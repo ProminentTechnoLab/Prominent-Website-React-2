@@ -1,0 +1,31 @@
+<?php
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\ContactController;
+
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+|
+| These routes are loaded by the RouteServiceProvider and are assigned
+| the "api" middleware group.
+|
+*/
+
+// Contact form submission
+Route::post('/contact', [ContactController::class, 'submit']);
+
+// Health check endpoint
+Route::get('/health', function () {
+    return response()->json([
+        'status'  => 'ok',
+        'app'     => 'Prominent TechnoLabs API',
+        'version' => '1.0.0',
+    ]);
+});
+
+Route::get('/user', function (Request $request) {
+    return $request->user();
+})->middleware('auth:sanctum');
