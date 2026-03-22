@@ -1,157 +1,316 @@
-﻿'use client'
+'use client'
 
-import { motion } from 'framer-motion'
-import { useInView } from 'react-intersection-observer'
+import React, { useState } from 'react'
 import Link from 'next/link'
-import { FiArrowRight, FiCheckCircle, FiX } from 'react-icons/fi'
+import { IoCheckmarkCircle, IoCloseCircle } from 'react-icons/io5'
+import TextReveal from './animations/TextReveal'
+import LiquidButton from './animations/LiquidButton'
 
-// Use Rs. for currency to avoid encoding issues; or HTML entity below
-const USD = () => <span>$</span>
+const Pricing = () => {
+  const [activeTab, setActiveTab] = useState('Website Design')
 
-const tabs = [
-  { id: 'web', label: 'Website Design' },
-  { id: 'remote', label: 'Remote Hiring' },
-  { id: 'mobile', label: 'Mobile App' },
-  { id: 'marketing', label: 'Digital Marketing' },
-]
+  const categories = ['Website Design', 'Remote Hiring', 'Mobile App', 'Digital Marketing']
 
-const plans = {
-  web: [
-    {
-      name: 'Basic', price: '69', period: 'package', popular: false,
-      features: ['Up to 5 Pages', 'Responsive Design', 'Contact Form', 'Basic SEO Setup', 'Social Media Links', 'Free Domain (1 Year)', '1 Month Support', { text: 'Custom Animations', crossed: true }, { text: 'E-Commerce Integration', crossed: true }],
-    },
-    {
-      name: 'Standard', price: '129', period: 'package', popular: true,
-      features: ['Up to 15 Pages', 'Responsive Design', 'Contact & Enquiry Forms', 'On-Page SEO Optimization', 'Admin Panel (CMS)', 'Free Domain + Hosting (1 Year)', 'Blog Integration', 'Google Analytics Setup', '3 Months Support'],
-    },
-    {
-      name: 'Premium', price: '239', period: 'package', popular: false,
-      features: ['Unlimited Pages', 'Custom UI/UX Design', 'E-Commerce Integration', 'Advanced SEO Setup', 'Payment Gateway Integration', 'Free Domain + Premium Hosting', 'Custom Animations', 'Speed Optimization', '6 Months Support'],
-    },
-  ],
-  remote: [
-    {
-      name: 'Laravel / PHP', price: '15', period: 'per hour', popular: false,
-      features: ['Dedicated Developer', 'Agile Workflow', 'Daily Progress Report', 'Code via GitHub', 'Email Support', 'Technical Architecture', 'Git + CI/CD Setup', 'Slack / Teams Support'],
-    },
-    {
-      name: 'React / Next.js', price: '16', period: 'per hour', popular: true,
-      features: ['Expert React Developer', 'State Management', 'Performance Tuning', 'Daily Standups & Reports', 'Code Review Included', 'Technical Architecture', 'Git + CI/CD Setup', 'Slack / Teams Support'],
-    },
-    {
-      name: 'Node / Python / Mobile', price: '18', period: 'per hour', popular: false,
-      features: ['Specialist Developer', 'Complex Logic / Backend', 'API Security', 'Daily Standups & Reports', 'Code Review Included', 'Technical Architecture', 'Git + CI/CD Setup', 'Slack / Teams Support'],
-    },
-  ],
-  mobile: [
-    {
-      name: 'Native (iOS/Android)', price: '359', period: 'per app', popular: false,
-      features: ['Single Platform', 'Up to 10 Screens', 'Material / HIG Design', 'Push Notifications', 'App Store / Play Store', '1 Month Support', { text: 'Multi-platform', crossed: true }, { text: 'Advanced API', crossed: true }],
-    },
-    {
-      name: 'Flutter / React Native', price: '499', period: 'per app', popular: true,
-      features: ['Both iOS + Android', 'Up to 15 Screens', 'Custom UI/UX Design', 'Backend API Integration', 'Push Notifications', 'Store Optimization', 'Cross-platform Efficiency', '3 Months Support'],
-    },
-    {
-      name: 'Enterprise App', price: '899', period: 'per app', popular: false,
-      features: ['iOS + Android (Hybrid/Native)', 'Unlimited Screens', 'Real-time Features', 'Complex Backend / CMS', 'Scalable Architecture', 'Biometric Auth', 'In-App Purchases', '6 Months Support'],
-    },
-  ],
-  marketing: [
-    {
-      name: 'Basic', price: '299', period: 'per month', popular: false,
-      features: ['Social Media Management', '10 Keywords SEO', 'Monthly Report', 'Google My Business', '2 Blog Posts', { text: 'Google Ads', crossed: true }, { text: 'Competitor Analysis', crossed: true }],
-    },
-    {
-      name: 'Comprehensive', price: '399', period: 'per month', popular: true,
-      features: ['Advanced SEO (25 Keywords)', 'SMM & Content Strategy', 'Competitor Analysis', '4 Blog Posts/Month', 'Link Building', 'Monthly Detail Reporting', 'ROI Measurement'],
-    },
-    {
-      name: 'Premium', price: '549', period: 'per month', popular: false,
-      features: ['Full Digital Strategy', 'Unlimited SEO Keywords', 'Paid Ad Management', 'Premium Backlinks', 'Weekly Reporting', 'Conversion Rate Optimization', 'Dedicated Manager'],
-    },
-  ],
-}
-
-import { useState } from 'react'
-
-export default function Pricing() {
-  const [activeTab, setActiveTab] = useState('web')
-  const [ref, inView] = useInView({ threshold: 0.05, triggerOnce: true })
+  const plans = {
+    'Website Design': [
+      { name: 'Starter', price: '$199', period: 'One Time', popular: false, features: ['5 Dynamic Pages', 'Responsive Design', 'Basic SEO', '1 Month Support', { text: 'Free Domain & Hosting', included: false }] },
+      { name: 'Professional', price: '$349', period: 'One Time', popular: true, features: ['10 Dynamic Pages', 'Premium Design', 'Advanced SEO', '3 Months Support', 'Free Domain & Hosting', 'Admin Panel'] },
+      { name: 'Business', price: '$599', period: 'One Time', popular: false, features: ['Unlimited Pages', 'Custom UI/UX', 'SEO & Speed Fix', '6 Months Support', 'Free Domain & Hosting', 'CMS Integration', 'E-commerce Ready'] }
+    ],
+    'Remote Hiring': [
+      { name: 'Junior Dev', price: '$449', period: 'per month', features: ['Dedicate Developer', 'Daily Updates', 'Quality Assurance', 'Project Management', { text: 'Senior Oversight', included: false }] },
+      { name: 'Mid Dev', price: '$699', period: 'per month', popular: true, features: ['Dedicated UI Specialist', 'Code Review', 'Cloud Deployment', '24/7 Support', 'Senior Oversight'] },
+      { name: 'Senior Dev', price: '$1,199', period: 'per month', features: ['Architect Level Dev', 'Fullstack Expertise', 'Tech Consulting', 'Priority Support', 'Team Lead Access'] }
+    ],
+    'Mobile App': [
+      { name: 'Basic App', price: '$649', period: 'Starting', features: ['Flutter/React Native', 'Basic Features', 'App Store Prep', '1 Month Support'] },
+      { name: 'Pro App', price: '$1,299', period: 'Starting', popular: true, features: ['Custom Logic', 'Firebase/Laravel API', 'Push Notifications', '3 Months Support', 'Play/App Store Deploy'] }
+    ],
+    'Digital Marketing': [
+      { name: 'ESSENTIAL', price: '$129', period: 'per month', features: ['SEO Analysis', 'Social Media Management', '5 Creatives/mo', 'Basic Reporting'] },
+      { name: 'GROWTH', price: '$249', period: 'per month', popular: true, features: ['Full SEO Service', 'PPC Management', '15 Creatives/mo', 'Content Strategy', 'Monthly Strategy Call'] }
+    ]
+  }
 
   return (
-    <section className="section-pad" ref={ref}>
+    <section className="pricing section">
       <div className="container">
-        <div className="section-header">
-          <div className="section-badge">Transparent Pricing</div>
-          <h2 className="section-title">Simple, Honest <span>Pricing Plans</span></h2>
-          <p className="section-subtitle">No hidden fees. Choose the plan that fits your business. All plans include dedicated support.</p>
+        <div className="section-header-centered">
+          <div className="badge">Flexible Pricing</div>
+          <h2 className="section-h">
+            <TextReveal>Transparent Plans for</TextReveal>
+            <TextReveal delay={0.2} className="accent-text">Every Scale</TextReveal>
+          </h2>
         </div>
 
+        {/* Tab Switcher */}
         <div className="pricing-tabs">
-          {tabs.map(t => (
-            <button key={t.id} className={`pricing-tab ${activeTab === t.id ? 'active' : ''}`} onClick={() => setActiveTab(t.id)}>{t.label}</button>
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              className={`tab-btn ${activeTab === cat ? 'active' : ''}`}
+              onClick={() => setActiveTab(cat)}
+            >
+              {cat}
+            </button>
           ))}
         </div>
 
-        <motion.div key={activeTab} className="pricing-grid" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
+        {/* Pricing Cards */}
+        <div className="pricing-grid">
           {plans[activeTab].map((plan, i) => (
-            <motion.div
-              key={plan.name}
-              className={`pricing-card ${plan.popular ? 'popular' : ''}`}
-              initial={{ opacity: 0, y: 30 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-            >
-              {plan.popular && <div className="popular-badge">Most Popular</div>}
-              <div className="plan-name">{plan.name}</div>
-              <div className="plan-price">
-                <span className="price-amount"><USD />{plan.price}</span>
-                <span className="price-period">/{plan.period}</span>
+            <div key={plan.name} className={`pricing-card ${plan.popular ? 'popular' : ''}`}>
+              {plan.popular && <div className="popular-tag">MOST POPULAR</div>}
+              <div className="card-head">
+                <h3 className="plan-name">{plan.name}</h3>
+                <div className="price-wrap">
+                  <span className="price">{plan.price}</span>
+                  <span className="period">/{plan.period}</span>
+                </div>
               </div>
+
               <ul className="plan-features">
-                {plan.features.map((f, fi) => {
-                  const crossed = typeof f === 'object' && f.crossed
-                  const text = typeof f === 'object' ? f.text : f
+                {plan.features.map((f, i) => {
+                  const isObject = typeof f === 'object'
+                  const text = isObject ? f.text : f
+                  const included = isObject ? f.included : true
                   return (
-                    <li key={fi} className={crossed ? 'feature-crossed' : ''}>
-                      {crossed ? <FiX size={14} className="feature-icon-x" /> : <FiCheckCircle size={14} className="feature-icon-check" />}
-                      {text}
+                    <li key={i} className={included ? '' : 'disabled'}>
+                      {included ? <IoCheckmarkCircle className="check" /> : <IoCloseCircle className="uncheck" />}
+                      <span className="feature-text">{text}</span>
                     </li>
                   )
                 })}
               </ul>
-              <Link href="/contact" className={`btn ${plan.popular ? 'btn-primary' : 'btn-outline-navy'}`} style={{ width: '100%', justifyContent: 'center', marginTop: 'auto' }}>
-                Get Started <FiArrowRight />
-              </Link>
-            </motion.div>
+
+              <div className="card-footer">
+                <LiquidButton
+                  effect="cryogenic"
+                  variant={plan.popular ? "solid" : "outline"}
+                  color={plan.popular ? "var(--brand-orange)" : "#fff"}
+                  liquidColor={plan.popular ? "#000" : "var(--brand-orange)"}
+                  textColor="white"
+                  hoverTextColor="white"
+                  strength={30}
+                  width="100%"
+                >
+                  <Link href="/contact/" className="btn-clean">
+                    Choose Plan
+                  </Link>
+                </LiquidButton>
+              </div>
+            </div>
           ))}
-        </motion.div>
+        </div>
       </div>
 
       <style>{`
-        .pricing-tabs { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 44px; }
-        .pricing-tab { padding: 10px 24px; border-radius: var(--radius-full); font-size: 0.88rem; font-weight: 600; cursor: pointer; border: 1.5px solid var(--gray-200); background: white; color: var(--gray-600); transition: var(--transition); }
-        .pricing-tab:hover { color: var(--orange); border-color: var(--orange); }
-        .pricing-tab.active { background: var(--orange); color: white; border-color: var(--orange); box-shadow: var(--shadow-orange); }
-        .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; align-items: start; }
-        .pricing-card { background: white; border-radius: var(--radius-xl); padding: 36px; border: 1.5px solid var(--gray-100); box-shadow: var(--shadow-card); position: relative; display: flex; flex-direction: column; transition: var(--transition); }
-        .pricing-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-card-hover); }
-        .pricing-card.popular { border-color: var(--orange); box-shadow: 0 10px 40px rgba(255,102,0,0.18); }
-        .popular-badge { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: var(--orange); color: white; font-size: 0.72rem; font-weight: 700; padding: 5px 16px; border-radius: var(--radius-full); letter-spacing: 0.5px; white-space: nowrap; }
-        .plan-name { font-family: var(--font-heading); font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); margin-bottom: 14px; }
-        .plan-price { margin-bottom: 28px; }
-        .price-amount { font-family: var(--font-heading); font-size: 2.3rem; font-weight: 800; color: var(--primary); }
-        .price-period { font-size: 0.85rem; color: var(--gray-400); margin-left: 4px; }
-        .plan-features { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; flex: 1; }
-        .plan-features li { display: flex; align-items: center; gap: 8px; font-size: 0.87rem; color: var(--gray-700); }
-        .feature-crossed { opacity: 0.4; }
-        .feature-icon-check { color: var(--orange); flex-shrink: 0; }
-        .feature-icon-x { color: var(--gray-400); flex-shrink: 0; }
-        @media (max-width: 900px) { .pricing-grid { grid-template-columns: 1fr; max-width: 400px; margin: 0 auto; } }
-        @media (max-width: 600px) { .pricing-grid { max-width: 100%; } }
+        .pricing {
+          background: #000000; /* Changed from white */
+          padding: 10vw 0;
+        }
+        .section-header-centered { 
+          text-align: left; 
+          margin-bottom: 6rem; 
+        }
+        .section-h { 
+          font-size: clamp(3rem, 6vw, 5.5rem); 
+          color: #fff !important; /* Changed to white */
+          line-height: 0.95;
+          letter-spacing: -0.04em;
+          text-transform: uppercase;
+        }
+        .accent-text { 
+          color: #fff;
+          opacity: 0.15; 
+          display: block;
+        }
+
+        .pricing-tabs {
+          display: flex;
+          justify-content: flex-start;
+          gap: 30px;
+          margin-bottom: 6rem;
+          flex-wrap: wrap;
+          border-top: 1px solid rgba(255,255,255,0.1); /* Adjusted for dark */
+          padding-top: 2rem;
+        }
+        .tab-btn {
+          padding: 0;
+          background: transparent;
+          border: none;
+          color: #fff; /* Changed to white */
+          opacity: 0.4;
+          font-size: 1rem;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.1em;
+          cursor: pointer;
+          transition: 0.4s var(--ease-expo);
+          position: relative;
+        }
+        .tab-btn::after {
+          content: '';
+          position: absolute;
+          bottom: -5px;
+          left: 0;
+          width: 0;
+          height: 2px;
+          background: #fff;
+          transition: 0.4s var(--ease-expo);
+        }
+        .tab-btn:hover, .tab-btn.active {
+          opacity: 1;
+        }
+        .tab-btn.active::after {
+          width: 100%;
+        }
+
+        .pricing-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 2rem;
+          margin-top: 2rem;
+        }
+
+        .pricing-card {
+          background: #111; /* Darker card for dark theme */
+          border: 1px solid rgba(255,255,255,0.1);
+          border-radius: 2.5rem;
+          padding: 5rem 3rem;
+          position: relative;
+          transition: all 0.6s var(--ease-expo);
+          display: flex;
+          flex-direction: column;
+          overflow: hidden;
+        }
+        .pricing-card:hover {
+          background: #fff; /* Flip to white on hover */
+          transform: translateY(-15px);
+          box-shadow: 0 30px 60px rgba(255,255,255,0.1);
+          border-color: #fff;
+        }
+        .popular-tag {
+          position: absolute;
+          top: 0;
+          right: 0;
+          left: auto;
+          background: var(--brand-orange);
+          color: white;
+          font-size: 0.65rem;
+          font-weight: 900;
+          padding: 8px 16px;
+          letter-spacing: 0.1em;
+          border-bottom-left-radius: 1.5rem;
+        }
+
+        .card-head { margin-bottom: 3rem; text-align: left; }
+        .plan-name { 
+          font-size: 0.9rem; 
+          color: #aaa !important; /* Lighter for dark */
+          margin-bottom: 1.5rem; 
+          text-transform: uppercase;
+          letter-spacing: 0.2rem;
+          font-weight: 800;
+          transition: color 0.4s;
+        }
+        .pricing-card:hover .plan-name,
+        .section-dark .pricing-card:hover .plan-name,
+        .pricing-card:hover .feature-text,
+        .section-dark .pricing-card:hover .feature-text { 
+          color: #000000 !important;
+          opacity: 0.8 !important; /* Increased for better visibility */
+        }
+        .price-wrap { color: #fff; transition: color 0.4s; display: flex; align-items: baseline; gap: 4px; }
+        .pricing-card:hover .price-wrap,
+        .section-dark .pricing-card:hover .price-wrap,
+        .pricing-card:hover .price,
+        .section-dark .pricing-card:hover .price,
+        .pricing-card:hover .period,
+        .section-dark .pricing-card:hover .period { 
+          color: #000000 !important; 
+        }
+        .price { font-size: 3rem; font-weight: 700; letter-spacing: -0.04em; }
+        .period { font-size: 0.8rem; opacity: 0.4; text-transform: uppercase; font-weight: 700; }
+
+        .plan-features {
+          list-style: none;
+          margin-bottom: 4rem;
+          flex: 1;
+        }
+        .plan-features li {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          margin-bottom: 1.2rem;
+          color: #eee; /* Lighter for dark theme */
+          font-size: 0.95rem;
+          transition: all 0.4s;
+        }
+        .pricing-card:hover .plan-features li,
+        .section-dark .pricing-card:hover .plan-features li { 
+          color: #000000 !important; 
+        }
+        
+        .plan-features .check { color: var(--brand-orange); font-size: 1.2rem; transition: color 0.4s; }
+        .pricing-card:hover .plan-features .check { color: #000000 !important; }
+        
+        .plan-features .uncheck { font-size: 1.2rem; color: #ff4d4d; opacity: 0.8; transition: all 0.4s; }
+        .pricing-card:hover .plan-features .uncheck { color: #000000 !important; opacity: 1; }
+
+        .plan-features li.disabled { 
+          opacity: 0.3; 
+          text-decoration: line-through;
+        }
+        .pricing-card:hover .plan-features li.disabled { 
+          opacity: 0.4 !important; 
+          color: #000000 !important;
+        }
+
+        .card-footer {
+          margin-top: auto;
+          display: flex;
+          justify-content: center;
+          width: 100%;
+        }
+        .plan-btn {
+          width: 100%;
+          justify-content: center;
+          font-size: 0.85rem;
+          font-weight: 800;
+          padding: 1.2rem;
+          border-radius: 1rem;
+        }
+
+        .pricing-card .btn-outline {
+          border: 1px solid #fff;
+          color: #fff;
+        }
+        .pricing-card:hover .fast-btn {
+          background: #000 !important;
+          border-color: #000 !important;
+        }
+        .pricing-card:hover .btn-content,
+        .pricing-card:hover .btn-content * {
+          color: #fff !important;
+        }
+        
+        /* Ensure popular card button stays orange on card hover but maybe changes liquid color */
+        .pricing-card.popular:hover .fast-btn {
+          background: var(--brand-orange) !important;
+          border-color: var(--brand-orange) !important;
+        }
+
+        @media (max-width: 1024px) {
+          .pricing-grid { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+        }
+        @media (max-width: 768px) {
+          .pricing-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+          .pricing-card { padding: 4rem 2.5rem; }
+        }
       `}</style>
     </section>
   )
 }
+
+export default Pricing

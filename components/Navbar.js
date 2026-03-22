@@ -1,178 +1,371 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { FiPhone, FiMail, FiChevronDown, FiMenu, FiX, FiArrowRight } from 'react-icons/fi'
-import { FaFacebookF, FaLinkedinIn, FaInstagram, FaYoutube } from 'react-icons/fa'
+import { IoClose, IoMenu, IoChevronDown } from 'react-icons/io5'
+import { gsap } from 'gsap'
+import MagneticButton from './animations/MagneticButton'
 
-const XIcon = ({ size = 14 }) => (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
-        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-    </svg>
-)
+const Navbar = () => {
+  const [isOpen, setIsOpen] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
+  const [activeDropdown, setActiveDropdown] = useState(null)
+  const [isVisible, setIsVisible] = useState(true)
 
-const serviceItems = [
-    { label: 'Website Development', href: '/services/website-development' },
-    { label: 'Mobile App Development', href: '/services/mobile-app-development' },
-    { label: 'UI/UX Design', href: '/services/ui-ux-design' },
-    { label: 'CMS & E-Commerce', href: '/services/cms-ecommerce' },
-    { label: 'Payment & Shipping APIs', href: '/services/payment-shipping-api' },
-    { label: 'Digital Marketing', href: '/services/digital-marketing' },
-]
+  const pathname = usePathname()
+  const menuRef = useRef(null)
+  const navRef = useRef(null)
+  const lastScrollYRef = useRef(0)
+  const rafRef = useRef(null)
 
-const navLinks = [
-    { label: 'Home', href: '/' },
-    { label: 'About', href: '/about' },
-    { label: 'Services', href: '/services', hasDropdown: true },
-    { label: 'Pricing', href: '/pricing' },
-    { label: 'Contact', href: '/contact' },
-]
+  useEffect(() => {
+    const handleScroll = () => {
+      if (rafRef.current) return
+      rafRef.current = requestAnimationFrame(() => {
+        const currentScrollY = window.scrollY
 
-export default function Navbar() {
-    const [scrolled, setScrolled] = useState(false)
-    const [mobileOpen, setMobileOpen] = useState(false)
-    const [dropOpen, setDropOpen] = useState(false)
-    const pathname = usePathname()
+        setIsScrolled(currentScrollY > 20)
 
-    useEffect(() => {
-        const onScroll = () => setScrolled(window.scrollY > 40)
-        window.addEventListener('scroll', onScroll, { passive: true })
-        return () => window.removeEventListener('scroll', onScroll)
-    }, [])
+        if (currentScrollY > lastScrollYRef.current && currentScrollY > 100) {
+          setIsVisible(false)
+        } else {
+          setIsVisible(true)
+        }
 
-    useEffect(() => { setMobileOpen(false); setDropOpen(false) }, [pathname])
+        lastScrollYRef.current = currentScrollY
+        rafRef.current = null
+      })
+    }
 
-    const isHomepage = pathname === '/'
-    const transparent = isHomepage && !scrolled && !mobileOpen
-    const isActive = useCallback((href) => {
-        if (href === '/') return pathname === '/'
-        return pathname.startsWith(href)
-    }, [pathname])
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      if (rafRef.current) cancelAnimationFrame(rafRef.current)
+    }
+  }, [])
 
-    return (
-        <>
-            {/* Top Bar */}
-            <div className="topbar">
-                <div className="container topbar-inner">
-                    <div className="topbar-left">
-                        <a href="tel:+919327603253"><FiPhone size={12} />+91 93276 03253</a>
-                        <a href="mailto:info@prominenttechnolabs.com"><FiMail size={12} />info@prominenttechnolabs.com</a>
-                    </div>
-                    <div className="topbar-right">
-                        <a href="https://www.facebook.com/people/Prominent-TechnoLabs/61556264138689/" target="_blank" rel="noreferrer" aria-label="Facebook"><FaFacebookF size={12} /></a>
-                        <a href="#" aria-label="X (Twitter)"><XIcon size={12} /></a>
-                        <a href="#" aria-label="LinkedIn"><FaLinkedinIn size={12} /></a>
-                        <a href="https://www.instagram.com/prominent_technolabs/" target="_blank" rel="noreferrer" aria-label="Instagram"><FaInstagram size={12} /></a>
-                        <a href="https://www.youtube.com/@Prominentechnolabs" target="_blank" rel="noreferrer" aria-label="YouTube"><FaYoutube size={12} /></a>
-                    </div>
+  useEffect(() => {
+    if (menuRef.current) {
+      if (isOpen) {
+        gsap.to(menuRef.current, { y: 0, opacity: 1, duration: 0.6, ease: 'power4.out', display: 'flex' })
+        document.body.style.overflow = 'hidden'
+      } else {
+        gsap.to(menuRef.current, { y: '-100%', opacity: 0, duration: 0.5, ease: 'power4.in', display: 'none' })
+        document.body.style.overflow = 'auto'
+      }
+    }
+  }, [isOpen])
+
+  const services = [
+    { title: 'Website Development', path: '/services/website-development/' },
+    { title: 'Mobile App Development', path: '/services/mobile-app-development/' },
+    { title: 'UI/UX Design', path: '/services/ui-ux-design/' },
+    { title: 'CMS & E-commerce', path: '/services/cms-ecommerce/' },
+    { title: 'Digital Marketing', path: '/services/digital-marketing/' },
+    { title: 'Payment & Shipping API', path: '/services/payment-shipping-api/' },
+  ]
+
+  const navLinks = [
+    { title: 'Home', path: '/' },
+    { title: 'About', path: '/about/' },
+    { title: 'Services', path: '/services/', hasDropdown: true },
+    { title: 'Pricing', path: '/pricing/' },
+    { title: 'Contact', path: '/contact/' },
+  ]
+
+  return (
+    <nav
+      ref={navRef}
+      className={`navbar ${isScrolled ? 'scrolled' : ''} ${!isVisible ? 'nav-hidden' : ''}`}
+    >
+      <div className="container nav-container">
+        {/* Logo */}
+        <Link href="/" className="logo-wrap">
+          <Image
+            src="/images/logo-color.svg"
+            alt="Prominent TechnoLabs"
+            width={180}
+            height={48}
+            priority
+            className="nav-logo"
+            style={{ width: 'auto', height: '48px', objectFit: 'contain', verticalAlign: 'middle' }}
+          />
+        </Link>
+
+        {/* Desktop Navigation */}
+        <ul className="nav-links">
+          {navLinks.map((link) => (
+            <li
+              key={link.title}
+              className={`nav-item ${link.hasDropdown ? 'has-dropdown' : ''}`}
+              onMouseEnter={() => link.hasDropdown && setActiveDropdown(true)}
+              onMouseLeave={() => link.hasDropdown && setActiveDropdown(false)}
+            >
+              <Link
+                href={link.path}
+                className={`link ${pathname === link.path ? 'active' : ''}`}
+              >
+                <span className="link-text">{link.title}</span>
+                {link.hasDropdown && <IoChevronDown className="chevron" />}
+                <div className="link-indicator"></div>
+              </Link>
+
+              {link.hasDropdown && (
+                <div className={`mega-menu ${activeDropdown ? 'show' : ''}`}>
+                  <div className="mega-grid">
+                    {services.map((service) => (
+                      <Link key={service.title} href={service.path} className="mega-item">
+                        {service.title}
+                      </Link>
+                    ))}
+                  </div>
                 </div>
+              )}
+            </li>
+          ))}
+        </ul>
+
+        {/* Mobile Toggle */}
+        <button className="mobile-toggle" onClick={() => setIsOpen(true)}>
+          <IoMenu />
+        </button>
+      </div>
+
+      {/* Mobile Menu Overlay */}
+      <div ref={menuRef} className="mobile-overlay">
+        <button className="close-menu" onClick={() => setIsOpen(false)}>
+          <IoClose />
+        </button>
+        <div className="mobile-links">
+          {navLinks.map((link) => (
+            <div key={link.title} className="mobile-link-item">
+              {link.hasDropdown ? (
+                <div className="mobile-dropdown">
+                  <span className="mobile-link-main">Services</span>
+                  <div className="mobile-sublinks">
+                    {services.map((s) => (
+                      <Link key={s.title} href={s.path} onClick={() => setIsOpen(false)}>
+                        {s.title}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <Link href={link.path} onClick={() => setIsOpen(false)}>
+                  {link.title}
+                </Link>
+              )}
             </div>
+          ))}
+          {/* Mobile CTA removed */}
+        </div>
+      </div>
 
-            {/* Main Nav */}
-            <header className={`navbar ${scrolled ? 'navbar-scrolled' : ''} ${transparent ? 'navbar-transparent' : ''}`}>
-                <div className="container nav-inner">
-                    <Link href="/" className="nav-logo">
-                        <img
-                            src={transparent ? '/images/logo-white.svg' : '/images/logo-color.svg'}
-                            alt="Prominent TechnoLabs"
-                            className="nav-logo-img"
-                        />
-                    </Link>
+      <style>{`
+        .navbar {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          z-index: 1000;
+          height: var(--nav-height);
+          display: flex;
+          align-items: center;
+          transition: var(--trans-smooth);
+        }
+        .navbar.scrolled {
+          height: 80px;
+          background: rgba(255, 255, 255, 0.9);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        .nav-container {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          width: 100%;
+        }
+        .nav-hidden {
+          transform: translateY(-100%);
+        }
+        .nav-links {
+          display: flex;
+          gap: 2.5rem;
+          list-style: none;
+        }
+        .nav-item {
+          position: relative;
+        }
+        .link {
+          font-family: var(--font-heading);
+          color: #000;
+          font-weight: 700;
+          font-size: 0.85rem;
+          text-transform: uppercase;
+          text-decoration: none;
+          letter-spacing: 0.1em;
+          display: flex;
+          align-items: center;
+          gap: 5px;
+          position: relative;
+          opacity: 0.9;
+          transition: var(--trans-fast);
+          padding: 10px 0;
+        }
+        .link:hover, .link.active {
+          opacity: 1;
+        }
+        .link-indicator {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 0;
+          height: 2px;
+          background: var(--brand-orange);
+          transition: width 0.6s var(--ease-expo);
+          transform-origin: left;
+        }
+        .link:hover .link-indicator {
+          width: 100%;
+        }
+        .link.active {
+          opacity: 1;
+        }
+        .link.active .link-text {
+          color: var(--brand-orange);
+        }
+        .link .chevron {
+          font-size: 0.8rem;
+          transition: transform 0.3s;
+        }
+        .nav-item:hover .chevron {
+          transform: rotate(180deg);
+        }
+        
+        .nav-btn {
+          padding: 0.8rem 2rem;
+          font-size: 0.9rem;
+          background: var(--brand-orange) !important;
+          color: white !important;
+          border-color: var(--brand-orange) !important;
+          opacity: 1 !important;
+          visibility: visible !important;
+        }
+        .nav-btn:hover {
+          background: #000 !important;
+          color: white !important;
+          border-color: #000 !important;
+        }
 
-                    <nav className="nav-links">
-                        {navLinks.map(l => l.hasDropdown ? (
-                            <div key={l.label} className="nav-dropdown-wrapper">
-                                <Link href={l.href} className={`nav-link ${isActive(l.href) ? 'active' : ''}`}>
-                                    {l.label} <FiChevronDown size={14} className="nav-chevron" />
-                                </Link>
-                                <div className="nav-dropdown">
-                                    {serviceItems.map(s => (
-                                        <Link key={s.label} href={s.href} className="nav-dropdown-item">
-                                            <FiArrowRight size={13} />{s.label}
-                                        </Link>
-                                    ))}
-                                </div>
-                            </div>
-                        ) : (
-                            <Link key={l.label} href={l.href} className={`nav-link ${isActive(l.href) ? 'active' : ''}`}>{l.label}</Link>
-                        ))}
-                    </nav>
+        .mega-menu {
+          position: absolute;
+          top: 100%;
+          left: 50%;
+          transform: translateX(-50%) translateY(20px);
+          background: #ffffff;
+          border: 1px solid rgba(0, 0, 0, 0.08);
+          border-radius: 20px;
+          padding: 1.5rem;
+          width: 450px;
+          opacity: 0;
+          visibility: hidden;
+          transition: all 0.4s var(--ease-expo);
+          box-shadow: 0 30px 60px rgba(0,0,0,0.1);
+        }
+        .mega-menu.show {
+          opacity: 1;
+          visibility: visible;
+          transform: translateX(-50%) translateY(0);
+        }
+        .mega-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 10px;
+        }
+        .mega-item {
+          padding: 0.8rem 1.2rem;
+          color: #444;
+          border-radius: 10px;
+          font-weight: 500;
+          transition: var(--trans-fast);
+          text-decoration: none;
+        }
+        .mega-item:hover {
+          background: rgba(0,0,0,0.03);
+          color: var(--brand-orange);
+          padding-left: 1.5rem;
+        }
 
-                    <Link href="/contact" className="btn btn-primary nav-cta">Get a Quote <FiArrowRight /></Link>
+        .mobile-toggle {
+          display: none;
+          font-size: 2rem;
+          color: #000;
+          background: none;
+          border: none;
+          cursor: pointer;
+        }
 
-                    <button className="nav-hamburger" onClick={() => setMobileOpen(v => !v)} aria-label="Toggle menu">
-                        {mobileOpen ? <FiX size={24} /> : <FiMenu size={24} />}
-                    </button>
-                </div>
+        .mobile-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100vh;
+          background: var(--bg-dark);
+          z-index: 2000;
+          display: none;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          padding: 40px;
+          opacity: 0;
+          transform: translateY(-100%);
+        }
+        .close-menu {
+          position: absolute;
+          top: 30px;
+          right: 30px;
+          font-size: 2.5rem;
+          color: white;
+          background: none;
+          border: none;
+          cursor: pointer;
+        }
+        .mobile-links {
+          display: flex;
+          flex-direction: column;
+          gap: 2rem;
+          text-align: center;
+        }
+        .mobile-links a, .mobile-link-main {
+          font-family: var(--font-heading);
+          font-size: 1.8rem;
+          font-weight: 700;
+          color: white;
+          text-decoration: none;
+        }
+        .mobile-sublinks {
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+          margin-top: 1rem;
+        }
+        .mobile-sublinks a {
+          font-size: 1.1rem;
+          font-weight: 400;
+          color: var(--text-secondary);
+        }
 
-                {mobileOpen && (
-                    <div className="mobile-menu">
-                        {navLinks.map(l => l.hasDropdown ? (
-                            <div key={l.label}>
-                                <button className="mobile-link" onClick={() => setDropOpen(v => !v)}
-                                    style={{ width: '100%', textAlign: 'left', background: 'none', color: 'inherit', fontFamily: 'inherit', fontSize: 'inherit', cursor: 'pointer' }}>
-                                    {l.label} <FiChevronDown style={{ float: 'right', transition: '0.3s', transform: dropOpen ? 'rotate(180deg)' : 'none' }} />
-                                </button>
-                                {dropOpen && (
-                                    <div className="mobile-sub">
-                                        {serviceItems.map(s => <Link key={s.label} href={s.href} className="mobile-sub-link">{s.label}</Link>)}
-                                    </div>
-                                )}
-                            </div>
-                        ) : (
-                            <Link key={l.label} href={l.href} className={`mobile-link ${isActive(l.href) ? 'active' : ''}`}>{l.label}</Link>
-                        ))}
-                        <Link href="/contact" className="btn btn-primary" style={{ margin: '16px 20px', display: 'flex', justifyContent: 'center' }}>
-                            Get a Quote <FiArrowRight />
-                        </Link>
-                    </div>
-                )}
-            </header>
-
-            <style>{`
-        .topbar { background: var(--primary); color: rgba(255,255,255,0.8); font-size: 0.78rem; padding: 7px 0; position: relative; z-index: 1001; }
-        .topbar-inner { display: flex; align-items: center; justify-content: space-between; }
-        .topbar-left { display: flex; gap: 24px; flex-wrap: wrap; }
-        .topbar-left a { display: flex; align-items: center; gap: 5px; color: rgba(255,255,255,0.8); font-size: 0.78rem; transition: var(--transition); }
-        .topbar-left a:hover { color: var(--orange); }
-        .topbar-right { display: flex; gap: 6px; }
-        .topbar-right a { width: 26px; height: 26px; background: rgba(255,255,255,0.1); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.75); transition: var(--transition); }
-        .topbar-right a:hover { background: var(--orange); color: white; }
-        .navbar { position: sticky; top: 0; z-index: 1000; background: white; box-shadow: 0 2px 20px rgba(10,36,99,0.1); transition: var(--transition); }
-        .navbar-transparent { background: rgba(10,36,99,0.9) !important; backdrop-filter: blur(14px); box-shadow: none; }
-        .navbar-transparent .nav-link { color: rgba(255,255,255,0.9) !important; }
-        .navbar-transparent .nav-link.active, .navbar-transparent .nav-link:hover { color: var(--orange) !important; }
-        .navbar-transparent .nav-hamburger { color: white; }
-        .navbar-scrolled { background: white !important; box-shadow: 0 4px 25px rgba(10,36,99,0.12) !important; }
-        .nav-inner { display: flex; align-items: center; gap: 32px; height: var(--navbar-height); }
-        .nav-logo { flex-shrink: 0; }
-        .nav-logo-img { height: 42px; width: auto; object-fit: contain; }
-        .nav-links { display: flex; align-items: center; gap: 6px; margin-left: auto; }
-        .nav-link { display: flex; align-items: center; gap: 4px; padding: 8px 12px; font-size: 0.9rem; font-weight: 500; color: var(--gray-800); border-radius: var(--radius-sm); transition: var(--transition); text-decoration: none; }
-        .nav-link:hover, .nav-link.active { color: var(--orange); }
-        .nav-link.active { font-weight: 600; }
-        .nav-dropdown-wrapper { position: relative; }
-        .nav-chevron { transition: transform 0.3s; vertical-align: middle; }
-        .nav-dropdown-wrapper:hover .nav-chevron { transform: rotate(180deg); }
-        /* Dropdown: hidden by default, shown on CSS :hover — no gap = no disappearing */
-        .nav-dropdown { position: absolute; top: 100%; left: 50%; transform: translateX(-50%); background: white; border-radius: var(--radius-md); box-shadow: var(--shadow-lg); border: 1px solid var(--gray-100); min-width: 230px; z-index: 999; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 0.15s ease, transform 0.15s ease; transform: translateX(-50%) translateY(-4px); padding: 6px 0; }
-        .nav-dropdown-wrapper:hover .nav-dropdown { opacity: 1; visibility: visible; pointer-events: auto; transform: translateX(-50%) translateY(0); }
-        /* Invisible bridge fills the gap so mouse doesn't leave hover zone */
-        .nav-dropdown::before { content: ''; position: absolute; top: -12px; left: 0; right: 0; height: 12px; background: transparent; }
-        .nav-dropdown-item { display: flex; align-items: center; gap: 8px; padding: 10px 18px; font-size: 0.87rem; color: var(--gray-700); transition: var(--transition); font-weight: 500; text-decoration: none; }
-        .nav-dropdown-item:hover { color: var(--orange); background: rgba(255,102,0,0.04); padding-left: 24px; }
-        .nav-cta { font-size: 0.87rem; padding: 10px 22px; flex-shrink: 0; }
-        .nav-hamburger { display: none; color: var(--primary); padding: 8px; border-radius: var(--radius-sm); background: none; border: none; cursor: pointer; }
-        .mobile-menu { background: white; border-top: 1px solid var(--gray-100); padding-bottom: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); max-height: calc(100vh - var(--navbar-height) - 40px); overflow-y: auto; }
-        .mobile-link { display: block; padding: 14px 20px; font-size: 0.95rem; font-weight: 500; color: var(--gray-800); border-bottom: 1px solid var(--gray-100); transition: var(--transition); text-decoration: none; }
-        .mobile-link.active, .mobile-link:hover { color: var(--orange); }
-        .mobile-sub { background: var(--off-white); }
-        .mobile-sub-link { display: block; padding: 10px 20px 10px 36px; font-size: 0.87rem; color: var(--gray-600); border-bottom: 1px solid var(--gray-100); transition: var(--transition); text-decoration: none; }
-        .mobile-sub-link:hover { color: var(--orange); }
-        @media (max-width: 900px) { .nav-links, .nav-cta { display: none; } .nav-hamburger { display: flex; margin-left: auto; } }
-        @media (max-width: 480px) { .topbar-left a:last-child { display: none; } }
+        @media (max-width: 1024px) {
+          .nav-links, .nav-cta { display: none; }
+          .mobile-toggle { display: block; }
+        }
       `}</style>
-        </>
-    )
+    </nav>
+  )
 }
+
+export default Navbar

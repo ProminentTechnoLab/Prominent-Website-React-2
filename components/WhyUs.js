@@ -1,207 +1,231 @@
-﻿'use client'
-import { motion } from 'framer-motion'
-import { useInView } from 'react-intersection-observer'
-import { useEffect, useState } from 'react'
-import { FiCheckCircle, FiZap, FiUsers, FiAward } from 'react-icons/fi'
+'use client'
 
-const stats = [
-  { num: 30, suffix: '+', label: 'Happy Customers' },
-  { num: 50, suffix: '+', label: 'Successful Projects' },
-  { num: 15, suffix: '+', label: 'Team Members' },
-  { num: 99, suffix: '%', label: 'Satisfaction Rate' },
-]
+import React, { useEffect, useRef } from 'react'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
+import TextReveal from './animations/TextReveal'
 
-const reasons = [
-  {
-    icon: FiZap,
-    title: 'Lightning-Fast Delivery',
-    desc: 'We follow agile methodologies with sprint-based delivery cycles, ensuring your project launches on time without compromising on quality.',
-    color: '#FF6600',
-  },
-  {
-    icon: FiUsers,
-    title: 'Dedicated Expert Team',
-    desc: 'Work directly with experienced developers, designers, and marketers committed exclusively to your project â€” no outsourcing, no junior staff surprises.',
-    color: '#FF6600',
-  },
-  {
-    icon: FiAward,
-    title: 'Transparent Communication',
-    desc: 'Daily updates, weekly reports, and an always-open communication channel mean you are always in the loop â€” from kickoff to launch and beyond.',
-    color: '#FF6600',
-  },
-]
+const WhyUs = () => {
+  const sectionRef = useRef(null)
 
-function AnimatedCounter({ target, suffix, inView }) {
-  const [count, setCount] = useState(0)
   useEffect(() => {
-    if (!inView) return
-    let start = 0
-    const step = target / 50
-    const id = setInterval(() => {
-      start += step
-      if (start >= target) { setCount(target); clearInterval(id) }
-      else { setCount(Math.floor(start)) }
-    }, 30)
-    return () => clearInterval(id)
-  }, [inView, target])
-  return <>{count}{suffix}</>
-}
+    gsap.registerPlugin(ScrollTrigger)
 
-export default function WhyUs() {
-  const [ref, inView] = useInView({ threshold: 0.1, triggerOnce: true })
+    const counters = document.querySelectorAll('.counter-val')
+    counters.forEach((counter) => {
+      const target = parseInt(counter.getAttribute('data-target'))
+      gsap.fromTo(
+        counter,
+        { innerText: 0 },
+        {
+          innerText: target,
+          duration: 2,
+          snap: { innerText: 1 },
+          scrollTrigger: {
+            trigger: counter,
+            start: 'top 85%',
+          },
+        }
+      )
+    })
+  }, [])
+
+  const stats = [
+    { label: 'Happy Clients', value: 30, suffix: '+' },
+    { label: 'Successful Projects', value: 50, suffix: '+' },
+    { label: 'Expert Developers', value: 15, suffix: '+' },
+    { label: 'Years of Experience', value: 5, suffix: '+' },
+  ]
+
+  const reasons = [
+    {
+      title: 'Customer Centric',
+      desc: 'We prioritize your vision and goals, ensuring every solution is tailored to your specific business needs.'
+    },
+    {
+      title: 'Expert Engineering',
+      desc: 'Our team consists of top-tier developers skilled in modern frameworks like React, Flutter, and Laravel.'
+    },
+    {
+      title: 'Transparent Process',
+      desc: 'From planning to deployment, we maintain full transparency with regular updates and clear communication.'
+    }
+  ]
 
   return (
-    <section className="why-us section-pad" ref={ref}>
+    <section className="why-us section" ref={sectionRef}>
       <div className="container">
-        {/* Stats bar */}
-        <div className="stats-grid">
-          {stats.map((s, i) => (
-            <motion.div
-              key={s.label}
-              className="stat-card"
-              initial={{ opacity: 0, y: 30 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: i * 0.1 }}
-            >
-              <div className="stat-card-number">
-                <AnimatedCounter target={s.num} suffix={s.suffix} inView={inView} />
-              </div>
-              <div className="stat-card-label">{s.label}</div>
-            </motion.div>
-          ))}
-        </div>
+        <div className="section-grid">
+          {/* Left: Stats & Heading */}
+          <div className="why-left">
+            <div className="badge">Why Choose Us</div>
+            <h2 className="section-h">
+              <TextReveal>Results Driven</TextReveal>
+              <TextReveal delay={0.2} className="accent-text">Engineering</TextReveal>
+            </h2>
+            <p className="why-desc">
+              We don't just build apps; we build businesses. Our data-driven approach ensures every line of code adds value to your bottom line.
+            </p>
 
-        {/* Section header */}
-        <div className="section-header" style={{ marginTop: 70 }}>
-          <div className="section-badge">Why Prominent TechnoLabs</div>
-          <h2 className="section-title">Why Working <span>With Us?</span></h2>
-          <p className="section-subtitle">
-            We go beyond just writing code â€” we become a strategic technology partner invested in your success.
-          </p>
-        </div>
-
-        {/* Reasons grid */}
-        <div className="grid-3">
-          {reasons.map((r, i) => {
-            const Icon = r.icon
-            return (
-              <motion.div
-                key={r.title}
-                className="reason-card"
-                initial={{ opacity: 0, y: 30 }}
-                animate={inView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.6, delay: i * 0.15 }}
-              >
-                <div className="reason-icon" style={{ background: r.color + '22', color: r.color }}>
-                  <Icon size={26} />
+            {/* Stats section restored */}
+            <div className="stats-grid">
+              {stats.map((s) => (
+                <div key={s.label} className="stat-card">
+                  <div className="stat-number">
+                    <span
+                      className="counter-val"
+                      data-target={s.value}
+                    >
+                      0
+                    </span>
+                    <span className="suffix">{s.suffix}</span>
+                  </div>
+                  <div className="stat-label">{s.label}</div>
                 </div>
-                <div className="reason-check"><FiCheckCircle color={r.color} size={18} /></div>
-                <h3 className="reason-title">{r.title}</h3>
-                <p className="reason-desc">{r.desc}</p>
-              </motion.div>
-            )
-          })}
+              ))}
+            </div>
+          </div>
+
+          {/* Right: Reasons */}
+          <div className="why-right">
+            {reasons.map((r, i) => (
+              <div key={r.title} className="reason-item">
+                <div className="reason-content">
+                  <h3 className="reason-title">{r.title}</h3>
+                  <p className="reason-desc">{r.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
       <style>{`
         .why-us {
-          background: var(--gradient-primary);
-          color: white;
-          position: relative;
-          overflow: hidden;
+          background: transparent;
+          padding-top: 4rem !important; /* Reduced from 12vw to remove unwanted space */
         }
-        .why-us::before {
-          content: '';
-          position: absolute;
-          top: -200px; right: -200px;
-          width: 500px; height: 500px;
-          border-radius: 50%;
-          background: var(--orange);
-          opacity: 0.07;
-          filter: blur(60px);
+        .section-grid {
+          display: grid;
+          grid-template-columns: 1.2fr 1fr;
+          gap: 10vw;
+          align-items: flex-start;
+          padding-top: 0; /* Removed remaining inner padding */
         }
-        .why-us .section-title { color: white; }
-        .why-us .section-subtitle { color: rgba(255,255,255,0.65); }
-        .why-us .section-badge {
-          background: rgba(255,102,0,0.2);
-          border-color: rgba(255,102,0,0.4);
-          color: #ffd9b8;
+
+        .why-left {
+          position: sticky;
+          top: 15vw;
+        }
+        .section-h {
+          font-size: clamp(3rem, 6vw, 5.5rem); 
+          color: #fff; /* Changed to white */
+          line-height: 0.95;
+          letter-spacing: -0.04em;
+          text-transform: uppercase;
+          margin-bottom: 4rem;
+        }
+        .accent-text {
+          color: #fff;
+          opacity: 0.15; /* Adjusted for dark */
+          display: block;
+        }
+        .why-desc {
+          font-size: 1.4rem;
+          color: #aaa; /* Lighter for dark */
+          margin-bottom: 6rem;
+          max-width: 500px;
+          opacity: 0.8;
         }
 
         .stats-grid {
           display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          gap: 24px;
+          grid-template-columns: repeat(2, 1fr);
+          border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
         .stat-card {
-          background: rgba(255,255,255,0.07);
-          backdrop-filter: blur(10px);
-          border: 1px solid rgba(255,255,255,0.12);
-          border-radius: var(--radius-lg);
-          padding: 32px 20px;
-          text-align: center;
-          transition: var(--transition);
+          padding: 4rem 2rem;
+          border-right: 1px solid rgba(255, 255, 255, 0.1);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+          text-align: left;
+          transition: all 0.6s var(--ease-expo);
         }
         .stat-card:hover {
-          background: rgba(255,102,0,0.15);
-          border-color: rgba(255,102,0,0.4);
-          transform: translateY(-4px);
+          background: #fff;
+          color: #000;
         }
-        .stat-card-number {
+        
+        .counter-val, .suffix {
           font-family: var(--font-heading);
-          font-size: 2.8rem;
-          font-weight: 800;
-          color: var(--orange);
-          line-height: 1;
-          margin-bottom: 8px;
+          font-size: 4rem;
+          font-weight: 700;
+          color: #fff; /* White for dark theme */
+          letter-spacing: -0.04em;
+          transition: color 0.4s;
         }
-        .stat-card-label {
-          font-size: 0.85rem;
-          color: rgba(255,255,255,0.7);
-          font-weight: 500;
+        .stat-card:hover .counter-val,
+        .stat-card:hover .suffix,
+        .section-dark .stat-card:hover .counter-val,
+        .section-dark .stat-card:hover .suffix {
+          color: #000000 !important;
+        }
+        .stat-label {
+          font-size: 0.75rem;
+          color: #999; /* Muted for dark */
           text-transform: uppercase;
-          letter-spacing: 0.5px;
+          letter-spacing: 0.2em;
+          margin-top: 1rem;
+          font-weight: 700;
+          transition: color 0.4s;
+        }
+        .stat-card:hover .stat-label {
+          color: rgba(0,0,0,0.7) !important;
         }
 
-        .reason-card {
-          background: rgba(255,255,255,0.07);
-          border: 1px solid rgba(255,255,255,0.1);
-          border-radius: var(--radius-lg);
-          padding: 36px;
-          position: relative;
-          transition: var(--transition);
+        .why-right {
+          display: flex;
+          flex-direction: column;
         }
-        .reason-card:hover {
-          background: rgba(255,255,255,0.12);
-          transform: translateY(-6px);
+        .reason-item {
+          display: flex;
+          flex-direction: column;
+          gap: 2rem;
+          padding: 6rem 0;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+          transition: all 0.6s var(--ease-expo);
         }
-        .reason-icon {
-          width: 60px; height: 60px;
-          border-radius: var(--radius-md);
-          display: flex; align-items: center; justify-content: center;
-          margin-bottom: 18px;
+        .reason-item:first-child { border-top: 1px solid rgba(255, 255, 255, 0.1); }
+        .reason-item:hover {
+          padding-left: 3rem;
         }
-        .reason-check { position: absolute; top: 20px; right: 20px; }
         .reason-title {
-          font-family: var(--font-heading);
-          font-size: 1.05rem;
+          font-size: 2.5rem;
+          color: #fff; /* White for dark */
+          margin-bottom: 1.5rem;
           font-weight: 700;
-          color: white;
-          margin-bottom: 10px;
+          letter-spacing: -0.02em;
+          text-transform: uppercase;
+          line-height: 1;
         }
         .reason-desc {
-          font-size: 0.88rem;
-          color: rgba(255,255,255,0.65);
-          line-height: 1.8;
+          font-size: 1.2rem;
+          color: #aaa; /* Lighter for dark */
+          line-height: 1.5;
+          opacity: 0.8;
         }
 
-        @media (max-width: 900px) { .stats-grid { grid-template-columns: repeat(2,1fr); } }
-        @media (max-width: 480px) { .stats-grid { grid-template-columns: 1fr 1fr; gap: 14px; } }
+        @media (max-width: 1024px) {
+          .section-grid { grid-template-columns: 1fr; gap: 60px; }
+          .why-left { position: relative; top: 0; }
+          .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+          .stats-grid { grid-template-columns: 1fr; }
+          .reason-item:hover { padding-left: 0; }
+        }
       `}</style>
     </section>
   )
 }
 
-
+export default WhyUs

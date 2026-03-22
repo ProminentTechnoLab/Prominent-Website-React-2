@@ -1,123 +1,327 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import { useInView } from 'react-intersection-observer'
-import { FaReact, FaVuejs, FaNodeJs, FaWordpress, FaApple, FaJava, FaAws } from 'react-icons/fa'
-import { SiNextdotjs, SiLaravel, SiFlutter, SiDart, SiKotlin, SiMysql, SiSwift, SiPython } from 'react-icons/si'
+import React from 'react'
+import {
+  FaReact, FaNodeJs, FaLaravel, FaWordpress,
+  FaShopify, FaJs, FaPython, FaAppStore, FaAndroid
+} from 'react-icons/fa'
+import { SiFlutter, SiNextdotjs, SiTailwindcss, SiTypescript, SiFirebase, SiMeta, SiGoogle } from 'react-icons/si'
+import { gsap } from 'gsap'
+import TextReveal from './animations/TextReveal'
 
-const techStack = [
-    { name: 'React', Icon: FaReact, color: '#61DBFB' },
-    { name: 'Next.js', Icon: SiNextdotjs, color: '#000000' },
-    { name: 'Vue.js', Icon: FaVuejs, color: '#42b883' },
-    { name: 'Laravel', Icon: SiLaravel, color: '#FF2D20' },
-    { name: 'Node.js', Icon: FaNodeJs, color: '#68A063' },
-    { name: 'Python', Icon: SiPython, color: '#3776AB' },
-    { name: 'Flutter', Icon: SiFlutter, color: '#54C5F8' },
-    { name: 'React Native', Icon: FaReact, color: '#61DBFB' },
-    { name: 'WordPress', Icon: FaWordpress, color: '#21759b' },
-    { name: 'iOS App', Icon: FaApple, color: '#555555' },
-    { name: 'SwiftUI', Icon: SiSwift, color: '#FA7343' },
-    { name: 'Kotlin', Icon: SiKotlin, color: '#7F52FF' },
-    { name: 'MySQL', Icon: SiMysql, color: '#00758F' },
-    { name: 'AWS', Icon: FaAws, color: '#FF9900' },
-]
+const Technologies = () => {
+  const techStack = [
+    { name: 'React', icon: <FaReact />, color: '#61DBFB' },
+    { name: 'Next.js', icon: <SiNextdotjs />, color: '#000000' },
+    { name: 'Flutter', icon: <SiFlutter />, color: '#54C5F8' },
+    { name: 'Laravel', icon: <FaLaravel />, color: '#FF2D20' },
+    { name: 'Node.js', icon: <FaNodeJs />, color: '#68A063' },
+    { name: 'WordPress', icon: <FaWordpress />, color: '#21759b' },
+    { name: 'Shopify', icon: <FaShopify />, color: '#96BF48' },
+    { name: 'Firebase', icon: <SiFirebase />, color: '#FFCA28' },
+    { name: 'Tailwind', icon: <SiTailwindcss />, color: '#06B6D4' },
+    { name: 'JavaScript', icon: <FaJs />, color: '#F7DF1E' },
+    { name: 'TypeScript', icon: <SiTypescript />, color: '#3178C6' },
+    { name: 'Python', icon: <FaPython />, color: '#3776AB' },
+    { name: 'Google Ads', icon: <SiGoogle />, color: '#4285F4' },
+    { name: 'Meta Ads', icon: <SiMeta />, color: '#0668E1' },
+    { name: 'App Store', icon: <FaAppStore />, color: '#0070c9' },
+    { name: 'Android', icon: <FaAndroid />, color: '#3DDC84' },
+  ]
 
-export default function Technologies() {
-    const [ref, inView] = useInView({ threshold: 0.1, triggerOnce: true })
+  // Triple for efficiency (Quad was overkill and taxing GPU)
+  const marqueeItems = [...techStack, ...techStack, ...techStack]
 
-    return (
-        <section className="section-pad bg-light" ref={ref}>
-            <div className="container">
-                <div className="section-header">
-                    <div className="section-badge">Our Technology Stack</div>
-                    <h2 className="section-title">Technologies <span>We Use</span></h2>
-                    <p className="section-subtitle">We use the latest and most efficient technologies to deliver high-quality digital products.</p>
-                </div>
+  const marquee1Ref = React.useRef(null)
+  const marquee2Ref = React.useRef(null)
 
-                <motion.div
-                    className="home-tech-grid"
-                    variants={{
-                        hidden: { opacity: 0 },
-                        show: {
-                            opacity: 1,
-                            transition: { staggerChildren: 0.05 }
-                        }
-                    }}
-                    initial="hidden"
-                    animate={inView ? "show" : "hidden"}
-                >
-                    {techStack.map((t) => {
-                        const Icon = t.Icon
-                        return (
-                            <motion.div
-                                key={t.name}
-                                className="home-tech-card"
-                                variants={{
-                                    hidden: { opacity: 0, scale: 0.8, y: 20 },
-                                    show: { opacity: 1, scale: 1, y: 0 }
-                                }}
-                                whileHover={{
-                                    y: -8,
-                                    scale: 1.05,
-                                    boxShadow: "0 20px 40px rgba(0,0,0,0.1)",
-                                    backgroundColor: "rgba(255, 255, 255, 1)"
-                                }}
-                            >
-                                <div className="home-tech-icon-wrapper">
-                                    <Icon size={32} color={t.color} />
-                                </div>
-                                <span>{t.name}</span>
-                            </motion.div>
-                        )
-                    })}
-                </motion.div>
-            </div>
+  React.useEffect(() => {
+    const ctx = gsap.context(() => {
+      const m1 = marquee1Ref.current
+      const m2 = marquee2Ref.current
+      if (!m1 || !m2) return
 
-            <style>{`
-        .home-tech-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-          gap: 24px;
-          margin-top: 50px;
+      const c1 = m1.querySelector('.marquee-content')
+      const c2 = m2.querySelector('.marquee-content')
+
+      // Set initial positions
+      gsap.set(c1, { xPercent: 0, force3D: true })
+      gsap.set(c2, { xPercent: -33.333, force3D: true })
+
+      const s1 = gsap.to(c1, {
+        xPercent: -33.333,
+        repeat: -1,
+        duration: 40, /* Increased from 20 to slow down */
+        ease: 'none',
+        force3D: true,
+      })
+
+      const s2 = gsap.to(c2, {
+        xPercent: 0,
+        repeat: -1,
+        duration: 56, /* Increased from 28 to slow down */
+        ease: 'none',
+        force3D: true,
+      })
+
+      // Hover controls
+      const handleEnter = (anim) => gsap.to(anim, { timeScale: 0.1, duration: 0.5 })
+      const handleLeave = (anim) => gsap.to(anim, { timeScale: 1, duration: 0.5 })
+
+      m1.addEventListener('mouseenter', () => handleEnter(s1))
+      m1.addEventListener('mouseleave', () => handleLeave(s1))
+      m2.addEventListener('mouseenter', () => handleEnter(s2))
+      m2.addEventListener('mouseleave', () => handleLeave(s2))
+    })
+
+    return () => ctx.revert()
+  }, [])
+
+  return (
+    <section className="tech-section">
+      <div className="tech-lens-flare top" />
+      <div className="tech-lens-flare bottom" />
+
+      <div className="wrapper">
+        <div className="section-header-centered">
+          <div className="badge glass-badge">Our Core Stack</div>
+          <h2 className="section-h">
+            <TextReveal>Architecting with</TextReveal>
+            <TextReveal delay={0.2} className="accent-text">Premium Tech</TextReveal>
+          </h2>
+        </div>
+      </div>
+
+      <div className="ribbon-universe">
+        <div className="ribbon-blur-edge left" />
+        <div className="ribbon-blur-edge right" />
+
+        <div className="marquee-wrap" ref={marquee1Ref}>
+          <div className="marquee-content">
+            {marqueeItems.map((tech, i) => (
+              <div
+                key={`${tech.name}-${i}`}
+                className="tech-chip"
+                style={{ '--glow-color': tech.color }}
+              >
+                <div className="chip-glass" />
+                <div className="chip-sheen" />
+                <span className="tech-icon" style={{ color: tech.color }}>{tech.icon}</span>
+                <span className="tech-name">{tech.name}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="marquee-wrap" ref={marquee2Ref}>
+          <div className="marquee-content">
+            {marqueeItems.map((tech, i) => (
+              <div
+                key={`${tech.name}-rev-${i}`}
+                className="tech-chip outline"
+                style={{ '--glow-color': tech.color }}
+              >
+                <div className="chip-glass" />
+                <div className="chip-sheen" />
+                <span className="tech-icon" style={{ color: tech.color }}>{tech.icon}</span>
+                <span className="tech-name">{tech.name}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <style>{`
+        .tech-section {
+          background: #000000; /* Changed from white */
+          overflow: hidden;
+          padding: 8rem 0;
+          position: relative;
         }
-        .home-tech-card {
-          background: rgba(255, 255, 255, 0.7);
+        .wrapper {
+          max-width: 1400px;
+          margin: 0 auto;
+          padding: 0 4%;
+        }
+
+        .tech-lens-flare {
+          position: absolute;
+          width: 60vw;
+          height: 60vw;
+          background: radial-gradient(circle, rgba(255, 102, 0, 0.08) 0%, transparent 70%);
+          pointer-events: none;
+          z-index: 1;
+        }
+        .tech-lens-flare.top { top: -20vw; right: -10vw; }
+        .tech-lens-flare.bottom { bottom: -20vw; left: -10vw; }
+
+        .section-header-centered {
+          text-align: left;
+          margin-bottom: 6vw;
+          position: relative;
+          z-index: 2;
+        }
+        .glass-badge {
+          background: rgba(255, 255, 255, 0.05); /* Lighter for dark theme */
           backdrop-filter: blur(10px);
-          -webkit-backdrop-filter: blur(10px);
-          border: 1px solid rgba(255, 255, 255, 0.5);
-          border-radius: var(--radius-lg);
-          padding: 28px 20px;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          color: var(--brand-orange);
+          font-weight: 700;
+          letter-spacing: 0.15em;
+        }
+        .section-h {
+          font-size: clamp(3rem, 6vw, 4.5rem); 
+          color: #fff; /* Changed to white */
+          line-height: 0.9;
+          letter-spacing: -0.06em;
+          text-transform: uppercase;
+          font-weight: 900;
+        }
+        .accent-text {
+          color: #fff;
+          opacity: 0.15; /* Adjusted for dark */
+        }
+
+        .ribbon-universe {
           display: flex;
           flex-direction: column;
-          align-items: center;
-          gap: 14px;
-          text-align: center;
-          transition: background-color 0.3s ease;
-          box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+          gap: 25px;
+          position: relative;
+          width: 100vw;
+          left: 50%;
+          transform: translateX(-50%);
+          padding: 3rem 0;
         }
-        .home-tech-icon-wrapper {
-          width: 64px;
-          height: 64px;
-          background: white;
-          border-radius: var(--radius-md);
+        
+        /* Depth-of-Field Blur Edges - Adjusted for black background */
+        .ribbon-blur-edge {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          width: 20vw;
+          z-index: 5;
+          pointer-events: none;
+        }
+        .ribbon-blur-edge.left {
+          left: 0;
+          background: linear-gradient(to right, #000 10%, rgba(0,0,0,0.8) 40%, transparent 100%);
+        }
+        .ribbon-blur-edge.right {
+          right: 0;
+          background: linear-gradient(to left, #000 10%, rgba(0,0,0,0.8) 40%, transparent 100%);
+        }
+
+        .marquee-wrap {
+          display: flex;
+          overflow: hidden;
+          width: 100%;
+          will-change: transform;
+        }
+        .marquee-wrap:nth-of-type(even) { transform: scale(0.95); opacity: 0.8; }
+
+        .marquee-content {
+          display: flex;
+          gap: 25px;
+          white-space: nowrap;
+          width: max-content;
+        }
+
+        /* Prismatic Tech Chips - Adjusted for dark mode */
+        .tech-chip {
+          position: relative;
+          padding: 1.8rem 4rem;
           display: flex;
           align-items: center;
-          justify-content: center;
-          box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+          gap: 20px;
+          cursor: pointer;
+          border-radius: 16px;
+          transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1), box-shadow 0.4s ease;
+          overflow: hidden;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
         }
-        .home-tech-card span {
-          font-size: 0.9rem;
-          font-weight: 700;
-          color: var(--primary);
-          letter-spacing: 0.3px;
+        .chip-glass {
+          position: absolute;
+          inset: 0;
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 16px;
+          z-index: -1;
         }
-        @media (max-width: 600px) {
-          .home-tech-grid {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
-          }
+        .chip-sheen {
+          position: absolute;
+          top: 0; left: -100%;
+          width: 50%; height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+          transform: skewX(-20deg);
+          transition: left 0.8s ease;
+        }
+        .tech-chip:hover .chip-sheen { left: 150%; }
+
+        .tech-chip.outline { opacity: 0.7; }
+
+        .tech-icon {
+          font-size: 2.2rem;
+          color: #fff;
+          filter: grayscale(100%) opacity(0.3);
+          transition: filter 0.4s ease, transform 0.4s ease, opacity 0.4s ease;
+        }
+
+        .tech-name {
+          font-family: var(--font-heading);
+          font-weight: 800;
+          color: rgba(255, 255, 255, 0.3);
+          font-size: 1.3rem;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+          transition: color 0.4s ease, letter-spacing 0.4s ease;
+        }
+
+        /* Prismatic Hover for Dark Mode */
+        .tech-chip:hover {
+          transform: scale(1.05) translateY(-8px);
+          background: rgba(255, 255, 255, 0.08);
+          border-color: rgba(255, 255, 255, 0.15);
+          opacity: 1 !important;
+          box-shadow: 
+            0 20px 40px rgba(0, 0, 0, 0.6),
+            0 10px 20px rgba(0, 0, 0, 0.4);
+        }
+        .tech-chip:hover .tech-icon {
+          filter: grayscale(0%) opacity(1);
+          transform: scale(1.15) rotate(3deg);
+        }
+        .tech-chip:hover .tech-name {
+          color: #fff;
+          letter-spacing: 0.15em;
+          opacity: 1;
+        }
+        
+        /* Dynamic Glow Reveal */
+        .tech-chip::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: radial-gradient(circle at center, var(--glow-color, rgba(255,255,255,0.05)), transparent 70%);
+          opacity: 0;
+          transition: opacity 0.5s ease;
+          pointer-events: none;
+        }
+        .tech-chip:hover::after { opacity: 0.25; }
+
+        @media (max-width: 1024px) {
+          .tech-chip { padding: 1.8rem 3.5rem; }
+          .tech-icon { font-size: 2rem; }
+          .tech-name { font-size: 1.2rem; }
+        }
+        @media (max-width: 768px) {
+          .tech-chip { padding: 1.4rem 2.5rem; }
+          .tech-icon { font-size: 1.8rem; }
+          .tech-name { font-size: 1rem; }
+          .ribbon-blur-edge { width: 25vw; }
         }
       `}</style>
-        </section>
-    )
+    </section>
+  )
 }
+
+export default Technologies

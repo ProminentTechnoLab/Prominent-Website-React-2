@@ -1,5 +1,4 @@
-import Pricing from '../../components/Pricing'
-import CTABanner from '../../components/CTABanner'
+import PricingContent from '../../components/PricingContent'
 
 export const metadata = {
     title: 'Pricing Plans — Affordable Web & App Development Packages',
@@ -11,20 +10,6 @@ export const metadata = {
 
 export default function PricingPage() {
     return (
-        <>
-            <div className="page-hero">
-                <div className="container">
-                    <div className="page-hero-content">
-                        <div className="section-badge">Simple Pricing</div>
-                        <h1 className="page-hero-title">Transparent <span style={{ color: 'var(--orange)' }}>Pricing Plans</span></h1>
-                        <p className="page-hero-subtitle">No hidden fees. No lock-ins. Just straightforward pricing in USD ($).</p>
-                        <div className="page-hero-breadcrumb"><a href="/">Home</a> / <span>Pricing</span></div>
-                    </div>
-                </div>
-                <div className="page-hero-wave"><svg viewBox="0 0 1440 80" preserveAspectRatio="none"><path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" fill="white" /></svg></div>
-            </div>
-            <Pricing />
-            <CTABanner />
-        </>
+        <PricingContent />
     )
 }

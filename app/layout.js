@@ -1,11 +1,16 @@
-import { Geist } from 'next/font/google'
+import { Inter, Space_Grotesk } from 'next/font/google'
 import Script from 'next/script'
 
 import './globals.css'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
+import CustomCursor from '../components/animations/CustomCursor' // Commented out to boost speed
 
-const geist = Geist({ subsets: ['latin'], variable: '--font-geist' })
+import AppWrapper from '../components/AppWrapper'
+import PageTransition from '../components/animations/PageTransition'
+
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
+const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-space' })
 
 export const metadata = {
   metadataBase: new URL('https://prominenttechnolabs.com'),
@@ -14,7 +19,7 @@ export const metadata = {
     template: '%s | Prominent TechnoLabs',
   },
   description: 'Prominent TechnoLabs — India\'s trusted web and mobile app development company. We build React, Laravel, Flutter apps, e-commerce, and digital marketing solutions. 30+ happy clients.',
-  keywords: ['web development company India', 'mobile app development', 'React developer Ahmedabad', 'Laravel development', 'Flutter app', 'digital marketing', 'SEO services', 'IT company Ahmedabad Gujarat'],
+  keywords: ['web development company India', 'mobile app development', 'React developer', 'Laravel development', 'Flutter app', 'digital marketing', 'SEO services', 'IT company India'],
   authors: [{ name: 'Prominent TechnoLabs' }],
   creator: 'Prominent TechnoLabs',
   openGraph: {
@@ -29,6 +34,11 @@ export const metadata = {
     site: '@ProminentTechno',
   },
   robots: { index: true, follow: true },
+  verification: {
+    other: {
+      'facebook-domain-verification': ['ka8ztjur1xprpwzve57szd0q729ucs'],
+    },
+  },
 }
 
 const orgSchema = {
@@ -60,20 +70,18 @@ const orgSchema = {
   ],
 }
 
+
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`}>
       <head>
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }}
         />
       </head>
-      <body className={geist.variable}>
+      <body>
         <Script
           id="fb-pixel"
           strategy="afterInteractive"
@@ -101,13 +109,21 @@ export default function RootLayout({ children }) {
             alt=""
           />
         </noscript>
-        <div className="app-wrapper">
+        
+        {/* <CustomCursor /> Removed for maximum performance */}
 
-          <Navbar />
-          <main>{children}</main>
-          <Footer />
+        
+        <div className="app-wrapper">
+          <AppWrapper>
+            <Navbar />
+            <PageTransition>
+              <main>{children}</main>
+            </PageTransition>
+            <Footer />
+          </AppWrapper>
         </div>
       </body>
     </html>
   )
 }
+

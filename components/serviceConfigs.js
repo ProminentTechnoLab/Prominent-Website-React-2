@@ -83,7 +83,7 @@ const SERVICE_CONFIGS = {
             { q: 'How long does it take to build a website?', a: 'A standard 5-10 page corporate website takes 3-4 weeks. Complex web applications with custom portals and APIs typically take 8-16 weeks depending on scope.' },
             { q: 'What technologies do you use for website development?', a: 'We primarily use React and Next.js for the frontend, Laravel for the backend API, and MySQL for the database. For WordPress projects we use custom themes and plugins.' },
             { q: 'Do you provide website hosting and domain setup?', a: 'Yes, we help you choose the right hosting (Hostinger, AWS, DigitalOcean), set up your domain DNS, configure SSL certificates, and deploy your website.' },
-            { q: 'How much does a website cost?', a: 'Website costs range from Rs. 15,000 for a landing page to Rs. 2,00,000+ for large enterprise web applications. Check our Pricing page for standard packages.' },
+            { q: 'How much does a website cost?', a: 'Website costs range from $199 for a landing page to $2,000+ for large enterprise web applications. Check our Pricing page for standard packages.' },
             { q: 'Will my website be mobile-friendly?', a: 'Absolutely. Every website we build is fully responsive and tested across iPhone, Android, iPad, and all major browsers (Chrome, Safari, Firefox, Edge).' },
         ],
     },
@@ -147,7 +147,7 @@ const SERVICE_CONFIGS = {
             { q: 'How long does mobile app development take?', a: 'A simple app with 5-8 screens takes 6-8 weeks. A complex app with features like real-time chat, maps, payments, or social feeds typically takes 12-20 weeks.' },
             { q: 'Should I choose Flutter or React Native?', a: 'Flutter is our top recommendation for most projects — it offers native-like performance, consistent UI across platforms, and faster development. React Native is a great choice if your team is already experienced in JavaScript/React.' },
             { q: 'Do you help with App Store submission?', a: 'Yes, we handle the entire submission process including Apple Developer account setup, screenshots, descriptions, privacy policy, and responding to review rejections.' },
-            { q: 'What is the cost of mobile app development in India?', a: 'A basic app starts from Rs. 80,000. Mid-complexity apps with backend APIs range from Rs. 1,50,000 to Rs. 3,50,000. Enterprise apps are priced on scope. Contact us for a detailed estimate.' },
+            { q: 'What is the cost of mobile app development in India?', a: 'A basic app starts from $649. Mid-complexity apps with backend APIs range from $1,299 to $4,500. Enterprise apps are priced on scope. Contact us for a detailed estimate.' },
         ],
     },
 
@@ -268,7 +268,7 @@ const SERVICE_CONFIGS = {
             { q: 'Can you migrate my existing store to a new platform?', a: 'Yes, we handle full data migrations including products, categories, customer accounts, order history, and SEO redirects. We have migrated from Magento to WooCommerce, OpenCart to Shopify, and custom systems to Laravel.' },
             { q: 'Which payment gateways do you integrate?', a: 'For Indian stores: Razorpay, PayU, CCAvenue, UPI, and COD. For international: Stripe, PayPal, and Square. We also support subscription billing via Razorpay Subscriptions and Stripe Billing.' },
             { q: 'Can customers manage their own store after delivery?', a: 'Absolutely. We provide full training videos or live training sessions for your team. WooCommerce and Shopify have very user-friendly admin panels that non-technical staff can manage day-to-day.' },
-            { q: 'How much does an e-commerce website cost in India?', a: 'A WooCommerce store with up to 100 products starts from Rs. 35,000. A Shopify store with custom design starts from Rs. 25,000. Custom Laravel marketplace platforms start from Rs. 1,50,000.' },
+            { q: 'How much does an e-commerce website cost in India?', a: 'A WooCommerce store with up to 100 products starts from $499. A Shopify store with custom design starts from $349. Custom Laravel marketplace platforms start from $1,999.' },
         ],
     },
 
@@ -386,7 +386,7 @@ const SERVICE_CONFIGS = {
         ],
         faqs: [
             { q: 'How long does SEO take to show results?', a: 'SEO is a long-term investment. You can typically expect to see traffic improvements within 3-4 months, significant ranking jumps by month 6, and compounding growth from month 9 onward. Competitive niches may take 12 months for top 3 positions.' },
-            { q: 'What is the minimum budget for Google Ads in India?', a: 'We recommend a minimum ad spend of Rs. 15,000-20,000/month for Google Search Ads to gather meaningful data. Our management fee is separate from ad spend.' },
+            { q: 'What is the minimum budget for Google Ads in India?', a: 'We recommend a minimum ad spend of $199-$299/month for Google Search Ads to gather meaningful data. Our management fee is separate from ad spend.' },
             { q: 'Do you provide content for social media posts?', a: 'Yes. Our social media management service includes graphic design, caption writing, hashtag research, and scheduling. We create a monthly content calendar and get your approval before posting.' },
             { q: 'Can you run ads for my app on the App Store and Play Store?', a: 'Yes. We run Apple Search Ads (for App Store) and Google UAC campaigns (for Play Store) to drive app installs with accurate cost-per-install tracking.' },
             { q: 'How do you measure the success of digital marketing?', a: 'We track KPIs based on your goals — for e-commerce: revenue, ROAS, and cost-per-purchase. For lead generation: CPL, qualified leads, and conversion rate. For brand awareness: reach, impressions, and engagement rate.' },
