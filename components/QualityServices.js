@@ -102,10 +102,10 @@ const QualityServices = () => {
         .quality-services {
           position: relative;
           z-index: 5;
-          padding: 12vw 0;
+          padding: 10vw 0;
         }
         .section-header {
-          margin-bottom: 8rem;
+          margin-bottom: 5rem;
           text-align: left;
         }
         .section-h {
@@ -125,7 +125,7 @@ const QualityServices = () => {
         .services-list {
           display: flex;
           flex-direction: column;
-          gap: 10vw;
+          gap: 8vw;
         }
 
         .service-row {
@@ -195,8 +195,8 @@ const QualityServices = () => {
         .service-features-mini {
           display: flex;
           flex-wrap: wrap;
-          gap: 12px;
-          margin-bottom: 4rem;
+          gap: 10px;
+          margin-bottom: 3rem;
         }
         
         .feature-dot {
@@ -281,6 +281,26 @@ const QualityServices = () => {
             max-width: 100%;
             text-align: left;
           }
+        }
+        @media (max-width: 768px) {
+          .quality-services { padding: 8vw 0; }
+          .section-header { margin-bottom: 3rem; }
+          .services-list { gap: 6vw; }
+          .service-title { font-size: 1.8rem; }
+          .service-desc { font-size: 1rem; margin-bottom: 1.5rem; }
+          .service-features-mini { margin-bottom: 2rem; }
+          .service-image-wrap { border-radius: 24px; }
+        }
+        @media (max-width: 480px) {
+          .quality-services { padding: 10vw 0; }
+          .section-header { margin-bottom: 2rem; }
+          .services-list { gap: 8vw; }
+          .service-title { font-size: 1.5rem; margin-bottom: 1.2rem; }
+          .service-desc { font-size: 0.95rem; margin-bottom: 1.2rem; line-height: 1.4; }
+          .service-features-mini { gap: 6px; margin-bottom: 1.5rem; }
+          .feature-dot { font-size: 0.65rem; padding: 5px 12px; }
+          .service-image-wrap { border-radius: 18px; }
+          .btn-text { font-size: 0.9rem; }
         }
       `}</style>
     </section>

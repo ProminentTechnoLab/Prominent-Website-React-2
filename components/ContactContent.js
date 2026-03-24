@@ -205,24 +205,7 @@ const ContactContent = () => {
             </div>
 
             {/* Social Links */}
-            <div className="social-section stagger-item">
-              <span className="social-label">Follow Our Journey</span>
-              <div className="social-links-refokus">
-                {[
-                  { icon: <FaLinkedinIn />, url: 'https://linkedin.com/company/prominent-technolabs/' },
-                  { icon: <FaInstagram />, url: 'https://instagram.com/prominenttechnolabs/' },
-                  { icon: <FaFacebookF />, url: 'https://facebook.com/prominenttechnolabs/' },
-                  { icon: <RiTwitterXFill />, url: 'https://twitter.com/prominenttech/' },
-                  { icon: <FaYoutube />, url: 'https://youtube.com/@prominenttechnolabs' }
-                ].map((s, idx) => (
-                  <MagneticButton key={idx} strength={15} bgColor="#000">
-                    <a href={s.url} target="_blank" rel="noopener noreferrer" className="social-btn-bw">
-                      {s.icon}
-                    </a>
-                  </MagneticButton>
-                ))}
-              </div>
-            </div>
+
           </div>
 
           {/* Right Side: Form */}
@@ -336,7 +319,7 @@ const ContactContent = () => {
         .contact-refokus {
           background-color: #F5F5F7;
           color: #000;
-          padding: 180px 0 120px;
+          padding: 150px 0 100px;
           min-height: 100vh;
           position: relative;
           z-index: 1;
@@ -474,8 +457,8 @@ const ContactContent = () => {
         /* Form Style */
         .contact-form-wrapper {
           background: white;
-          padding: 5rem 4rem;
-          border-radius: 40px;
+          padding: 4rem 3.5rem;
+          border-radius: 30px;
           box-shadow: 0 40px 80px rgba(0,0,0,0.03);
         }
         .refokus-form input, .refokus-form textarea, .refokus-form select {
@@ -529,10 +512,36 @@ const ContactContent = () => {
           .contact-form-wrapper { padding: 4rem 3rem; }
         }
         @media (max-width: 768px) {
+          .contact-refokus { padding: 120px 0 70px; }
           .field-row { grid-template-columns: 1fr; gap: 0; }
-          .hero-h { font-size: 3.5rem; }
-          .testimonial-card { padding: 2rem; }
-          .contact-form-wrapper { padding: 3rem 1.5rem; border-radius: 30px; }
+          .hero-h { font-size: 2.8rem; }
+          .testimonial-card { padding: 2rem; min-height: 200px; }
+          .t-content { font-size: 1.2rem; }
+          .contact-form-wrapper { padding: 3rem 2rem; border-radius: 24px; }
+          .social-btn-bw { width: 48px; height: 48px; font-size: 1.1rem; }
+          .faq-question { font-size: 1.05rem; padding: 1.8rem 0; }
+        }
+        @media (max-width: 480px) {
+          .contact-refokus { padding: 100px 0 50px; }
+          .contact-header { margin-bottom: 6vw; }
+          .hero-h { font-size: 2rem; }
+          .contact-main-grid { gap: 40px; }
+          .testimonial-card { padding: 1.5rem; min-height: 160px; border-radius: 18px; }
+          .t-content { font-size: 1.05rem; margin-bottom: 1.2rem; }
+          .t-name { font-size: 0.95rem; }
+          .t-role { font-size: 0.75rem; }
+          .t-dots { gap: 5px; }
+          .contact-form-wrapper { padding: 2rem 1.2rem; border-radius: 20px; }
+          .overhead-label { font-size: 0.65rem; }
+          .field-group { margin-bottom: 1.8rem; }
+          .refokus-form input, .refokus-form textarea, .refokus-form select { font-size: 0.95rem; padding: 0.9rem 0; }
+          .submit-btn { font-size: 1rem; }
+          .faq-question { font-size: 0.95rem; padding: 1.5rem 0; }
+          .faq-title { margin-bottom: 1.2rem; }
+          .social-btn-bw { width: 44px; height: 44px; font-size: 1rem; }
+          .social-links-refokus { gap: 8px; }
+          .social-label { margin-bottom: 1.2rem; }
+          .info-column { gap: 2.5rem; }
         }
       `}</style>
     </section>

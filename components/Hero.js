@@ -57,11 +57,18 @@ const Hero = () => {
 
   return (
     <section className="hero section-light" ref={heroRef}>
-      {/* Dynamic Background */}
-      <div className="hero-bg" ref={bgRef}>
-        <div className="blob blob-1"></div>
-        <div className="blob blob-2"></div>
-        <div className="noise"></div>
+      {/* Full-bleed subtle animated background */}
+      <div className="hero-video-wrapper">
+        <video
+          className="hero-video-element"
+          autoPlay
+          loop
+          muted
+          playsInline
+          style={{ opacity: 0.15 }}
+          src="https://cdn.coverr.co/videos/coverr-abstract-neon-lines-5953/1080p.mp4"
+        />
+        <div className="hero-overlay"></div>
       </div>
 
       <div className="container hero-container">
@@ -89,7 +96,7 @@ const Hero = () => {
               hoverTextColor="white"
               strength={35}
             >
-              <Link href="/contact/" className="btn-clean">
+              <Link href="/contact/" className="btn-clean" style={{ color: 'inherit', textDecoration: 'none' }}>
                 Start Your Project
               </Link>
             </LiquidButton>
@@ -100,7 +107,7 @@ const Hero = () => {
               textColor="#000"
               strength={25}
             >
-              <Link href="/services/" className="hero-btn-secondary">
+              <Link href="/services/" className="hero-btn-secondary" style={{ color: 'inherit', textDecoration: 'none' }}>
                   Our Services
                 </Link>
             </LiquidButton>
@@ -117,34 +124,30 @@ const Hero = () => {
           justify-content: center;
           position: relative;
           background: #ffffff !important;
-          padding-top: calc(var(--nav-height) + 10vh);
-          padding-bottom: 25vh;
+          padding-top: calc(var(--nav-height) + 8vh);
+          padding-bottom: 18vh;
         }
 
-        .hero-bg {
+        .hero-video-wrapper {
           position: absolute;
+          inset: 0;
+          z-index: 1;
+          overflow: hidden;
+        }
+
+        .hero-video-element {
           width: 100%;
           height: 100%;
-          top: 0;
-          left: 0;
-          z-index: 2;
-          pointer-events: none;
+          object-fit: cover;
+          transform: scale(1.02); /* Slight scale to hide edges */
+          filter: grayscale(100%);
         }
-        .blob {
+
+        .hero-overlay {
           position: absolute;
-          border-radius: 50%;
-          filter: blur(100px);
-          opacity: 0.15;
-        }
-        .blob-1 {
-          width: 600px; height: 600px;
-          background: var(--brand-orange);
-          top: -20%; right: -10%;
-        }
-        .blob-2 {
-          width: 800px; height: 800px;
-          background: #ffaa00;
-          bottom: -30%; left: -15%;
+          inset: 0;
+          background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.7) 100%);
+          z-index: 2;
         }
 
         .hero-container {
@@ -181,8 +184,8 @@ const Hero = () => {
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 3.5rem;
-          margin-top: 5rem;
+          gap: 2.5rem;
+          margin-top: 4rem;
         }
 
         .btn-clean {
@@ -196,8 +199,24 @@ const Hero = () => {
         }
 
         @media (max-width: 1024px) {
-          .hero-actions { flex-direction: column; gap: 2rem; }
-          .hero { padding-bottom: 20vh; }
+          .hero-actions { flex-direction: column; gap: 1.5rem; }
+          .hero { padding-bottom: 15vh; }
+        }
+        @media (max-width: 768px) {
+          .hero { padding-top: calc(var(--nav-height) + 5vh); padding-bottom: 12vh; min-height: auto; }
+          .hero-title { font-size: clamp(2.5rem, 10vw, 4rem); margin-bottom: 1.5rem; }
+          .hero-desc { font-size: 1rem; max-width: 100%; }
+          .hero-actions { gap: 1.2rem; margin-top: 2.5rem; }
+          .blob-1 { width: 300px; height: 300px; }
+          .blob-2 { width: 400px; height: 400px; }
+        }
+        @media (max-width: 480px) {
+          .hero { padding-top: calc(var(--nav-height) + 3vh); padding-bottom: 10vh; }
+          .hero-title { font-size: 2rem; margin-bottom: 1.2rem; }
+          .hero-desc { font-size: 0.95rem; line-height: 1.5; }
+          .hero-actions { gap: 1rem; margin-top: 2rem; }
+          .blob-1 { width: 200px; height: 200px; }
+          .blob-2 { width: 250px; height: 250px; }
         }
       `}</style>
     </section>

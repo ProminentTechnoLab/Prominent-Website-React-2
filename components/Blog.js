@@ -69,11 +69,11 @@ const Blog = () => {
 
       <style>{`
         .blog-section {
-          padding-top: 5rem;
+          padding-top: 4rem;
         }
         .section-header-centered { 
           text-align: left; 
-          margin-bottom: 8rem; 
+          margin-bottom: 5rem; 
         }
         .section-h { 
           font-size: clamp(3rem, 6vw, 5.5rem); 
@@ -95,14 +95,14 @@ const Blog = () => {
 
         .blog-card {
           text-decoration: none;
-          padding: 5rem 4rem;
+          padding: 3.5rem 3rem;
           border-right: 1px solid rgba(255, 255, 255, 0.1);
           border-bottom: 1px solid rgba(255, 255, 255, 0.1);
           transition: all 0.6s var(--ease-expo);
           background: rgba(255,255,255,0.02);
           display: flex;
           flex-direction: column;
-          gap: 2rem;
+          gap: 1.5rem;
         }
         .blog-card:hover {
           background: rgba(255,255,255,0.05);
@@ -174,7 +174,18 @@ const Blog = () => {
         }
         @media (max-width: 768px) {
           .blog-grid { grid-template-columns: 1fr; }
-          .blog-card { padding: 4rem 2rem; }
+          .blog-card { padding: 2.5rem 2rem; border-right: none; }
+          .section-header-centered { margin-bottom: 3rem; }
+        }
+        @media (max-width: 480px) {
+          .blog-section { padding-top: 2.5rem; }
+          .blog-card { padding: 2rem 1.2rem; gap: 1.2rem; }
+          .blog-h { font-size: 1.2rem; margin-bottom: 0.8rem; }
+          .blog-p { font-size: 0.88rem; margin-bottom: 1.2rem; }
+          .blog-meta { gap: 10px; font-size: 0.65rem; margin-bottom: 0.8rem; }
+          .blog-cat { font-size: 0.58rem; padding: 4px 10px; }
+          .blog-cat-wrapper { margin-bottom: 0.8rem; }
+          .section-header-centered { margin-bottom: 2.5rem; }
         }
       `}</style>
     </section>

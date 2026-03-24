@@ -1,9 +1,11 @@
 import { Inter, Space_Grotesk } from 'next/font/google'
+import localFont from 'next/font/local'
 import Script from 'next/script'
 
 import './globals.css'
-import Navbar from '../components/Navbar'
-import Footer from '../components/Footer'
+import Navbar from '@/components/Navbar'
+import Footer from '@/components/Footer'
+import FooterDoorEdge from '@/components/FooterDoorEdge'
 import CustomCursor from '../components/animations/CustomCursor' // Commented out to boost speed
 
 import AppWrapper from '../components/AppWrapper'
@@ -115,12 +117,26 @@ export default function RootLayout({ children }) {
         
         <div className="app-wrapper">
           <AppWrapper>
-            <Navbar />
-            <PageTransition>
-              <main>{children}</main>
-            </PageTransition>
-            <Footer />
+            <div className="main-layer" style={{ 
+              position: 'relative', 
+              zIndex: 2, 
+              backgroundColor: '#0a0a0a', /* Explicit hex blocks FOUC footer flashes instantly */
+              boxShadow: '0 30px 60px rgba(0,0,0,0.9), 0 100px 100px rgba(0,0,0,0.5)', /* stronger shadow for wrapper layer effect */
+              overflow: 'hidden',
+              minHeight: '100vh'
+            }}>
+              <Navbar />
+              <PageTransition>
+                <main>{children}</main>
+              </PageTransition>
+              <FooterDoorEdge />
+            </div>
+            {/* INJECT DOM SPACER HERE TO PUSH SCROLL HEIGHT, WHILE KEEPING REAL FOOTER OUTSIDE */}
+            <div id="global-footer-spacer" style={{ width: '100%', pointerEvents: 'none', background: 'transparent' }} />
           </AppWrapper>
+          
+          {/* TRUE FIXED FOOTER SITS COMPLETELY OUTSIDE THE SMOOTH SCROLL TRANSFORM CONTEXT */}
+          <Footer />
         </div>
       </body>
     </html>

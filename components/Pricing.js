@@ -106,12 +106,12 @@ const Pricing = () => {
 
       <style>{`
         .pricing {
-          background: #000000; /* Changed from white */
-          padding: 10vw 0;
+          background: #000000;
+          padding: 8vw 0;
         }
         .section-header-centered { 
           text-align: left; 
-          margin-bottom: 6rem; 
+          margin-bottom: 4rem; 
         }
         .section-h { 
           font-size: clamp(3rem, 6vw, 5.5rem); 
@@ -129,11 +129,11 @@ const Pricing = () => {
         .pricing-tabs {
           display: flex;
           justify-content: flex-start;
-          gap: 30px;
-          margin-bottom: 6rem;
+          gap: 24px;
+          margin-bottom: 4rem;
           flex-wrap: wrap;
-          border-top: 1px solid rgba(255,255,255,0.1); /* Adjusted for dark */
-          padding-top: 2rem;
+          border-top: 1px solid rgba(255,255,255,0.1);
+          padding-top: 1.5rem;
         }
         .tab-btn {
           padding: 0;
@@ -174,10 +174,10 @@ const Pricing = () => {
         }
 
         .pricing-card {
-          background: #111; /* Darker card for dark theme */
+          background: #111;
           border: 1px solid rgba(255,255,255,0.1);
           border-radius: 2.5rem;
-          padding: 5rem 3rem;
+          padding: 4rem 2.5rem;
           position: relative;
           transition: all 0.6s var(--ease-expo);
           display: flex;
@@ -306,7 +306,20 @@ const Pricing = () => {
         }
         @media (max-width: 768px) {
           .pricing-grid { grid-template-columns: 1fr; gap: 1.5rem; }
-          .pricing-card { padding: 4rem 2.5rem; }
+          .pricing-card { padding: 3rem 2rem; }
+          .pricing-tabs { gap: 12px; }
+          .section-header-centered { margin-bottom: 3rem; }
+        }
+        @media (max-width: 480px) {
+          .pricing { padding: 12vw 0; }
+          .pricing-card { padding: 2.5rem 1.5rem; border-radius: 1.5rem; }
+          .price { font-size: 2.2rem; }
+          .plan-name { font-size: 0.75rem; letter-spacing: 0.12rem; margin-bottom: 0.8rem; }
+          .plan-features li { font-size: 0.85rem; margin-bottom: 0.8rem; }
+          .plan-features { margin-bottom: 2.5rem; }
+          .section-header-centered { margin-bottom: 2.5rem; }
+          .pricing-tabs { gap: 8px; margin-bottom: 3rem; }
+          .tab-btn { font-size: 0.8rem; }
         }
       `}</style>
     </section>

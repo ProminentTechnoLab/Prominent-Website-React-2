@@ -133,9 +133,9 @@ const Technologies = () => {
 
       <style>{`
         .tech-section {
-          background: #000000; /* Changed from white */
+          background: #000000;
           overflow: hidden;
-          padding: 8rem 0;
+          padding: 6rem 0;
           position: relative;
         }
         .wrapper {
@@ -157,7 +157,7 @@ const Technologies = () => {
 
         .section-header-centered {
           text-align: left;
-          margin-bottom: 6vw;
+          margin-bottom: 4vw;
           position: relative;
           z-index: 2;
         }
@@ -314,10 +314,20 @@ const Technologies = () => {
           .tech-name { font-size: 1.2rem; }
         }
         @media (max-width: 768px) {
-          .tech-chip { padding: 1.4rem 2.5rem; }
-          .tech-icon { font-size: 1.8rem; }
-          .tech-name { font-size: 1rem; }
+          .tech-chip { padding: 1.2rem 2rem; }
+          .tech-icon { font-size: 1.6rem; }
+          .tech-name { font-size: 0.95rem; }
           .ribbon-blur-edge { width: 25vw; }
+          .tech-section { padding: 4rem 0; }
+        }
+        @media (max-width: 480px) {
+          .tech-section { padding: 3rem 0; }
+          .tech-chip { padding: 0.9rem 1.5rem; gap: 10px; border-radius: 10px; }
+          .tech-icon { font-size: 1.3rem; }
+          .tech-name { font-size: 0.8rem; }
+          .marquee-content { gap: 12px; }
+          .ribbon-universe { gap: 12px; padding: 1.5rem 0; }
+          .section-header-centered { margin-bottom: 3vw; }
         }
       `}</style>
     </section>

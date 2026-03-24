@@ -101,8 +101,8 @@ const ServicePageLayout = ({ slug }) => {
         
         .service-hero { 
           text-align: left; 
-          padding-top: 15vh; 
-          margin-bottom: 5vw;
+          padding-top: 13vh; 
+          margin-bottom: 4vw;
         }
         .hero-h { 
           font-size: clamp(3.5rem, 8vw, 8rem); 
@@ -128,10 +128,10 @@ const ServicePageLayout = ({ slug }) => {
         .service-grid {
           display: grid;
           grid-template-columns: 1fr 1.2fr;
-          gap: 10vw;
+          gap: 8vw;
           align-items: flex-start;
           border-top: 1px solid rgba(0,0,0,0.06);
-          padding-top: 10vw;
+          padding-top: 8vw;
         }
 
         .service-visual {
@@ -154,26 +154,27 @@ const ServicePageLayout = ({ slug }) => {
         }
 
         .service-section-h { 
-          font-size: 3.5rem; 
+          font-size: 3rem; 
           color: #000; 
-          margin-bottom: 3rem; 
+          margin-bottom: 2.5rem; 
           line-height: 1; 
           font-weight: 700;
           letter-spacing: -0.03em;
           text-transform: uppercase;
         }
         .service-text { 
-          font-size: 1.3rem; 
+          font-size: 1.2rem; 
           color: #555; 
           line-height: 1.5; 
-          margin-bottom: 4rem; 
+          margin-bottom: 3rem; 
           opacity: 0.8;
         }
 
         .cta-box {
           background: #f8f9fa;
-          padding: 4rem;
+          padding: 3rem;
           border: 1px solid rgba(0,0,0,0.04);
+          border-radius: 20px;
         }
         .cta-box h4 { 
           color: #000; 
@@ -199,10 +200,10 @@ const ServicePageLayout = ({ slug }) => {
           border-top: 1px solid rgba(0,0,0,0.06);
         }
         .feature-item-card {
-          padding: 4rem 0;
+          padding: 3rem 0;
           border-bottom: 1px solid rgba(0,0,0,0.06);
           display: flex;
-          gap: 40px;
+          gap: 30px;
           transition: 0.6s var(--ease-expo);
         }
         .feature-item-card:hover { 
@@ -265,8 +266,34 @@ const ServicePageLayout = ({ slug }) => {
           .cta-box { text-align: left; }
         }
         @media (max-width: 768px) {
-          .hero-h { font-size: 4rem; }
-          .feature-item-card h4 { font-size: 1.5rem; }
+          .service-hero { padding-top: 11vh; margin-bottom: 2vw; }
+          .hero-h { font-size: 3rem; }
+          .hero-p { font-size: 1.1rem; }
+          .feature-item-card h4 { font-size: 1.4rem; }
+          .feature-item-card { gap: 20px; padding: 2.5rem 0; }
+          .feature-item-card p { font-size: 0.95rem; }
+          .service-section-h { font-size: 2.2rem; margin-bottom: 1.5rem; }
+          .service-text { font-size: 1.05rem; margin-bottom: 2.5rem; }
+          .cta-box { padding: 2.5rem; }
+          .cta-box h4 { font-size: 1.1rem; }
+          .service-grid { padding-top: 6vw; }
+        }
+        @media (max-width: 480px) {
+          .service-hero { padding-top: 9vh; margin-bottom: 1vw; }
+          .hero-h { font-size: 2.2rem; margin-bottom: 2rem; }
+          .hero-p { font-size: 1rem; }
+          .service-grid { gap: 35px; padding-top: 5vw; }
+          .feature-item-card { gap: 14px; padding: 2rem 0; }
+          .feature-item-card h4 { font-size: 1.2rem; margin-bottom: 8px; }
+          .feature-item-card p { font-size: 0.9rem; }
+          .check-icon { font-size: 1.3rem; }
+          .features-grid { margin-bottom: 3rem; }
+          .service-section-h { font-size: 1.8rem; }
+          .service-text { font-size: 0.95rem; }
+          .cta-box { padding: 2rem 1.5rem; border-radius: 16px; }
+          .cta-box h4 { font-size: 1rem; margin-bottom: 1.2rem; }
+          .tech-pills { gap: 8px; }
+          .tech-pill-small { padding: 7px 14px; font-size: 0.7rem; }
         }
       `}</style>
     </div>

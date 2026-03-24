@@ -199,7 +199,7 @@ const PricingContent = () => {
         .pricing-page-wrapper { background: #fff; overflow: hidden; }
         
         /* Hero */
-        .pricing-hero { padding: 180px 0 100px; background: #fff; text-align: left; }
+        .pricing-hero { padding: 150px 0 80px; background: #fff; text-align: left; }
         .hero-title { 
             font-size: clamp(3rem, 7vw, 6rem); 
             line-height: 0.9; 
@@ -216,8 +216,8 @@ const PricingContent = () => {
         .hero-description { font-size: 1.4rem; max-width: 800px; color: #666; font-weight: 500; line-height: 1.5; }
 
         /* Tabs Section */
-        .pricing-main { padding: 120px 0; background: #0a0a0b; border-radius: 60px 60px 0 0; position: relative; z-index: 10; }
-        .pricing-controls { margin-bottom: 5rem; display: flex; justify-content: flex-start; }
+        .pricing-main { padding: 80px 0; background: #0a0a0b; border-radius: 50px 50px 0 0; position: relative; z-index: 10; }
+        .pricing-controls { margin-bottom: 4rem; display: flex; justify-content: flex-start; }
         .tabs-container { display: flex; background: rgba(255,255,255,0.05); padding: 8px; border-radius: 100px; gap: 5px; flex-wrap: wrap; }
         .pricing-tab { padding: 12px 30px; border-radius: 100px; border: none; background: transparent; color: #fff; opacity: 0.6; font-weight: 700; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.1em; cursor: pointer; transition: 0.4s; }
         .pricing-tab.active { background: #fff; color: #000; opacity: 1; }
@@ -318,17 +318,17 @@ const PricingContent = () => {
         }
 
         /* Enterprise Section */
-        .enterprise-section { padding: 120px 0; background: #fff; }
-        .enterprise-box { background: #000; border-radius: 40px; padding: 6rem; display: flex; justify-content: space-between; align-items: center; gap: 4rem; color: #fff; }
-        .enterprise-content h3 { font-size: 3rem; font-weight: 800; margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: -0.02em; }
-        .enterprise-content p { font-size: 1.3rem; opacity: 0.7; max-width: 600px; line-height: 1.5; }
+        .enterprise-section { padding: 80px 0; background: #fff; }
+        .enterprise-box { background: #000; border-radius: 30px; padding: 5rem; display: flex; justify-content: space-between; align-items: center; gap: 3rem; color: #fff; }
+        .enterprise-content h3 { font-size: 2.5rem; font-weight: 800; margin-bottom: 1.2rem; text-transform: uppercase; letter-spacing: -0.02em; }
+        .enterprise-content p { font-size: 1.2rem; opacity: 0.7; max-width: 600px; line-height: 1.5; }
         .cta-link-btn { background: #fff !important; color: #000 !important; padding: 22px 45px; border-radius: 100px; text-decoration: none; font-weight: 800; display: inline-flex; align-items: center; gap: 12px; font-size: 1.1rem; transition: 0.4s var(--ease-expo); }
         .cta-link-btn:hover { background: var(--brand-orange) !important; color: #fff !important; transform: translateX(5px); }
 
         /* FAQ Section (Help Center) */
-        .pricing-faq { padding: 150px 0; background: #F5F5F7; }
-        .faq-main-wrapper { display: flex; flex-direction: column; gap: 4rem; }
-        .faq-h { font-size: 3.5rem; font-weight: 800; margin: 1rem 0; line-height: 0.9; letter-spacing: -0.04em; text-transform: uppercase; }
+        .pricing-faq { padding: 100px 0; background: #F5F5F7; }
+        .faq-main-wrapper { display: flex; flex-direction: column; gap: 3rem; }
+        .faq-h { font-size: 3rem; font-weight: 800; margin: 1rem 0; line-height: 0.9; letter-spacing: -0.04em; text-transform: uppercase; }
         .faq-header-info p { font-size: 1.2rem; color: #666; margin-bottom: 2rem; }
         
         .faq-accordion-wrapper { border-top: 1px solid rgba(0,0,0,0.1); width: 100%; }
@@ -352,11 +352,43 @@ const PricingContent = () => {
           .pricing-grid { grid-template-columns: repeat(2, 1fr); }
         }
         @media (max-width: 768px) {
+          .pricing-hero { padding: 120px 0 60px; }
           .pricing-grid { grid-template-columns: 1fr; }
-          .enterprise-box { flex-direction: column; text-align: center; padding: 4rem 2rem; }
-          .hero-title { font-size: 3.5rem; }
-          .faq-h { font-size: 2.5rem; }
-          .faq-btn-trigger { font-size: 1.2rem; }
+          .enterprise-box { flex-direction: column; text-align: center; padding: 3.5rem 2rem; border-radius: 24px; }
+          .enterprise-content h3 { font-size: 2rem; }
+          .enterprise-content p { font-size: 1.05rem; }
+          .hero-title { font-size: 2.8rem; }
+          .hero-description { font-size: 1.1rem; }
+          .faq-h { font-size: 2.2rem; }
+          .faq-btn-trigger { font-size: 1.1rem; }
+          .pricing-main { padding: 60px 0; border-radius: 30px 30px 0 0; }
+          .tabs-container { flex-wrap: wrap; }
+          .cta-link-btn { padding: 16px 30px; font-size: 0.95rem; }
+        }
+        @media (max-width: 480px) {
+          .pricing-hero { padding: 100px 0 40px; }
+          .hero-title { font-size: 2rem; }
+          .hero-description { font-size: 1rem; }
+          .pricing-main { padding: 45px 0; border-radius: 20px 20px 0 0; }
+          .pricing-controls { margin-bottom: 2.5rem; }
+          .tabs-container { padding: 5px; gap: 3px; }
+          .pricing-tab { padding: 8px 14px; font-size: 0.65rem; }
+          .pricing-grid { gap: 1.2rem; }
+          .pricing-card { padding: 2.5rem 1.5rem; border-radius: 1.5rem; }
+          .price { font-size: 2.2rem; }
+          .plan-name { font-size: 0.75rem; letter-spacing: 0.12rem; margin-bottom: 0.8rem; }
+          .plan-features li { font-size: 0.85rem; margin-bottom: 0.8rem; }
+          .plan-features { margin-bottom: 2.5rem; }
+          .enterprise-section { padding: 45px 0; }
+          .enterprise-box { padding: 2.5rem 1.2rem; border-radius: 20px; gap: 2rem; }
+          .enterprise-content h3 { font-size: 1.6rem; }
+          .enterprise-content p { font-size: 0.95rem; }
+          .cta-link-btn { padding: 14px 24px; font-size: 0.85rem; gap: 6px; }
+          .pricing-faq { padding: 60px 0; }
+          .faq-h { font-size: 1.8rem; }
+          .faq-header-info p { font-size: 0.95rem; }
+          .faq-btn-trigger { font-size: 0.95rem; padding: 1.5rem 0; }
+          .faq-pane-inner { font-size: 0.95rem; }
         }
       `}</style>
     </div>

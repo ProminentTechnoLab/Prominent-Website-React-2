@@ -201,7 +201,7 @@ const AboutContent = () => {
         
         /* Hero Section */
         .about-hero { 
-          padding: 180px 0 100px; 
+          padding: 150px 0 80px; 
           background: #fff; 
           text-align: left;
         }
@@ -269,7 +269,7 @@ const AboutContent = () => {
         .stat-card:hover .stat-label { color: rgba(255,255,255,0.6); }
 
         /* Narrative Section */
-        .narrative-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 8vw; align-items: center; padding: 120px 0; }
+        .narrative-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 6vw; align-items: center; padding: 80px 0; }
         .visual-inner { position: relative; border-radius: 40px; overflow: hidden; height: 600px; }
         .studio-img { width: 100%; height: 100%; object-fit: cover; }
         .visual-badge { position: absolute; bottom: 40px; right: 40px; background: #fff; padding: 15px 30px; border-radius: 100px; font-weight: 900; font-size: 0.8rem; }
@@ -320,22 +320,22 @@ const AboutContent = () => {
         }
 
         /* Mission Vision */
-        .mission-vision-section { padding: 120px 0; background: #000; border-radius: 60px; color: #fff; margin: 0 2vw; }
-        .mv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; }
-        .mv-card { padding: 4rem; border: 1px solid rgba(255,255,255,0.1); border-radius: 40px; }
-        .mv-badge { font-size: 0.75rem; font-weight: 900; color: var(--brand-orange); letter-spacing: 0.2rem; margin-bottom: 2rem; }
-        .mv-card h3 { font-size: 2.5rem; font-weight: 800; margin-bottom: 2rem; line-height: 1.1; }
-        .mv-card p { font-size: 1.1rem; opacity: 0.6; line-height: 1.6; }
+        .mission-vision-section { padding: 80px 0; background: #000; border-radius: 50px; color: #fff; margin: 0 2vw; }
+        .mv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
+        .mv-card { padding: 3.5rem; border: 1px solid rgba(255,255,255,0.1); border-radius: 30px; }
+        .mv-badge { font-size: 0.75rem; font-weight: 900; color: var(--brand-orange); letter-spacing: 0.2rem; margin-bottom: 1.5rem; }
+        .mv-card h3 { font-size: 2.2rem; font-weight: 800; margin-bottom: 1.5rem; line-height: 1.1; }
+        .mv-card p { font-size: 1.05rem; opacity: 0.6; line-height: 1.6; }
 
         /* Values Section */
-        .about-values { padding: 150px 0; }
-        .section-header { margin-bottom: 6rem; }
-        .values-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+        .about-values { padding: 100px 0; }
+        .section-header { margin-bottom: 4rem; }
+        .values-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
         .value-card-premium { 
           background: #fbfbfb; 
           border: 1px solid rgba(0,0,0,0.06); 
-          padding: 5rem 3.5rem; 
-          border-radius: 40px; 
+          padding: 4rem 3rem; 
+          border-radius: 30px; 
           transition: all 0.6s var(--ease-expo);
           position: relative;
           overflow: hidden;
@@ -355,11 +355,54 @@ const AboutContent = () => {
         .value-desc { font-size: 1rem; color: #555; line-height: 1.6; transition: 0.4s; }
 
         @media (max-width: 1024px) {
-          .stats-grid { grid-template-columns: 1fr 1fr; }
+          .stats-border-grid { grid-template-columns: repeat(2, 1fr); }
           .narrative-grid { grid-template-columns: 1fr; }
           .mv-grid { grid-template-columns: 1fr; }
           .values-grid { grid-template-columns: 1fr; }
           .visual-inner { height: 400px; }
+        }
+        @media (max-width: 768px) {
+          .about-hero { padding: 120px 0 60px; }
+          .hero-p { font-size: 1.15rem; }
+          .stat-card { padding: 3rem 2rem; }
+          .stat-number-box { font-size: 3.5rem; }
+          .narrative-grid { padding: 60px 0; }
+          .visual-inner { height: 280px; border-radius: 24px; }
+          .section-h { font-size: 2rem; margin-bottom: 2rem; }
+          .text-content p { font-size: 1rem; }
+          .mission-vision-section { padding: 60px 0; margin: 0 0; border-radius: 30px; }
+          .mv-card { padding: 2.5rem; border-radius: 24px; }
+          .mv-card h3 { font-size: 1.8rem; }
+          .about-values { padding: 60px 0; }
+          .value-card-premium { padding: 3rem 2rem; border-radius: 24px; }
+          .section-header { margin-bottom: 3rem; }
+        }
+        @media (max-width: 480px) {
+          .about-hero { padding: 100px 0 40px; }
+          .hero-title { font-size: 2rem !important; }
+          .hero-p { font-size: 1rem; max-width: 100%; }
+          .stats-border-grid { grid-template-columns: 1fr; }
+          .stat-card { padding: 2rem 1.5rem; border-right: none; }
+          .stat-number-box { font-size: 3rem; }
+          .stat-label { font-size: 0.65rem; letter-spacing: 0.12rem; }
+          .narrative-grid { padding: 40px 0; gap: 2.5rem; }
+          .visual-inner { height: 220px; border-radius: 16px; }
+          .visual-badge { bottom: 15px; right: 15px; padding: 8px 16px; font-size: 0.65rem; }
+          .section-h { font-size: 1.6rem; }
+          .mission-vision-section { padding: 45px 0; border-radius: 20px; margin: 0; }
+          .mv-grid { gap: 1.5rem; }
+          .mv-card { padding: 2rem 1.5rem; border-radius: 20px; }
+          .mv-card h3 { font-size: 1.4rem; margin-bottom: 1.2rem; }
+          .mv-card p { font-size: 0.95rem; }
+          .about-values { padding: 45px 0; }
+          .values-grid { gap: 1rem; }
+          .value-card-premium { padding: 2.5rem 1.5rem; border-radius: 20px; }
+          .value-title { font-size: 1.3rem; margin-bottom: 0.8rem; }
+          .value-desc { font-size: 0.9rem; }
+          .value-icon-box { font-size: 2rem; margin-bottom: 1.2rem; }
+          .value-index { font-size: 2.5rem; top: 20px; right: 20px; }
+          .premium-button { padding: 12px 24px; font-size: 0.85rem; gap: 12px; }
+          .narrative-cta { margin-top: 1.5rem; }
         }
       `}</style>
     </div>

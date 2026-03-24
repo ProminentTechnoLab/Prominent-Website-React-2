@@ -50,7 +50,7 @@ const CTABanner = ({
         .cta-banner {
           position: relative;
           overflow: hidden;
-          padding: 15vw 0;
+          padding: 10vw 0;
         }
 
         .cta-content {
@@ -63,20 +63,20 @@ const CTABanner = ({
         }
 
         .cta-title {
-          font-size: clamp(3rem, 7vw, 7rem);
+          font-size: clamp(3rem, 7vw, 6rem);
           line-height: 0.9;
-          margin-bottom: 4rem;
-          color: #000; /* Changed to black */
+          margin-bottom: 3rem;
+          color: #000;
           max-width: 1000px;
           text-transform: uppercase;
           letter-spacing: -0.04em;
           font-weight: 800;
         }
         .cta-desc {
-          font-size: 1.2rem;
-          color: #444; /* Darker for light theme */
+          font-size: 1.15rem;
+          color: #444;
           max-width: 600px;
-          margin: 0 auto 6rem;
+          margin: 0 auto 4rem;
           opacity: 0.8;
           line-height: 1.5;
         }
@@ -109,8 +109,21 @@ const CTABanner = ({
           to { opacity: 1; transform: translateY(0); }
         }
 
+        @media (max-width: 1024px) {
+          .cta-banner { padding: 10vw 0; }
+          .cta-title { margin-bottom: 2.5rem; }
+          .cta-desc { margin: 0 auto 3.5rem; }
+        }
         @media (max-width: 768px) {
-          .cta-content { padding: 2rem 0; }
+          .cta-content { padding: 1.5rem 0; }
+          .cta-title { margin-bottom: 2rem; }
+          .cta-desc { margin: 0 auto 3rem; font-size: 1.05rem; }
+        }
+        @media (max-width: 480px) {
+          .cta-banner { padding: 14vw 0; }
+          .cta-content { padding: 1rem 0; }
+          .cta-title { font-size: 1.8rem; margin-bottom: 1.5rem; }
+          .cta-desc { font-size: 0.95rem; margin: 0 auto 2.5rem; }
         }
       `}</style>
     </section>

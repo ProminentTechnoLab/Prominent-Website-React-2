@@ -53,11 +53,11 @@ const HireSteps = () => {
 
       <style>{`
         .hire-steps {
-          padding: 10vw 0;
+          padding: 8vw 0;
         }
         .section-header-centered {
           text-align: left;
-          margin-bottom: 10vw;
+          margin-bottom: 6vw;
         }
         .section-h {
           font-size: clamp(3rem, 6vw, 5.5rem); 
@@ -80,7 +80,7 @@ const HireSteps = () => {
           background: transparent;
           border-right: 1px solid rgba(0, 0, 0, 0.08);
           border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-          padding: 8rem 4rem;
+          padding: 5rem 3rem;
           text-align: left;
           position: relative;
           transition: background-color 0.8s var(--ease-expo), color 0.8s var(--ease-expo);
@@ -92,16 +92,16 @@ const HireSteps = () => {
         }
 
         .step-icon-wrap {
-          width: 80px;
-          height: 80px;
+          width: 70px;
+          height: 70px;
           background: transparent;
           border: 1px solid rgba(0, 0, 0, 0.1);
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 2.5rem;
-          color: #000; /* Darker for light theme */
-          margin: 0 0 4rem;
+          font-size: 2.2rem;
+          color: #000;
+          margin: 0 0 3rem;
           transition: all 0.6s var(--ease-expo);
           opacity: 0.15;
         }
@@ -145,7 +145,17 @@ const HireSteps = () => {
         }
         @media (max-width: 768px) {
           .steps-row { grid-template-columns: 1fr; }
-          .step-card { padding: 4rem 2rem; }
+          .step-card { padding: 3rem 2rem; border-right: none; }
+          .step-title { font-size: 1.6rem; }
+          .step-desc { font-size: 1.05rem; }
+        }
+        @media (max-width: 480px) {
+          .hire-steps { padding: 10vw 0; }
+          .section-header-centered { margin-bottom: 8vw; }
+          .step-card { padding: 2.5rem 1.5rem; }
+          .step-icon-wrap { width: 55px; height: 55px; font-size: 1.8rem; margin: 0 0 2rem; }
+          .step-title { font-size: 1.4rem; margin-bottom: 1.2rem; }
+          .step-desc { font-size: 0.95rem; }
         }
       `}</style>
     </section>

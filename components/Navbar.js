@@ -13,6 +13,7 @@ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false)
   const [activeDropdown, setActiveDropdown] = useState(null)
   const [isVisible, setIsVisible] = useState(true)
+  const [mobileServicesOpen, setMobileServicesOpen] = useState(false)
 
   const pathname = usePathname()
   const menuRef = useRef(null)
@@ -143,10 +144,16 @@ const Navbar = () => {
             <div key={link.title} className="mobile-link-item">
               {link.hasDropdown ? (
                 <div className="mobile-dropdown">
-                  <span className="mobile-link-main">Services</span>
-                  <div className="mobile-sublinks">
+                  <button 
+                    className="mobile-link-main mobile-services-toggle"
+                    onClick={() => setMobileServicesOpen(!mobileServicesOpen)}
+                  >
+                    Services
+                    <IoChevronDown className={`mobile-chevron ${mobileServicesOpen ? 'open' : ''}`} />
+                  </button>
+                  <div className={`mobile-sublinks ${mobileServicesOpen ? 'expanded' : ''}`}>
                     {services.map((s) => (
-                      <Link key={s.title} href={s.path} onClick={() => setIsOpen(false)}>
+                      <Link key={s.title} href={s.path} onClick={() => { setIsOpen(false); setMobileServicesOpen(false); }}>
                         {s.title}
                       </Link>
                     ))}
@@ -159,7 +166,6 @@ const Navbar = () => {
               )}
             </div>
           ))}
-          {/* Mobile CTA removed */}
         </div>
       </div>
 
@@ -314,18 +320,21 @@ const Navbar = () => {
           left: 0;
           width: 100%;
           height: 100vh;
+          height: 100dvh;
           background: var(--bg-dark);
           z-index: 2000;
           display: none;
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          padding: 40px;
+          padding: 80px 40px 40px;
           opacity: 0;
           transform: translateY(-100%);
+          overflow-y: auto;
+          -webkit-overflow-scrolling: touch;
         }
         .close-menu {
-          position: absolute;
+          position: fixed;
           top: 30px;
           right: 30px;
           font-size: 2.5rem;
@@ -333,12 +342,20 @@ const Navbar = () => {
           background: none;
           border: none;
           cursor: pointer;
+          z-index: 2001;
+          min-width: 44px;
+          min-height: 44px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
         .mobile-links {
           display: flex;
           flex-direction: column;
-          gap: 2rem;
+          gap: 1.5rem;
           text-align: center;
+          width: 100%;
+          max-width: 400px;
         }
         .mobile-links a, .mobile-link-main {
           font-family: var(--font-heading);
@@ -346,22 +363,64 @@ const Navbar = () => {
           font-weight: 700;
           color: white;
           text-decoration: none;
+          min-height: 44px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .mobile-services-toggle {
+          background: none;
+          border: none;
+          cursor: pointer;
+          gap: 10px;
+          width: 100%;
+        }
+        .mobile-chevron {
+          font-size: 1rem;
+          transition: transform 0.4s var(--ease-expo);
+        }
+        .mobile-chevron.open {
+          transform: rotate(180deg);
         }
         .mobile-sublinks {
           display: flex;
           flex-direction: column;
-          gap: 1rem;
+          gap: 0.8rem;
+          margin-top: 0;
+          max-height: 0;
+          overflow: hidden;
+          transition: max-height 0.5s var(--ease-expo), margin-top 0.3s ease;
+        }
+        .mobile-sublinks.expanded {
+          max-height: 400px;
           margin-top: 1rem;
         }
         .mobile-sublinks a {
           font-size: 1.1rem;
           font-weight: 400;
           color: var(--text-secondary);
+          min-height: 44px;
         }
 
         @media (max-width: 1024px) {
           .nav-links, .nav-cta { display: none; }
           .mobile-toggle { display: block; }
+        }
+        @media (max-width: 768px) {
+          .nav-logo { height: 40px !important; }
+          .mobile-links a, .mobile-link-main { font-size: 1.5rem; }
+          .mobile-sublinks a { font-size: 1rem; }
+          .mobile-links { gap: 1.2rem; }
+          .close-menu { top: 24px; right: 24px; font-size: 2.2rem; }
+          .mobile-overlay { padding: 70px 30px 30px; }
+        }
+        @media (max-width: 480px) {
+          .nav-logo { height: 34px !important; }
+          .mobile-links a, .mobile-link-main { font-size: 1.3rem; }
+          .mobile-sublinks a { font-size: 0.9rem; }
+          .mobile-links { gap: 1rem; }
+          .close-menu { top: 18px; right: 18px; font-size: 2rem; }
+          .mobile-overlay { padding: 60px 24px 24px; }
         }
       `}</style>
     </nav>

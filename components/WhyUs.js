@@ -119,11 +119,11 @@ const WhyUs = () => {
         }
         .section-h {
           font-size: clamp(3rem, 6vw, 5.5rem); 
-          color: #fff; /* Changed to white */
+          color: #fff;
           line-height: 0.95;
           letter-spacing: -0.04em;
           text-transform: uppercase;
-          margin-bottom: 4rem;
+          margin-bottom: 3rem;
         }
         .accent-text {
           color: #fff;
@@ -131,9 +131,9 @@ const WhyUs = () => {
           display: block;
         }
         .why-desc {
-          font-size: 1.4rem;
-          color: #aaa; /* Lighter for dark */
-          margin-bottom: 6rem;
+          font-size: 1.3rem;
+          color: #aaa;
+          margin-bottom: 4rem;
           max-width: 500px;
           opacity: 0.8;
         }
@@ -141,18 +141,22 @@ const WhyUs = () => {
         .stats-grid {
           display: grid;
           grid-template-columns: repeat(2, 1fr);
-          border-top: 1px solid rgba(255, 255, 255, 0.1);
+          gap: 2vw; /* Added gap to allow cards to shadow without overlapping */
         }
         .stat-card {
-          padding: 4rem 2rem;
-          border-right: 1px solid rgba(255, 255, 255, 0.1);
-          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+          padding: 4rem 3rem;
+          border-radius: 20px; /* Modern rounded corners */
+          background: rgba(255, 255, 255, 0.03); /* Subtle background instead of borders */
           text-align: left;
-          transition: all 0.6s var(--ease-expo);
+          transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1), background 0.6s var(--ease-expo), color 0.4s;
+          will-change: transform;
         }
         .stat-card:hover {
           background: #fff;
           color: #000;
+          transform: translateY(-12px) scale(1.02);
+          box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+          z-index: 2;
         }
         
         .counter-val, .suffix {
@@ -189,8 +193,8 @@ const WhyUs = () => {
         .reason-item {
           display: flex;
           flex-direction: column;
-          gap: 2rem;
-          padding: 6rem 0;
+          gap: 1.5rem;
+          padding: 4rem 0;
           border-bottom: 1px solid rgba(255, 255, 255, 0.1);
           transition: all 0.6s var(--ease-expo);
         }
@@ -221,7 +225,20 @@ const WhyUs = () => {
         }
         @media (max-width: 768px) {
           .stats-grid { grid-template-columns: 1fr; }
+          .stat-card { border-right: none; }
           .reason-item:hover { padding-left: 0; }
+          .reason-title { font-size: 1.8rem; }
+          .reason-item { padding: 3rem 0; }
+          .why-desc { font-size: 1.1rem; margin-bottom: 3rem; }
+        }
+        @media (max-width: 480px) {
+          .counter-val, .suffix { font-size: 2.8rem; }
+          .stat-card { padding: 2.5rem 1.5rem; }
+          .reason-title { font-size: 1.5rem; }
+          .reason-desc { font-size: 1rem; }
+          .reason-item { padding: 2.5rem 0; gap: 1.2rem; }
+          .why-desc { font-size: 1rem; margin-bottom: 2.5rem; }
+          .section-h { margin-bottom: 2rem; }
         }
       `}</style>
     </section>

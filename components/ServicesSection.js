@@ -12,6 +12,14 @@ import MagneticButton from './animations/MagneticButton'
 const ServicesSection = () => {
   const sectionRef = useRef(null)
   const [activeTab, setActiveTab] = useState(0) // Default first item open
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth <= 1024)
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   const services = [
     {
@@ -114,23 +122,26 @@ const ServicesSection = () => {
             We deliver end-to-end digital engineering that scales. Discover our specialized services tailored to elevate your business in the digital era.
           </p>
         </div>
+      </div> {/* <-- PROPERLY CLOSES THE MAIN CONTAINER --> */}
 
-        {/* Vertical Accordion */}
-        <div className="services-vertical-accordion">
+      {/* Vertical Accordion - Full Width */}
+      <div className="services-vertical-accordion">
           {services.map((s, index) => {
-            const isActive = activeTab === index;
+            const isActive = isMobile || activeTab === index;
 
             return (
               <div
                 key={s.id}
                 className={`acc-row ${isActive ? 'active' : ''}`}
-                onMouseEnter={() => setActiveTab(index)}
+                onMouseEnter={() => !isMobile && setActiveTab(index)}
               >
-                {/* Hover Background Color Overlay */}
+                {/* Hover Background Color Overlay - Stretches 100vw */}
                 <div className="row-bg" style={{ backgroundColor: s.color }}></div>
 
-                {/* Visible Row Header */}
-                <div className="row-header">
+                {/* Content bounded by container to align with header */}
+                <div className="container" style={{ maxWidth: '1400px' }}>
+                  {/* Visible Row Header */}
+                  <div className="row-header">
                   <div className="row-num">{s.id}</div>
                   <h3 className="row-title">{s.title}</h3>
                   <div className="row-indicator">
@@ -181,21 +192,21 @@ const ServicesSection = () => {
                     </div>
                   </div>
                 </div>
+                </div> {/* End inner container */}
               </div>
             )
           })}
         </div>
-      </div>
 
       <style jsx>{`
         .services-hub-premium {
-          padding: 160px 0 120px;
+          padding: 120px 0 100px;
           background: #ffffff;
           position: relative;
         }
 
         .hub-header {
-          margin-bottom: 90px;
+          margin-bottom: 60px;
           max-width: 900px;
           padding: 0 2vw;
         }
@@ -220,8 +231,8 @@ const ServicesSection = () => {
 
         /* --- VERTICAL FULL WIDTH ACCORDION --- */
         .services-vertical-accordion {
+          width: 100%;
           border-top: 1px solid rgba(0,0,0,0.1);
-          border-bottom: 1px solid rgba(0,0,0,0.1);
         }
 
         .acc-row {
@@ -230,9 +241,6 @@ const ServicesSection = () => {
           overflow: hidden;
           transition: box-shadow 0.6s cubic-bezier(0.19, 1, 0.22, 1), border-color 0.6s cubic-bezier(0.19, 1, 0.22, 1), background-color 0.6s cubic-bezier(0.19, 1, 0.22, 1);
           background: #ffffff;
-        }
-        .acc-row:last-child {
-          border-bottom: none;
         }
         .acc-row.active {
           z-index: 5;
@@ -296,12 +304,12 @@ const ServicesSection = () => {
           transform: translateX(15px);
         }
 
-        /* Animated Plus/Minus Indicator */
+        /* Animated Plus/Minus Indicator — HIDDEN on desktop since hover is used */
         .row-indicator {
           width: 40px;
           height: 40px;
           position: relative;
-          display: flex;
+          display: none;
           align-items: center;
           justify-content: center;
         }
@@ -356,7 +364,7 @@ const ServicesSection = () => {
         .row-content-split {
           display: flex;
           gap: 60px;
-          padding: 20px 2vw 70px 100px; /* offset by number width */
+          padding: 20px 2vw 50px 100px;
           margin-top: 10px;
         }
 
@@ -365,10 +373,10 @@ const ServicesSection = () => {
         }
 
         .row-desc {
-          font-size: 1.3rem;
+          font-size: 1.2rem;
           line-height: 1.5;
           opacity: 0.9;
-          margin-bottom: 40px;
+          margin-bottom: 30px;
           max-width: 85%;
         }
         #services-hub-id .acc-row.active .row-desc {
@@ -378,10 +386,10 @@ const ServicesSection = () => {
         .row-features {
           list-style: none;
           padding: 0;
-          margin: 0 0 50px 0;
+          margin: 0 0 35px 0;
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: 20px;
+          gap: 16px;
         }
         .row-features li {
           display: flex;
@@ -502,15 +510,87 @@ const ServicesSection = () => {
             width: 100%;
           }
         }
-        
+
+        /* Tablet & Mobile: Always-expanded Refokus style */
+        @media (max-width: 1024px) {
+          .services-hub-premium { padding: 100px 0 80px; }
+          .hub-header { margin-bottom: 50px; }
+          .hub-desc { font-size: 1.1rem; }
+
+          /* Hide +/- indicator on mobile */
+          .row-indicator { display: none !important; }
+
+          /* Force all items to be always expanded */
+          .acc-row .row-body {
+            grid-template-rows: 1fr !important;
+          }
+          .acc-row .row-body-inner {
+            overflow: visible !important;
+          }
+          .acc-row .row-bg {
+            opacity: 1 !important;
+          }
+          .acc-row .row-header {
+            color: #fff;
+            cursor: default;
+          }
+          .acc-row .row-num,
+          .acc-row .row-title {
+            color: #fff !important;
+          }
+          .acc-row .row-desc,
+          .acc-row .row-features li,
+          .acc-row .check-icon {
+            color: rgba(255,255,255,0.85) !important;
+          }
+          .acc-row .pill-text {
+            color: #fff !important;
+          }
+          .acc-row .pill-orb {
+            background: rgba(255,255,255,0.15) !important;
+            color: #fff !important;
+          }
+
+          /* Each service becomes a stacked card */
+          .acc-row {
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+            border-top: none;
+            border-radius: 16px;
+            margin-bottom: 8px;
+          }
+          .row-header { padding: 25px 16px 12px; }
+          .row-content-split { padding: 0 16px 30px 16px; }
+          .row-features { grid-template-columns: 1fr; gap: 10px; }
+          .image-float-wrapper { height: 250px; border-radius: 20px; }
+          .row-desc { font-size: 1.05rem; max-width: 100%; }
+        }
+
         @media (max-width: 768px) {
-          .row-header { padding: 30px 2vw; }
-          .row-num { width: 50px; font-size: 1.2rem; }
-          .row-title { font-size: 1.8rem; }
-          .row-content-split { padding: 10px 2vw 40px 50px; }
-          .row-features { grid-template-columns: 1fr; gap: 12px; }
-          .image-float-wrapper { height: 250px; }
-          .row-desc { font-size: 1.15rem; max-width: 100%; }
+          .services-hub-premium { padding: 70px 0 50px; }
+          .hub-header { margin-bottom: 35px; }
+          .row-header { padding: 22px 12px 10px; }
+          .row-num { width: 35px; font-size: 1rem; }
+          .row-title { font-size: 1.6rem; }
+          .row-content-split { padding: 0 12px 28px 12px; gap: 25px; }
+          .image-float-wrapper { height: 200px; }
+        }
+
+        @media (max-width: 480px) {
+          .services-hub-premium { padding: 50px 0 35px; }
+          .hub-header { margin-bottom: 25px; }
+          .hub-title { font-size: 2rem; }
+          .hub-desc { font-size: 0.95rem; max-width: 100%; }
+          .row-header { padding: 18px 10px 8px; }
+          .row-num { width: 28px; font-size: 0.85rem; }
+          .row-title { font-size: 1.3rem; }
+          .row-content-split { padding: 0 10px 24px 10px; gap: 20px; }
+          .row-desc { font-size: 0.95rem; margin-bottom: 16px; }
+          .row-features { gap: 8px; margin: 0 0 20px 0; }
+          .row-features li { font-size: 0.85rem; gap: 8px; }
+          .image-float-wrapper { height: 160px; border-radius: 14px; }
+          .pill-orb { width: 36px; height: 36px; font-size: 1rem; }
+          .pill-text { font-size: 0.8rem; }
+          .acc-row { border-radius: 12px; margin-bottom: 6px; }
         }
       `}</style>
     </section>
