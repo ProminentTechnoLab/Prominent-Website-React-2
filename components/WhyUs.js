@@ -53,15 +53,15 @@ const WhyUs = () => {
   ]
 
   return (
-    <section className="why-us section" ref={sectionRef}>
+    <section className="why-us section section-dark" ref={sectionRef}>
+      <span className="section-label">TRUST</span>
       <div className="container">
         <div className="section-grid">
           {/* Left: Stats & Heading */}
           <div className="why-left">
-            <div className="badge">Why Choose Us</div>
             <h2 className="section-h">
               <TextReveal>Results Driven</TextReveal>
-              <TextReveal delay={0.2} className="accent-text">Engineering</TextReveal>
+              <TextReveal delay={0.2} className="muted-text">Engineering</TextReveal>
             </h2>
             <p className="why-desc">
               We don't just build apps; we build businesses. Our data-driven approach ensures every line of code adds value to your bottom line.
@@ -125,9 +125,8 @@ const WhyUs = () => {
           text-transform: uppercase;
           margin-bottom: 3rem;
         }
-        .accent-text {
-          color: #fff;
-          opacity: 0.15; /* Adjusted for dark */
+        .muted-text {
+          color: #a1a1a1;
           display: block;
         }
         .why-desc {

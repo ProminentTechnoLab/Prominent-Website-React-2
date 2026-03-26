@@ -134,19 +134,20 @@ const FooterDoorEdge = () => {
 
         /* Hover States when MagneticButton container is actively hovered */
         .magnetic-btn-wrap:hover .door-social-icon {
-          background: transparent;
-          border-color: transparent;
-          color: #ffffff !important; /* Always pure white text on top of the orange liquid */
-          /* Note: MagneticButton handles the orange liquid fill natively behind this */
+          background: var(--brand-orange) !important;
+          border-color: var(--brand-orange) !important;
+          color: #ffffff !important; 
+          transform: scale(1.1);
+          box-shadow: 0 10px 30px rgba(255, 102, 0, 0.3);
         }
         
         .magnetic-btn-wrap:hover .door-social-icon svg {
-          fill: #ffffff !important; /* Enforce SVG color change ignoring react-icons defaults */
+          fill: #ffffff !important;
           color: #ffffff !important;
         }
 
         .magnetic-btn-wrap:hover .icon-svg {
-          transform: scale(1.35); /* Elegant icon pop */
+          transform: scale(1.2); /* Elegant icon pop */
         }
         
         /* Add a soft ambient glow to the wrapper itself when hovered */

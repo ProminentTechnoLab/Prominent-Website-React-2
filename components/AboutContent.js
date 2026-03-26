@@ -206,7 +206,7 @@ const AboutContent = () => {
           text-align: left;
         }
         .hero-title { 
-            font-size: clamp(3.5rem, 8vw, 7rem); 
+            font-size: clamp(3rem, 7vw, 6rem); 
             line-height: 0.9; 
             font-weight: 800; 
             letter-spacing: -0.04em; 
@@ -214,7 +214,11 @@ const AboutContent = () => {
             text-transform: uppercase; 
             color: #000;
         }
-        .accent-text { opacity: 0.15; display: block; }
+        .accent-text { 
+           display: block; 
+           color: #000 !important; 
+           opacity: 0.15 !important; 
+        }
         .hero-p { 
             font-size: 1.5rem; 
             max-width: 800px; 

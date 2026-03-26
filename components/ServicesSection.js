@@ -109,14 +109,14 @@ const ServicesSection = () => {
   }, [])
 
   return (
-    <section id="services-hub-id" className="services-hub-premium" ref={sectionRef}>
+    <section id="services-hub-id" className="services-hub-premium section-light" ref={sectionRef}>
+      <span className="section-label">EXPERTISE</span>
       <div className="container" style={{ maxWidth: '1400px' }}>
         {/* Header */}
         <div className="hub-header">
-          <div className="badge">WHAT WE DO</div>
           <h1 className="hub-title">
             <TextReveal>Specialized Digital</TextReveal>
-            <TextReveal delay={0.2} className="accent-text">Capabilities</TextReveal>
+            <TextReveal delay={0.2} className="muted-text">Capabilities</TextReveal>
           </h1>
           <p className="hub-desc">
             We deliver end-to-end digital engineering that scales. Discover our specialized services tailored to elevate your business in the digital era.
@@ -220,7 +220,7 @@ const ServicesSection = () => {
           margin-bottom: 2.5rem;
           color: #000;
         }
-        .accent-text { color: #000; opacity: 0.08; display: block; }
+        .muted-text { color: #666666; display: block; }
         .hub-desc {
           font-size: 1.3rem;
           line-height: 1.5;

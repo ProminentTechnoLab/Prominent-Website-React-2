@@ -133,7 +133,7 @@ const Footer = () => {
           border: 1px solid rgba(0,0,0,0.1);
         }
         .panel-left:hover {
-          background: #ffffff;
+          background: #ebebeb; /* Professional gray-based hover instead of pure white */
           border-color: rgba(0,0,0,0.1);
           box-shadow: 0 20px 40px rgba(0,0,0,0.1);
         }
@@ -235,6 +235,7 @@ const Footer = () => {
           position: relative;
           padding-bottom: 12px;
           margin-bottom: 10px;
+          white-space: nowrap; /* Prevent wrapping as requested */
         }
         .panel-cta-arrow {
           font-size: 1.3rem;

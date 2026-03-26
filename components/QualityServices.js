@@ -59,13 +59,13 @@ const QualityServices = () => {
   ]
 
   return (
-    <section className="quality-services section">
+    <section className="quality-services section section-dark">
+      <span className="section-label">SERVICES</span>
       <div className="container">
         <div className="section-header">
-          <div className="badge">What We Do Best</div>
           <h2 className="section-h">
             <TextReveal>Transforming Ideas Into</TextReveal>
-            <TextReveal delay={0.2} className="accent-text">Service Excellence</TextReveal>
+            <TextReveal delay={0.2} className="muted-text">Service Excellence</TextReveal>
           </h2>
         </div>
 
@@ -110,15 +110,14 @@ const QualityServices = () => {
         }
         .section-h {
           font-size: clamp(3rem, 6vw, 5.5rem);
-          color: #fff; /* Changed to white */
+          color: #fff;
           max-width: 1000px;
           line-height: 0.95;
           letter-spacing: -0.03em;
           text-transform: uppercase;
         }
-        .accent-text {
-          color: #fff; /* Changed to white */
-          opacity: 0.15; /* Adjusted for dark */
+        .muted-text {
+          color: #a1a1a1;
           display: block;
         }
 

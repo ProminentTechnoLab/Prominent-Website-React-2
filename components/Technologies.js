@@ -78,16 +78,16 @@ const Technologies = () => {
   }, [])
 
   return (
-    <section className="tech-section">
+    <section className="tech-section section-dark">
+      <span className="section-label">STACK</span>
       <div className="tech-lens-flare top" />
       <div className="tech-lens-flare bottom" />
 
       <div className="wrapper">
         <div className="section-header-centered">
-          <div className="badge glass-badge">Our Core Stack</div>
           <h2 className="section-h">
             <TextReveal>Architecting with</TextReveal>
-            <TextReveal delay={0.2} className="accent-text">Premium Tech</TextReveal>
+            <TextReveal delay={0.2} className="muted-text">Premium Tech</TextReveal>
           </h2>
         </div>
       </div>
@@ -177,9 +177,9 @@ const Technologies = () => {
           text-transform: uppercase;
           font-weight: 900;
         }
-        .accent-text {
-          color: #fff;
-          opacity: 0.15; /* Adjusted for dark */
+        .muted-text {
+          color: #a1a1a1;
+          opacity: 1; /* Override accent-text opacity */
         }
 
         .ribbon-universe {

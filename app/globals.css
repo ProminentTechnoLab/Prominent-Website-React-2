@@ -63,9 +63,19 @@
   overflow: visible;
 }
 
-/* Section labels removed as per request */
+/* Standardized Section Labels - Top Right Alignment */
+/* Section labels globally hidden for a cleaner professional look */
 .section-label {
   display: none !important;
+}
+
+@media (max-width: 768px) {
+  .section-label {
+    top: 25px;
+    left: 6vw;
+    font-size: 0.65rem;
+    letter-spacing: 0.15rem;
+  }
 }
 
 .section-light.section-curved {
@@ -77,9 +87,20 @@
   color: #000000 !important;
 }
 
+/* Split-heading pattern: First line black, second line light gray */
+.section-light h1 span, .section-light h2 span,
+.section-light h1 .muted-text, .section-light h2 .muted-text {
+  color: #666666 !important;
+  opacity: 1 !important;
+}
+
+.section-light h1, .section-light h2 {
+    color: #000000 !important;
+}
+
 .section-light p:not(.full-desc):not(.item-desc-mini), 
-.section-light span:not(.accent-text):not(.step-desc):not(.blog-cat):not(.feature-dot):not(.counter-val):not(.suffix):not(.stat-label):not(.price):not(.plan-name):not(.feature-text):not(.badge-text):not(.link-text) {
-  color: #000000 !important;
+.section-light span:not(.accent-text):not(.step-desc):not(.blog-cat):not(.feature-dot):not(.counter-val):not(.suffix):not(.stat-label):not(.price):not(.plan-name):not(.feature-text):not(.badge-text):not(.link-text):not(.section-label) {
+  color: #333333 !important;
 }
 
 .section-light .badge {
@@ -94,7 +115,18 @@
   color: #ffffff !important;
 }
 
-.section-dark p, .section-dark span:not(.accent-text):not(.step-title):not(.step-desc):not(.counter-val):not(.suffix):not(.price):not(.period):not(.feature-text):not(.plan-name) {
+/* Split-heading pattern: First line white/high-contrast, second line silver/gray */
+.section-dark h1, .section-dark h2 {
+  color: #ffffff !important;
+}
+
+.section-dark h1 span, .section-dark h2 span,
+.section-dark h1 .muted-text, .section-dark h2 .muted-text {
+  color: #a1a1a1 !important;
+  opacity: 1 !important;
+}
+
+.section-dark p, .section-dark span:not(.accent-text):not(.step-title):not(.step-desc):not(.counter-val):not(.suffix):not(.price):not(.period):not(.feature-text):not(.plan-name):not(.section-label) {
   color: rgba(255,255,255,0.7) !important;
 }
 

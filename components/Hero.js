@@ -3,119 +3,108 @@
 import React, { useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { gsap } from 'gsap'
-import TextReveal from './animations/TextReveal'
 import LiquidButton from './animations/LiquidButton'
+import TextReveal from './animations/TextReveal'
 
 const Hero = () => {
   const heroRef = useRef(null)
-  const bgRef = useRef(null)
-  const title1Ref = useRef(null)
-  const title2Ref = useRef(null)
+  const videoWrapperRef = useRef(null)
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Subtle background drift animation
-      gsap.to(bgRef.current, {
-        x: '3%',
-        y: '3%',
-        duration: 20,
-        repeat: -1,
-        yoyo: true,
-        ease: 'sine.inOut'
+      // Reveal animations for white theme
+      const tl = gsap.timeline({
+        defaults: { ease: 'power4.out', duration: 1.5 },
+        delay: 0.2
       })
 
-      // Title animation - Using fromTo for absolute reliability
-      const tl = gsap.timeline({ 
-        defaults: { ease: 'power4.out', duration: 1.5 },
-        delay: 0.2 // Small delay to ensure DOM is ready
-      })
-      
-      tl.fromTo(title1Ref.current, 
-        { y: 60, opacity: 0 },
-        { y: 0, opacity: 1 }
+      tl.fromTo('.hero-title span',
+        { y: 80, opacity: 0 },
+        { y: 0, opacity: 1, stagger: 0.2 }
       )
-      .fromTo(title2Ref.current, 
-        { y: 60, opacity: 0 },
-        { y: 0, opacity: 1 }, 
-        '-=1.2'
-      )
-      .fromTo('.hero-desc, .hero-actions', 
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, stagger: 0.15, duration: 1 }, 
-        '-=1.0'
-      )
+        .fromTo('.hero-desc',
+          { y: 30, opacity: 0 },
+          { y: 0, opacity: 1 },
+          '-=1.0'
+        )
+        .fromTo(videoWrapperRef.current,
+          { scale: 0.9, opacity: 0, y: 40 },
+          { scale: 1, opacity: 1, y: 0, duration: 1.2, ease: 'expo.out' },
+          '-=0.8'
+        )
+        .fromTo('.hero-actions',
+          { y: 30, opacity: 0 },
+          { y: 0, opacity: 1, stagger: 0.15 },
+          '-=1.0'
+        )
     }, heroRef)
 
     return () => ctx.revert()
   }, [])
 
-  const stats = [
-    { label: 'Happy Clients', value: '30+' },
-    { label: 'Projects Delivered', value: '50+' },
-    { label: 'Years Experience', value: '5+' },
-  ]
-
   return (
     <section className="hero section-light" ref={heroRef}>
-      {/* Full-bleed subtle animated background */}
-      <div className="hero-video-wrapper">
-        <video
-          className="hero-video-element"
-          autoPlay
-          loop
-          muted
-          playsInline
-          style={{ opacity: 0.15 }}
-          src="https://cdn.coverr.co/videos/coverr-abstract-neon-lines-5953/1080p.mp4"
-        />
-        <div className="hero-overlay"></div>
-      </div>
-
+      <span className="section-label">HOME</span>
       <div className="container hero-container">
         <div className="hero-content">
-          <h1 className="hero-title" style={{ color: '#000000' }}>
-            <span className="title-line">
-              <span ref={title1Ref}>Powering Businesses</span>
-            </span>
-            <span className="title-line accent-text" style={{ color: '#ff4d00' }}>
-              <span ref={title2Ref}>With Innovation</span>
-            </span>
+          <h1 className="hero-title">
+            <TextReveal>Powering Businesses</TextReveal>
+            <TextReveal delay={0.2} className="accent-text">With Innovation</TextReveal>
           </h1>
 
-          <p className="hero-desc" style={{ color: '#444444', opacity: 1 }}>
+          <p className="hero-desc">
             We deliver world-class Digital Marketing, intuitive UI/UX Design, and high-performance Web Development. Our team combines technical excellence with creative strategy to scale your brand's digital presence globally.
           </p>
+
+          {/* Premium 16:9 Showcase Video (Local Asset) */}
+          <div className="hero-featured-showcase-container" ref={videoWrapperRef}>
+            <div className="showcase-inner">
+              <video
+                className="hero-main-video"
+                autoPlay
+                muted
+                loop
+                playsInline
+                // Pointing to local asset to ensure reliable playback (No Black Screen)
+                src="/videos/hero-3d.mp4"
+              >
+                <source src="/videos/hero-3d.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
+            <div className="showcase-shadow"></div>
+          </div>
 
           <div className="hero-actions">
             <LiquidButton
               effect="cryogenic"
               variant="solid"
-              color="#000"
+              color="#0a0a0a"
               liquidColor="var(--brand-orange)"
               textColor="white"
               hoverTextColor="white"
               strength={35}
             >
-              <Link href="/contact/" className="btn-clean" style={{ color: 'inherit', textDecoration: 'none' }}>
+              <Link href="/contact/" className="btn-clean">
                 Start Your Project
               </Link>
             </LiquidButton>
             <LiquidButton
               effect="aura"
               variant="outline"
-              liquidColor="#000"
-              textColor="#000"
+              liquidColor="#0a0a0a"
+              textColor="#0a0a0a"
               strength={25}
             >
-              <Link href="/services/" className="hero-btn-secondary" style={{ color: 'inherit', textDecoration: 'none' }}>
-                  Our Services
-                </Link>
+              <Link href="/services/" className="hero-btn-secondary">
+                Our Services
+              </Link>
             </LiquidButton>
           </div>
         </div>
       </div>
 
-      <style>{`
+      <style jsx>{`
         .hero {
           height: auto;
           min-height: 100vh;
@@ -124,60 +113,91 @@ const Hero = () => {
           justify-content: center;
           position: relative;
           background: #ffffff !important;
-          padding-top: calc(var(--nav-height) + 8vh);
-          padding-bottom: 18vh;
-        }
-
-        .hero-video-wrapper {
-          position: absolute;
-          inset: 0;
-          z-index: 1;
-          overflow: hidden;
-        }
-
-        .hero-video-element {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          transform: scale(1.02); /* Slight scale to hide edges */
-          filter: grayscale(100%);
-        }
-
-        .hero-overlay {
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.7) 100%);
-          z-index: 2;
+          padding: calc(var(--nav-height) + 8vh) 0 15vh;
         }
 
         .hero-container {
           position: relative;
           z-index: 10;
+          width: 100%;
         }
+        
+        .hero-content {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+        }
+
         .hero-title {
           font-size: clamp(3.2rem, 8.5vw, 8.5rem);
           line-height: 1.1;
           font-weight: 800;
           letter-spacing: -0.04em;
-          margin-bottom: 3.5rem;
+          margin-bottom: 2.5rem;
           display: flex;
           flex-direction: column;
-          align-items: center;
+          color: #000000;
         }
+        
         .title-line {
           display: block;
           position: relative;
         }
-        .title-line span {
+        
+        .accent-text {
           display: block;
+          color: #000000 !important;
+          opacity: 0.15 !important;
         }
 
         .hero-desc {
+          color: #444444;
           font-size: clamp(1.1rem, 1.5vw, 1.35rem);
           max-width: 850px;
-          margin: 0 auto;
+          margin: 0 auto 4rem;
           line-height: 1.6;
           font-weight: 500;
+        }
+
+        /* 16:9 Video Block Structure */
+        .hero-featured-showcase-container {
+            position: relative;
+            width: 100%;
+            max-width: 1100px;
+            aspect-ratio: 16 / 9;
+            margin: 0 auto 5rem;
+            z-index: 5;
+        }
+
+        .showcase-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 40px;
+            overflow: hidden;
+            background: #000000; /* Dark bg while video loads */
+            box-shadow: 0 50px 120px rgba(0,0,0,0.15);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .hero-main-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .showcase-shadow {
+            position: absolute;
+            bottom: -30px;
+            left: 5%;
+            width: 90%;
+            height: 40px;
+            background: rgba(0,0,0,0.08);
+            filter: blur(40px);
+            border-radius: 50%;
+            z-index: -1;
         }
 
         .hero-actions {
@@ -185,7 +205,6 @@ const Hero = () => {
           align-items: center;
           justify-content: center;
           gap: 2.5rem;
-          margin-top: 4rem;
         }
 
         .btn-clean {
@@ -196,27 +215,24 @@ const Hero = () => {
           padding: 0;
           background: transparent;
           border: none;
+          font-weight: inherit;
+          font-size: inherit;
         }
 
         @media (max-width: 1024px) {
+          .hero-featured-showcase-container { max-width: 95%; }
           .hero-actions { flex-direction: column; gap: 1.5rem; }
-          .hero { padding-bottom: 15vh; }
         }
         @media (max-width: 768px) {
-          .hero { padding-top: calc(var(--nav-height) + 5vh); padding-bottom: 12vh; min-height: auto; }
-          .hero-title { font-size: clamp(2.5rem, 10vw, 4rem); margin-bottom: 1.5rem; }
-          .hero-desc { font-size: 1rem; max-width: 100%; }
-          .hero-actions { gap: 1.2rem; margin-top: 2.5rem; }
-          .blob-1 { width: 300px; height: 300px; }
-          .blob-2 { width: 400px; height: 400px; }
+          .hero { padding-top: calc(var(--nav-height) + 5vh); }
+          .hero-title { font-size: clamp(2.5rem, 10vw, 4rem); margin-bottom: 2rem; }
+          .hero-featured-showcase-container { margin-bottom: 3.5rem; border-radius: 24px; aspect-ratio: 16 / 10; }
+          .showcase-inner { border-radius: 24px; }
         }
         @media (max-width: 480px) {
-          .hero { padding-top: calc(var(--nav-height) + 3vh); padding-bottom: 10vh; }
-          .hero-title { font-size: 2rem; margin-bottom: 1.2rem; }
-          .hero-desc { font-size: 0.95rem; line-height: 1.5; }
-          .hero-actions { gap: 1rem; margin-top: 2rem; }
-          .blob-1 { width: 200px; height: 200px; }
-          .blob-2 { width: 250px; height: 250px; }
+          .hero-title { font-size: 2.4rem; }
+          .hero-featured-showcase-container { aspect-ratio: 1 / 1; border-radius: 20px; }
+          .showcase-inner { border-radius: 20px; }
         }
       `}</style>
     </section>

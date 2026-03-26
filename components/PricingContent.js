@@ -65,12 +65,8 @@ const PricingContent = () => {
           <div className="hero-inner stagger-item">
             <div className="badge">Pricing & Plans</div>
             <h1 className="hero-title">
-              <span className="title-row">
-                <TextReveal>It's time to</TextReveal>
-              </span>
-              <span className="title-row accent-row">
-                <TextReveal delay={0.2}>Elevate Your Business</TextReveal>
-              </span>
+              <TextReveal>Flexible Plans for</TextReveal>
+              <TextReveal delay={0.2} className="accent-text">Every Digital Ambition</TextReveal>
             </h1>
             <p className="hero-description stagger-item">
               Transparent, value-driven pricing designed to scale with your ambition. 
@@ -208,11 +204,12 @@ const PricingContent = () => {
             margin-bottom: 3rem; 
             text-transform: uppercase; 
             color: #000 !important; 
-            display: flex;
-            flex-direction: column;
         }
-        .title-row { display: block; color: #000 !important; }
-        .accent-row { opacity: 0.15 !important; }
+        .accent-text { 
+          display: block; 
+          color: #000 !important; 
+          opacity: 0.15 !important; 
+        }
         .hero-description { font-size: 1.4rem; max-width: 800px; color: #666; font-weight: 500; line-height: 1.5; }
 
         /* Tabs Section */
