@@ -1,122 +1,33 @@
 'use client'
 
 import React, { useState, useEffect, useRef } from 'react'
-import { 
-  IoArrowForward, 
-  IoCheckmarkCircle, IoAlertCircle 
-} from 'react-icons/io5'
-import {
-  FaFacebookF, FaLinkedinIn,
-  FaInstagram, FaYoutube
-} from 'react-icons/fa'
-import { RiTwitterXFill } from 'react-icons/ri'
 import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
-import TextReveal from './animations/TextReveal'
-import MagneticButton from './animations/MagneticButton'
+import { IoCheckmarkCircle, IoAlertCircle } from 'react-icons/io5'
 
 const ContactContent = () => {
-  // --- Form Logic ---
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    service: '',
-    subject: '',
-    message: '',
-  })
-  const [status, setStatus] = useState({
-    submitting: false,
-    success: false,
-    error: null,
-  })
-
-  // --- FAQ State ---
-  const [activeFaq, setActiveFaq] = useState(null) // Start with all closed
-
-  // --- Testimonial State ---
-  const [testimonialIndex, setTestimonialIndex] = useState(0)
-
-  // --- Refs for Animations ---
   const sectionRef = useRef(null)
-  const formRef = useRef(null)
+  const [selected, setSelected] = useState([])
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '', subject: '', message: '' })
+  const [status, setStatus] = useState({ submitting: false, success: false, error: null })
 
-  const faqs = [
-    {
-      q: "What services do you offer?",
-      a: "We specialize in end-to-end digital product development, including Web Development (React, Next.js, Node.js), Mobile App Development (Flutter, React Native), UI/UX Design, and Digital Marketing."
-    },
-    {
-      q: "How long does a typical project take?",
-      a: "Timeline depends on complexity. A standard MVP typically takes 8-12 weeks, while larger enterprise transformations can span 4-6 months. We prioritize agile delivery to get you to market faster."
-    },
-    {
-      q: "What is your primary tech stack?",
-      a: "We are experts in modern high-performance stacks. For web: Next.js + Node.js. For mobile: Flutter. For backend: Laravel or Node.js. We always choose the best tool for your specific business requirements."
-    },
-    {
-      q: "Do you provide post-launch support?",
-      a: "Yes, we offer flexible maintenance and support packages. Whether you need bug fixes, feature updates, or server monitoring, our team is available to ensure your product continues to scale."
-    }
+  const interests = [
+    'Website Development', 'Mobile App Development', 'UI/UX Design',
+    'CMS & E-commerce', 'Digital Marketing', 'Payment & Shipping API'
   ]
 
-  const testimonials = [
-    {
-      name: 'Michael Chen',
-      role: 'Project Manager, US',
-      content: "The quality of work from Prominent TechnoLabs is exceptional. Their developers integrated seamlessly with our local team and delivered the product ahead of schedule.",
-    },
-    {
-      name: 'Sarah Jenkins',
-      role: 'CEO, Digital Pulse (UK)',
-      content: "Transformative results! Our e-commerce conversion rate increased by 40% after the redesign. They truly understand modern UX.",
-    },
-    {
-      name: 'Rajesh Gupta',
-      role: 'Founder, RetailGo (India)',
-      content: "Reliable, transparent, and technically brilliant. We've been working with them for 3 years and they never disappoint.",
-    },
-    {
-      name: 'Elena Rodriguez',
-      role: 'Tech Lead, Spain',
-      content: "Prompt communication and deep technical knowledge. Their React and Node.js expertise helped us scale our platform effortlessly.",
-    }
-  ]
-
-  const services = [
-    "Website Development",
-    "Mobile App Development",
-    "UI/UX Design",
-    "CMS & E-commerce",
-    "Digital Marketing",
-    "Payment & Shipping API"
-  ]
+  const toggleInterest = (item) => {
+    setSelected(prev =>
+      prev.includes(item) ? prev.filter(i => i !== item) : [...prev, item]
+    )
+  }
 
   useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger)
-    
     const ctx = gsap.context(() => {
-      gsap.from('.stagger-item', {
-        y: 40,
-        opacity: 0,
-        duration: 1.2,
-        stagger: 0.1,
-        ease: 'expo.out',
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 80%',
-        }
-      })
-    })
-
-    const interval = setInterval(() => {
-      setTestimonialIndex(prev => (prev + 1) % testimonials.length)
-    }, 6000)
-
-    return () => {
-      ctx.revert()
-      clearInterval(interval)
-    }
+      gsap.fromTo('.ct-line', { y: 80, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.1, duration: 1.2, ease: 'power4.out', delay: 0.3 })
+      gsap.fromTo('.ct-chips', { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: 'power4.out', delay: 0.6 })
+      gsap.fromTo('.ct-form', { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: 'power4.out', delay: 0.8 })
+    }, sectionRef)
+    return () => ctx.revert()
   }, [])
 
   const handleChange = (e) => {
@@ -127,20 +38,19 @@ const ContactContent = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setStatus({ submitting: true, success: false, error: null })
-
     try {
       const response = await fetch('https://api.prominenttechnolabs.com/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, service: selected.join(', ') }),
       })
-
       const data = await response.json()
       if (response.ok) {
         setStatus({ submitting: false, success: true, error: null })
-        setFormData({ name: '', email: '', phone: '', service: '', subject: '', message: '' })
+        setFormData({ name: '', email: '', phone: '', subject: '', message: '' })
+        setSelected([])
       } else {
-        throw new Error(data.message || 'Error occurred')
+        throw new Error(data.message || 'Something went wrong')
       }
     } catch (err) {
       setStatus({ submitting: false, success: false, error: err.message })
@@ -148,400 +58,203 @@ const ContactContent = () => {
   }
 
   return (
-    <section className="contact-refokus" ref={sectionRef}>
-      <div className="container">
-        {/* Header Section */}
-        <div className="contact-header">
-           <h1 className="hero-h stagger-item">
-             <TextReveal>It's time to</TextReveal>
-             <TextReveal delay={0.2} className="accent-text">Elevate Your Business</TextReveal>
-           </h1>
+    <section className="ct-page" ref={sectionRef}>
+      <div className="ct-inner">
+        {/* Cuberto: "Hey! Tell us all the things" */}
+        <h1 className="ct-title">
+          <span className="ct-line">Hey! Tell us all</span>
+          <span className="ct-line">the things</span>
+        </h1>
+
+        {/* Interest chips — Cuberto signature */}
+        <div className="ct-chips-section ct-chips">
+          <p className="ct-label">I'm interested in...</p>
+          <div className="ct-chips-row">
+            {interests.map(item => (
+              <button
+                key={item}
+                className={`ct-chip ${selected.includes(item) ? 'active' : ''}`}
+                onClick={() => toggleInterest(item)}
+                type="button"
+              >
+                {item}
+              </button>
+            ))}
+          </div>
         </div>
 
-        <div className="contact-main-grid">
-          {/* Left Side: Testimonials & FAQ */}
-          <div className="info-column">
-            {/* Testimonials */}
-            <div className="testimonial-section stagger-item">
-               <div className="testimonial-card">
-                 <p className="t-content">"{testimonials[testimonialIndex].content}"</p>
-                 <div className="t-author">
-                   <h4 className="t-name">{testimonials[testimonialIndex].name}</h4>
-                   <p className="t-role">{testimonials[testimonialIndex].role}</p>
-                 </div>
-               </div>
-               <div className="t-dots">
-                 {testimonials.map((_, i) => (
-                   <span 
-                     key={i} 
-                     className={`t-dot ${i === testimonialIndex ? 'active' : ''}`}
-                     onClick={() => setTestimonialIndex(i)}
-                   />
-                 ))}
-               </div>
+        {/* Form */}
+        <div className="ct-form">
+          {status.success ? (
+            <div className="ct-success">
+              <IoCheckmarkCircle className="ct-success-icon" />
+              <h3>Message sent!</h3>
+              <p>We'll get back to you within 24 hours.</p>
+              <button className="ct-reset" onClick={() => setStatus({ ...status, success: false })}>Send another message</button>
             </div>
-
-            {/* FAQ Accordion */}
-            <div className="faq-section stagger-item">
-              <h4 className="faq-title">Frequently Asked Questions</h4>
-              <div className="faq-list">
-                {faqs.map((faq, i) => (
-                  <div key={i} className={`faq-item ${activeFaq === i ? 'active' : ''}`}>
-                    <button className="faq-question" onClick={() => setActiveFaq(activeFaq === i ? null : i)}>
-                      <span>{faq.q}</span>
-                      <div className="faq-icon">
-                        <span className="line hor"></span>
-                        <span className="line ver"></span>
-                      </div>
-                    </button>
-                    <div className="faq-answer">
-                      <div className="faq-answer-inner">
-                        <p>{faq.a}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+          ) : (
+            <form onSubmit={handleSubmit}>
+              <div className="ct-field">
+                <label>Your name</label>
+                <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="John Doe" required />
               </div>
-            </div>
-
-            {/* Social Links */}
-
-          </div>
-
-          {/* Right Side: Form */}
-          <div className="form-column">
-            <div className="contact-form-wrapper stagger-item">
-              {status.success ? (
-                <div className="success-message">
-                  <IoCheckmarkCircle className="success-icon" />
-                  <h3>Message Sent!</h3>
-                  <p>We'll get back to you within 24 hours.</p>
-                  <button className="reset-btn" onClick={() => setStatus({ ...status, success: false })}>
-                    Send Another Message
-                  </button>
+              <div className="ct-field">
+                <label>Your email</label>
+                <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="john@example.com" required />
+              </div>
+              <div className="ct-field-row">
+                <div className="ct-field">
+                  <label>Phone (optional)</label>
+                  <input type="tel" name="phone" value={formData.phone} onChange={handleChange} placeholder="+1 (555) 000-0000" />
                 </div>
-              ) : (
-                <form onSubmit={handleSubmit} className="refokus-form" ref={formRef}>
-                  <div className="field-group">
-                    <label className="overhead-label">Full Name</label>
-                    <input 
-                      type="text" 
-                      name="name" 
-                      value={formData.name} 
-                      onChange={handleChange} 
-                      placeholder="e.g. John Doe"
-                      required
-                    />
-                  </div>
+                <div className="ct-field">
+                  <label>Subject</label>
+                  <input type="text" name="subject" value={formData.subject} onChange={handleChange} placeholder="Project inquiry" required />
+                </div>
+              </div>
+              <div className="ct-field">
+                <label>Tell us about your project</label>
+                <textarea name="message" value={formData.message} onChange={handleChange} placeholder="I need help with..." rows="3" required></textarea>
+              </div>
 
-                  <div className="field-row">
-                    <div className="field-group">
-                      <label className="overhead-label">Email Address</label>
-                      <input 
-                        type="email" 
-                        name="email" 
-                        value={formData.email} 
-                        onChange={handleChange} 
-                        placeholder="john@example.com"
-                        required
-                      />
-                    </div>
-                    <div className="field-group">
-                      <label className="overhead-label">Phone (Optional)</label>
-                      <input 
-                        type="tel" 
-                        name="phone" 
-                        value={formData.phone} 
-                        onChange={handleChange} 
-                        placeholder="+1 (555) 000-0000"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="field-row">
-                    <div className="field-group">
-                      <label className="overhead-label">I'm interested in</label>
-                      <select name="service" value={formData.service} onChange={handleChange} required>
-                        <option value="">Select a service</option>
-                        {services.map(s => <option key={s} value={s}>{s}</option>)}
-                      </select>
-                    </div>
-                    <div className="field-group">
-                      <label className="overhead-label">Subject</label>
-                      <input 
-                        type="text" 
-                        name="subject" 
-                        value={formData.subject} 
-                        onChange={handleChange} 
-                        placeholder="Project Inquiry"
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div className="field-group">
-                    <label className="overhead-label">Your Message</label>
-                    <textarea 
-                      name="message" 
-                      value={formData.message} 
-                      onChange={handleChange} 
-                      placeholder="Tell us about your goals..."
-                      rows="4"
-                      required
-                    ></textarea>
-                  </div>
-
-                  {status.error && (
-                    <div className="error-message-box">
-                      <IoAlertCircle /> {status.error}
-                    </div>
-                  )}
-
-                  <div className="submit-wrap">
-                    <button type="submit" className="submit-btn" disabled={status.submitting}>
-                      <span className="submit-text">
-                        {status.submitting ? 'Sending...' : 'Send Message'}
-                      </span>
-                      <div className="arrow-wrap">
-                        <IoArrowForward />
-                      </div>
-                      <div className="underline"></div>
-                    </button>
-                  </div>
-                </form>
+              {status.error && (
+                <div className="ct-error"><IoAlertCircle /> {status.error}</div>
               )}
-            </div>
-          </div>
+
+              <button type="submit" className="ct-submit" disabled={status.submitting}>
+                {status.submitting ? 'Sending...' : 'Send message'}
+              </button>
+            </form>
+          )}
         </div>
       </div>
 
       <style>{`
-        .contact-refokus {
-          background-color: #F5F5F7;
-          color: #000;
-          padding: 150px 0 100px;
+        .ct-page {
+          background: var(--bg-primary);
+          padding: 160px 0 120px;
           min-height: 100vh;
-          position: relative;
-          z-index: 1;
         }
+        .ct-inner { max-width: 1000px; margin: 0 auto; padding: 0 40px; }
 
-        .contact-header { margin-bottom: 5vw; }
-        .hero-h {
-          font-size: clamp(3rem, 7vw, 6rem);
-          line-height: 0.9;
-          font-weight: 800;
+        .ct-title {
+          font-size: clamp(3.5rem, 8vw, 7rem);
+          font-weight: 500;
+          line-height: 1.0;
           letter-spacing: -0.04em;
-          text-transform: uppercase;
-          color: #000 !important; /* Ensure black color */
-        }
-        .accent-text {
-          display: block;
-          color: #000 !important;
-          opacity: 0.15 !important; /* Fixed visibility */
-        }
-
-        .contact-main-grid {
-          display: grid;
-          grid-template-columns: 1fr 1.2fr;
-          gap: 10vw;
-          align-items: start;
-        }
-
-        /* Info Column */
-        .info-column { display: flex; flex-direction: column; gap: 4rem; }
-
-        .testimonial-card {
-          padding: 3rem;
-          background: white;
-          border-radius: 30px;
-          box-shadow: 0 20px 40px rgba(0,0,0,0.03);
-          margin-bottom: 1.5rem;
-          min-height: 280px;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-        }
-        .t-content {
-          font-size: 1.5rem;
-          line-height: 1.4;
-          font-weight: 600;
-          margin-bottom: 2rem;
           color: #000;
+          text-align: center;
+          margin-bottom: 80px;
         }
-        .t-name { font-size: 1.2rem; color: #000; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; margin-bottom: 0.5rem; }
-        .t-role { font-size: 0.9rem; color: #666; text-transform: uppercase; letter-spacing: 0.1em; }
-        
-        .t-dots { display: flex; gap: 8px; }
-        .t-dot { width: 8px; height: 8px; border-radius: 50%; background: #ddd; cursor: pointer; transition: all 0.3s; }
-        .t-dot.active { background: #000; width: 24px; border-radius: 10px; }
+        .ct-line { display: block; overflow: hidden; }
 
-        .faq-title { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.2em; font-weight: 800; margin-bottom: 2rem; opacity: 0.4; }
-        .faq-list { display: flex; flex-direction: column; border-top: 1px solid rgba(0,0,0,0.1); }
-        .faq-item { border-bottom: 1px solid rgba(0,0,0,0.1); }
-        
-        .faq-question {
-          width: 100%;
-          padding: 2.5rem 0;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          background: none;
-          border: none;
+        /* Chips — Cuberto "I'm interested in" */
+        .ct-chips-section { margin-bottom: 60px; }
+        .ct-label {
           font-size: 1.2rem;
-          font-weight: 700;
-          text-align: left;
-          cursor: pointer;
-          transition: all 0.3s;
+          font-weight: 400;
           color: #000;
+          margin-bottom: 24px;
         }
-        .faq-question:hover { opacity: 0.7; }
-
-        .faq-icon {
-          width: 20px;
-          height: 20px;
-          position: relative;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-        .faq-icon .line {
-          position: absolute;
-          background: #000;
-          transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1);
-        }
-        .faq-icon .hor { width: 100%; height: 2px; }
-        .faq-icon .ver { width: 2px; height: 100%; }
-        
-        /* PLUS TO MINUS ANIMATION */
-        .faq-item.active .faq-icon .ver { transform: rotate(90deg) scaleX(0); }
-        .faq-item.active .faq-icon .hor { transform: rotate(180deg); }
-
-        .faq-answer {
-            height: 0; 
-            overflow: hidden; 
-            transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1); 
-            opacity: 0;
-            pointer-events: none;
-        }
-        .faq-item.active .faq-answer {
-            height: auto; 
-            min-height: 40px; 
-            opacity: 1; 
-            padding-bottom: 2rem;
-            pointer-events: all;
-        }
-        .faq-answer-inner { color: #555; line-height: 1.7; font-size: 1.1rem; }
-
-        .social-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.2em; font-weight: 800; margin-bottom: 2rem; opacity: 0.4; display: block; }
-        .social-links-refokus { display: flex; gap: 15px; }
-        
-        .social-btn-bw {
-          width: 60px;
-          height: 60px;
-          border-radius: 50%;
+        .ct-chips-row { display: flex; flex-wrap: wrap; gap: 12px; }
+        .ct-chip {
+          padding: 14px 28px;
+          border: 1px solid rgba(0,0,0,0.15);
+          border-radius: 100px;
           background: transparent;
-          border: 1px solid rgba(0,0,0,0.1);
-          display: flex;
-          align-items: center;
-          justify-content: center;
           color: #000;
-          font-size: 1.4rem;
-          transition: all 0.4s var(--ease-expo);
+          font-size: 1rem;
+          font-weight: 400;
+          cursor: pointer;
+          transition: all 0.3s var(--ease-expo);
+          font-family: inherit;
         }
-        .social-btn-bw:hover {
+        .ct-chip:hover { border-color: #000; }
+        .ct-chip.active {
+          background: #000;
           color: #fff;
           border-color: #000;
-          transform: translateY(-5px);
         }
 
-        /* Form Style */
-        .contact-form-wrapper {
-          background: white;
-          padding: 4rem 3.5rem;
-          border-radius: 30px;
-          box-shadow: 0 40px 80px rgba(0,0,0,0.03);
+        /* Form — Cuberto style: borderless inputs with underlines */
+        .ct-field { margin-bottom: 32px; }
+        .ct-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+        .ct-field label {
+          display: block;
+          font-size: 0.75rem;
+          font-weight: 500;
+          color: #999;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+          margin-bottom: 8px;
         }
-        .refokus-form input, .refokus-form textarea, .refokus-form select {
+        .ct-field input, .ct-field textarea {
           width: 100%;
           background: transparent;
           border: none;
-          border-bottom: 1px solid rgba(0,0,0,0.1);
-          padding: 1.2rem 0;
+          border-bottom: 1px solid rgba(0,0,0,0.12);
+          padding: 12px 0;
           font-size: 1.1rem;
           font-weight: 500;
           color: #000;
+          font-family: inherit;
           outline: none;
-          transition: border-color 0.3s;
           border-radius: 0;
+          transition: border-color 0.3s;
         }
-        .refokus-form input:focus, .refokus-form textarea:focus, .refokus-form select:focus {
-          border-color: #000;
-        }
-        .refokus-form select {
-          appearance: none;
+        .ct-field input:focus, .ct-field textarea:focus { border-color: #000; }
+        .ct-field input::placeholder, .ct-field textarea::placeholder { color: rgba(0,0,0,0.2); font-weight: 400; }
+        .ct-field textarea { resize: vertical; min-height: 60px; }
+
+        .ct-submit {
+          display: inline-flex;
+          align-items: center;
+          padding: 18px 40px;
+          border: 1px solid rgba(0,0,0,0.15);
+          border-radius: 100px;
+          background: transparent;
+          color: #000;
+          font-size: 1rem;
+          font-weight: 500;
           cursor: pointer;
-          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
-          background-repeat: no-repeat;
-          background-position: right center;
+          transition: all 0.4s var(--ease-expo);
+          font-family: inherit;
+          margin-top: 16px;
+        }
+        .ct-submit:hover { background: #000; color: #fff; border-color: #000; }
+        .ct-submit:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        .ct-error {
+          display: flex; align-items: center; gap: 8px;
+          color: #c53030; margin-bottom: 16px;
+          font-size: 0.9rem; font-weight: 500;
         }
 
-        .overhead-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; font-weight: 800; color: #999; margin-bottom: 0.5rem; display: block; }
-        .field-group { margin-bottom: 3rem; }
-        .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
-
-        .submit-wrap { margin-top: 2rem; }
-        .submit-btn {
-          background: none; border: none; display: flex; align-items: center; gap: 15px;
-          font-size: 1.3rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;
-          cursor: pointer; position: relative; padding-bottom: 15px; color: #000;
+        .ct-success { text-align: center; padding: 60px 0; }
+        .ct-success-icon { font-size: 3rem; color: #4ade80; display: block; margin-bottom: 16px; }
+        .ct-success h3 { font-size: 1.5rem; font-weight: 500; margin-bottom: 8px; }
+        .ct-success p { color: #666; margin-bottom: 32px; }
+        .ct-reset {
+          padding: 14px 28px; border: 1px solid rgba(0,0,0,0.15);
+          border-radius: 100px; background: transparent; color: #000;
+          font-size: 0.9rem; font-weight: 500; cursor: pointer; font-family: inherit;
+          transition: all 0.3s;
         }
-        .submit-btn .underline { position: absolute; bottom: 0; left: 0; width: 100%; height: 1px; background: rgba(0,0,0,0.1); transition: all 0.3s; }
-        .submit-btn:hover .underline { height: 4px; background: #000; }
-        .submit-btn:hover .arrow-wrap { transform: translateX(10px); }
-        .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .ct-reset:hover { background: #000; color: #fff; }
 
-        .success-message { text-align: center; padding: 4rem 0; }
-        .success-icon { font-size: 5rem; color: #4CAF50; margin-bottom: 2rem; }
-        .reset-btn { background: #000; color: #fff; border: none; padding: 1.2rem 3rem; border-radius: 100px; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: 0.3s; }
-        .reset-btn:hover { transform: scale(1.05); }
-
-        .error-message-box { background: #fff5f5; color: #c53030; padding: 1.5rem; border-radius: 15px; margin-bottom: 2rem; display: flex; align-items: center; gap: 12px; font-weight: 600; }
-
-        @media (max-width: 1024px) {
-          .contact-main-grid { grid-template-columns: 1fr; gap: 80px; }
-          .contact-form-wrapper { padding: 4rem 3rem; }
-        }
         @media (max-width: 768px) {
-          .contact-refokus { padding: 120px 0 70px; }
-          .field-row { grid-template-columns: 1fr; gap: 0; }
-          .hero-h { font-size: 2.8rem; }
-          .testimonial-card { padding: 2rem; min-height: 200px; }
-          .t-content { font-size: 1.2rem; }
-          .contact-form-wrapper { padding: 3rem 2rem; border-radius: 24px; }
-          .social-btn-bw { width: 48px; height: 48px; font-size: 1.1rem; }
-          .faq-question { font-size: 1.05rem; padding: 1.8rem 0; }
+          .ct-page { padding: 120px 0 80px; }
+          .ct-inner { padding: 0 20px; }
+          .ct-field-row { grid-template-columns: 1fr; gap: 0; }
+          .ct-title { margin-bottom: 50px; }
+          .ct-chip { padding: 10px 18px; font-size: 0.9rem; }
         }
         @media (max-width: 480px) {
-          .contact-refokus { padding: 100px 0 50px; }
-          .contact-header { margin-bottom: 6vw; }
-          .hero-h { font-size: 2rem; }
-          .contact-main-grid { gap: 40px; }
-          .testimonial-card { padding: 1.5rem; min-height: 160px; border-radius: 18px; }
-          .t-content { font-size: 1.05rem; margin-bottom: 1.2rem; }
-          .t-name { font-size: 0.95rem; }
-          .t-role { font-size: 0.75rem; }
-          .t-dots { gap: 5px; }
-          .contact-form-wrapper { padding: 2rem 1.2rem; border-radius: 20px; }
-          .overhead-label { font-size: 0.65rem; }
-          .field-group { margin-bottom: 1.8rem; }
-          .refokus-form input, .refokus-form textarea, .refokus-form select { font-size: 0.95rem; padding: 0.9rem 0; }
-          .submit-btn { font-size: 1rem; }
-          .faq-question { font-size: 0.95rem; padding: 1.5rem 0; }
-          .faq-title { margin-bottom: 1.2rem; }
-          .social-btn-bw { width: 44px; height: 44px; font-size: 1rem; }
-          .social-links-refokus { gap: 8px; }
-          .social-label { margin-bottom: 1.2rem; }
-          .info-column { gap: 2.5rem; }
+          .ct-page { padding: 100px 0 60px; }
+          .ct-inner { padding: 0 16px; }
+          .ct-title { font-size: 2.5rem; }
+          .ct-chip { padding: 8px 14px; font-size: 0.8rem; }
+          .ct-submit { padding: 14px 28px; font-size: 0.9rem; }
         }
       `}</style>
     </section>

@@ -10,12 +10,12 @@ export default function useSmoothScroll() {
     gsap.registerPlugin(ScrollTrigger)
 
     const lenis = new Lenis({
-      duration: 0.8,
+      duration: 1.0,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: 'vertical',
       gestureOrientation: 'vertical',
       smoothWheel: true,
-      wheelMultiplier: 0.8,
+      wheelMultiplier: 0.65,
       smoothTouch: false,
       touchMultiplier: 2,
       infinite: false,
@@ -23,14 +23,12 @@ export default function useSmoothScroll() {
 
     lenis.on('scroll', ScrollTrigger.update)
 
-    // Use native rAF instead of GSAP ticker — much lighter
     function raf(time) {
       lenis.raf(time)
       requestAnimationFrame(raf)
     }
     requestAnimationFrame(raf)
 
-    // Scroll to top on refresh
     window.history.scrollRestoration = 'manual'
     window.scrollTo(0, 0)
 

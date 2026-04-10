@@ -2,128 +2,63 @@
 
 import React from 'react'
 import Link from 'next/link'
-import TextReveal from './animations/TextReveal'
-import LiquidButton from './animations/LiquidButton'
 
-const CTABanner = ({
-  title = "Ready to build something extraordinary?",
-  subtitle = "Partner with India's trusted digital agency to turn your vision into scalable reality.",
-  primaryBtnText = "Get A Quote",
-  primaryBtnLink = "/contact/",
-  variant = "primary"
-}) => {
+const CTABanner = () => {
   return (
-    <section className={`cta-banner section ${variant}`}>
-      <div className="container">
-        <div className="cta-content">
-          <div className="cta-text-wrap">
-            <h2 className="cta-title">
-              <TextReveal>{title}</TextReveal>
-            </h2>
-            <p className="cta-desc animate-up">
-              {subtitle}
-            </p>
-          </div>
-
-          <div className="cta-actions animate-up">
-            <LiquidButton
-              effect="cryogenic"
-              variant="solid"
-              color="var(--brand-orange)"
-              liquidColor="#000"
-              textColor="white"
-              hoverTextColor="white"
-              strength={35}
-            >
-              <Link href={primaryBtnLink} className="btn-clean">
-                {primaryBtnText}
-              </Link>
-            </LiquidButton>
-          </div>
-        </div>
+    <section className="cta-section">
+      <div className="cta-inner">
+        <h2 className="cta-title">Ready to build<br />something extraordinary?</h2>
+        <Link href="/contact/" className="cta-pill">Get in touch</Link>
       </div>
 
-      {/* Decorative Blob */}
-      <div className="cta-blob"></div>
-
       <style>{`
-        .cta-banner {
-          position: relative;
-          overflow: hidden;
-          padding: 10vw 0;
+        .cta-section {
+          background: var(--bg-primary);
+          padding: 120px 0;
         }
-
-        .cta-content {
-          position: relative;
-          z-index: 10;
+        .cta-inner {
+          max-width: 1400px;
+          margin: 0 auto;
+          padding: 0 40px;
+          text-align: center;
           display: flex;
           flex-direction: column;
           align-items: center;
-          text-align: center;
         }
-
         .cta-title {
-          font-size: clamp(3rem, 7vw, 6rem);
-          line-height: 0.9;
-          margin-bottom: 3rem;
+          font-size: clamp(3rem, 6vw, 5.5rem);
+          font-weight: 500;
           color: #000;
-          max-width: 1000px;
-          text-transform: uppercase;
           letter-spacing: -0.04em;
-          font-weight: 800;
+          line-height: 1.0;
+          margin-bottom: 48px;
         }
-        .cta-desc {
-          font-size: 1.15rem;
-          color: #444;
-          max-width: 600px;
-          margin: 0 auto 4rem;
-          opacity: 0.8;
-          line-height: 1.5;
+        .cta-pill {
+          display: inline-flex;
+          align-items: center;
+          padding: 18px 40px;
+          border: 1px solid rgba(0,0,0,0.15);
+          border-radius: 100px;
+          color: #000;
+          text-decoration: none;
+          font-size: 1.1rem;
+          font-weight: 500;
+          transition: all 0.4s var(--ease-expo);
         }
-
-        .cta-btn {
-          background: var(--brand-orange) !important;
-          color: white !important;
-          padding: 1.5rem 4rem !important;
-          font-size: 1.1rem !important;
-          font-weight: 800 !important;
-          border-radius: 100px !important;
-          text-transform: uppercase !important;
-          letter-spacing: 0.15em !important;
-          display: inline-flex !important;
-          align-items: center !important;
-          justify-content: center !important;
-          transition: var(--trans-smooth) !important;
-        }
-        .cta-btn:hover {
-          background: #000 !important; /* Changed from white for contrast */
-          color: white !important;
-          transform: scale(1.05);
-        }
-
-        .animate-up {
-          opacity: 1; /* Removing animation delays to ensure visibility */
-          transform: translateY(0);
-        }
-        @keyframes fadeInUp {
-          to { opacity: 1; transform: translateY(0); }
-        }
-
-        @media (max-width: 1024px) {
-          .cta-banner { padding: 10vw 0; }
-          .cta-title { margin-bottom: 2.5rem; }
-          .cta-desc { margin: 0 auto 3.5rem; }
+        .cta-pill:hover {
+          background: #000;
+          color: #fff;
+          border-color: #000;
         }
         @media (max-width: 768px) {
-          .cta-content { padding: 1.5rem 0; }
-          .cta-title { margin-bottom: 2rem; }
-          .cta-desc { margin: 0 auto 3rem; font-size: 1.05rem; }
+          .cta-section { padding: 80px 0; }
+          .cta-inner { padding: 0 20px; }
+          .cta-title br { display: none; }
+          .cta-pill { padding: 14px 28px; font-size: 1rem; }
         }
         @media (max-width: 480px) {
-          .cta-banner { padding: 14vw 0; }
-          .cta-content { padding: 1rem 0; }
-          .cta-title { font-size: 1.8rem; margin-bottom: 1.5rem; }
-          .cta-desc { font-size: 0.95rem; margin: 0 auto 2.5rem; }
+          .cta-section { padding: 60px 0; }
+          .cta-pill { padding: 12px 24px; font-size: 0.9rem; }
         }
       `}</style>
     </section>

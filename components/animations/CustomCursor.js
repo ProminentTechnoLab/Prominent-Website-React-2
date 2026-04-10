@@ -4,121 +4,92 @@ import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 
 export default function CustomCursor() {
-  const cursorRef = useRef(null)
+  const dotRef = useRef(null)
   const followerRef = useRef(null)
+  const mouseRef = useRef({ x: 0, y: 0 })
+  const posRef = useRef({ x: 0, y: 0 })
 
   useEffect(() => {
-    const cursor = cursorRef.current
-    const follower = followerRef.current
-    if (!cursor || !follower) return
+    if (typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0)) return
 
-    const pos = { x: window.innerWidth / 2, y: window.innerHeight / 2 }
-    const mouse = { x: pos.x, y: pos.y }
+    const dot = dotRef.current
+    const follower = followerRef.current
+    if (!dot || !follower) return
+
     const speed = 0.15
 
-    const xSet = gsap.quickSetter(cursor, 'x', 'px')
-    const ySet = gsap.quickSetter(cursor, 'y', 'px')
-
-    const fxSet = gsap.quickSetter(follower, 'x', 'px')
-    const fySet = gsap.quickSetter(follower, 'y', 'px')
-    const frSet = gsap.quickSetter(follower, 'rotate', 'deg')
-    const fsSet = gsap.quickSetter(follower, 'scaleX')
-    const fsySet = gsap.quickSetter(follower, 'scaleY')
-
     const handleMouseMove = (e) => {
-      mouse.x = e.clientX
-      mouse.y = e.clientY
-      xSet(mouse.x)
-      ySet(mouse.y)
+      mouseRef.current.x = e.clientX
+      mouseRef.current.y = e.clientY
+      gsap.set(dot, { x: e.clientX, y: e.clientY, force3D: true })
     }
 
-    gsap.ticker.add(() => {
+    const tick = () => {
       const dt = 1.0 - Math.pow(1.0 - speed, gsap.ticker.deltaRatio())
-      pos.x += (mouse.x - pos.x) * dt
-      pos.y += (mouse.y - pos.y) * dt
-      
-      fxSet(pos.x)
-      fySet(pos.y)
+      posRef.current.x += (mouseRef.current.x - posRef.current.x) * dt
+      posRef.current.y += (mouseRef.current.y - posRef.current.y) * dt
+      gsap.set(follower, { x: posRef.current.x, y: posRef.current.y, force3D: true })
+    }
+    gsap.ticker.add(tick)
 
-      // Jelly effect based on velocity
-      const dx = mouse.x - pos.x
-      const dy = mouse.y - pos.y
-      const vel = Math.sqrt(dx * dx + dy * dy)
-      const angle = Math.atan2(dy, dx) * (180 / Math.PI)
-      const stretch = Math.min(vel / 150, 0.4)
-
-      frSet(angle)
-      fsSet(1 + stretch)
-      fsySet(1 - stretch)
-    })
-
-    const handleHover = () => {
-      gsap.to(follower, {
-        width: 100,
-        height: 100,
-        backgroundColor: 'rgba(255, 255, 255, 0.15)',
-        mixBlendMode: 'difference',
-        duration: 0.5,
-        ease: 'power3.out'
-      })
-      gsap.to(cursor, { scale: 0, duration: 0.3 })
+    const onEnter = () => {
+      gsap.to(follower, { width: 70, height: 70, backgroundColor: 'rgba(0,0,0,0.04)', border: 'none', duration: 0.4, ease: 'power3.out' })
+      gsap.to(dot, { scale: 0, duration: 0.2 })
+    }
+    const onLeave = () => {
+      gsap.to(follower, { width: 40, height: 40, backgroundColor: 'transparent', border: '1px solid rgba(0,0,0,0.15)', duration: 0.4, ease: 'power3.out' })
+      gsap.to(dot, { scale: 1, duration: 0.2 })
     }
 
-    const handleUnhover = () => {
-      gsap.to(follower, {
-        width: 40,
-        height: 40,
-        backgroundColor: 'transparent',
-        mixBlendMode: 'normal',
-        duration: 0.5,
-        ease: 'power3.out'
+    window.addEventListener('mousemove', handleMouseMove, { passive: true })
+
+    const bind = () => {
+      document.querySelectorAll('a, button, .interactive, input, textarea, select, .ct-chip, .pr-tab').forEach(el => {
+        el.removeEventListener('mouseenter', onEnter)
+        el.removeEventListener('mouseleave', onLeave)
+        el.addEventListener('mouseenter', onEnter)
+        el.addEventListener('mouseleave', onLeave)
       })
-      gsap.to(cursor, { scale: 1, duration: 0.3 })
     }
-
-    window.addEventListener('mousemove', handleMouseMove)
-
-    const interactives = document.querySelectorAll('a, button, .interactive')
-    interactives.forEach((el) => {
-      el.addEventListener('mouseenter', handleHover)
-      el.addEventListener('mouseleave', handleUnhover)
-    })
+    bind()
+    const observer = new MutationObserver(() => requestAnimationFrame(bind))
+    observer.observe(document.body, { childList: true, subtree: true })
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove)
+      gsap.ticker.remove(tick)
+      observer.disconnect()
     }
   }, [])
 
   return (
     <>
-      <div ref={cursorRef} className="cursor-dot" />
-      <div ref={followerRef} className="cursor-follower" />
+      <div ref={dotRef} className="cb-dot" />
+      <div ref={followerRef} className="cb-follower" />
       <style>{`
-        .cursor-dot {
-          width: 8px;
-          height: 8px;
-          background-color: var(--brand-orange);
+        .cb-dot {
+          width: 8px; height: 8px;
+          background: #000;
           border-radius: 50%;
           position: fixed;
-          top: 0; left: 0;
+          top: -4px; left: -4px;
           pointer-events: none;
           z-index: 10000;
-          transform: translate(-50%, -50%);
+          will-change: transform;
+          mix-blend-mode: difference;
         }
-        .cursor-follower {
-          width: 40px;
-          height: 40px;
-          border: 1px solid rgba(255, 255, 255, 0.3);
+        .cb-follower {
+          width: 40px; height: 40px;
+          border: 1px solid rgba(0,0,0,0.15);
           border-radius: 50%;
           position: fixed;
-          top: 0; left: 0;
+          top: -20px; left: -20px;
           pointer-events: none;
           z-index: 9999;
-          transform: translate(-50%, -50%);
           will-change: transform, width, height;
         }
-        @media (max-width: 1024px) {
-          .cursor-dot, .cursor-follower { display: none; }
+        @media (max-width: 1024px), (hover: none) {
+          .cb-dot, .cb-follower { display: none !important; }
         }
       `}</style>
     </>

@@ -96,8 +96,9 @@ const ServicePageLayout = ({ slug }) => {
 
       <style>{`
         .service-detail-page { 
-          background: #ffffff; 
+          background: var(--bg-primary); 
         }
+        .badge { display: none !important; }
         
         .service-hero { 
           text-align: left; 
@@ -111,7 +112,7 @@ const ServicePageLayout = ({ slug }) => {
           line-height: 0.9;
           letter-spacing: -0.04em;
           text-transform: uppercase;
-          font-weight: 800;
+          font-weight: 500;
         }
         .hero-p { 
           font-size: 1.4rem; 
@@ -171,7 +172,7 @@ const ServicePageLayout = ({ slug }) => {
         }
 
         .cta-box {
-          background: #f8f9fa;
+           background: var(--bg-primary);
           padding: 3rem;
           border: 1px solid rgba(0,0,0,0.04);
           border-radius: 20px;

@@ -3,236 +3,240 @@
 import React, { useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { gsap } from 'gsap'
-import LiquidButton from './animations/LiquidButton'
-import TextReveal from './animations/TextReveal'
+import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 
 const Hero = () => {
   const heroRef = useRef(null)
-  const videoWrapperRef = useRef(null)
+  const videoRef = useRef(null)
 
   useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger)
     const ctx = gsap.context(() => {
-      // Reveal animations for white theme
-      const tl = gsap.timeline({
-        defaults: { ease: 'power4.out', duration: 1.5 },
-        delay: 0.2
-      })
-
-      tl.fromTo('.hero-title span',
-        { y: 80, opacity: 0 },
-        { y: 0, opacity: 1, stagger: 0.2 }
+      // Title lines stagger in
+      gsap.fromTo('.hero-line',
+        { y: 120, opacity: 0 },
+        { y: 0, opacity: 1, stagger: 0.12, duration: 1.4, ease: 'power4.out', delay: 0.2 }
       )
-        .fromTo('.hero-desc',
-          { y: 30, opacity: 0 },
-          { y: 0, opacity: 1 },
-          '-=1.0'
-        )
-        .fromTo(videoWrapperRef.current,
-          { scale: 0.9, opacity: 0, y: 40 },
-          { scale: 1, opacity: 1, y: 0, duration: 1.2, ease: 'expo.out' },
-          '-=0.8'
-        )
-        .fromTo('.hero-actions',
-          { y: 30, opacity: 0 },
-          { y: 0, opacity: 1, stagger: 0.15 },
-          '-=1.0'
-        )
+      // Subtitle fade in
+      gsap.fromTo('.hero-sub',
+        { y: 40, opacity: 0 },
+        { y: 0, opacity: 1, duration: 1.2, ease: 'power4.out', delay: 0.5 }
+      )
+      // Button fade in
+      gsap.fromTo('.hero-cta',
+        { y: 30, opacity: 0 },
+        { y: 0, opacity: 1, duration: 1, ease: 'power4.out', delay: 0.7 }
+      )
+      // Video scales up
+      gsap.fromTo(videoRef.current,
+        { scale: 0.92, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 1.6, ease: 'expo.out', delay: 0.5 }
+      )
+      // Parallax on scroll
+      if (videoRef.current) {
+        gsap.to(videoRef.current, {
+          y: -100, scale: 0.94,
+          scrollTrigger: { trigger: heroRef.current, start: 'top top', end: 'bottom top', scrub: 1.5 }
+        })
+      }
     }, heroRef)
-
     return () => ctx.revert()
   }, [])
 
   return (
-    <section className="hero section-light" ref={heroRef}>
-      <span className="section-label">HOME</span>
-      <div className="container hero-container">
-        <div className="hero-content">
-          <h1 className="hero-title">
-            <TextReveal>Powering Businesses</TextReveal>
-            <TextReveal delay={0.2} className="accent-text">With Innovation</TextReveal>
-          </h1>
+    <section className="cb-hero" ref={heroRef}>
+      <div className="cb-hero-content">
+        {/* Cuberto: massive centered title */}
+        <h1 className="cb-hero-title">
+          <span className="hero-line">Powering Businesses</span>
+          <span className="hero-line">With Innovation</span>
+        </h1>
 
-          <p className="hero-desc">
-            We deliver world-class Digital Marketing, intuitive UI/UX Design, and high-performance Web Development. Our team combines technical excellence with creative strategy to scale your brand's digital presence globally.
-          </p>
+        <p className="hero-sub">
+          Prominent TechnoLabs is a digital design and technology partner focused on smart
+          interactions, delightful UX, and cutting-edge development solutions.
+        </p>
 
-          {/* Premium 16:9 Showcase Video (Local Asset) */}
-          <div className="hero-featured-showcase-container" ref={videoWrapperRef}>
-            <div className="showcase-inner">
-              <video
-                className="hero-main-video"
-                autoPlay
-                muted
-                loop
-                playsInline
-                // Pointing to local asset to ensure reliable playback (No Black Screen)
-                src="/videos/hero-3d.mp4"
-              >
-                <source src="/videos/hero-3d.mp4" type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
-            </div>
-            <div className="showcase-shadow"></div>
-          </div>
-
-          <div className="hero-actions">
-            <LiquidButton
-              effect="cryogenic"
-              variant="solid"
-              color="#0a0a0a"
-              liquidColor="var(--brand-orange)"
-              textColor="white"
-              hoverTextColor="white"
-              strength={35}
-            >
-              <Link href="/contact/" className="btn-clean">
-                Start Your Project
-              </Link>
-            </LiquidButton>
-            <LiquidButton
-              effect="aura"
-              variant="outline"
-              liquidColor="#0a0a0a"
-              textColor="#0a0a0a"
-              strength={25}
-            >
-              <Link href="/services/" className="hero-btn-secondary">
-                Our Services
-              </Link>
-            </LiquidButton>
-          </div>
+        {/* "What we do" pill button — exact Cuberto liquid & rolling text hover */}
+        <div className="hero-cta">
+          <Link href="/services/" className="hero-btn">
+            <span className="hero-btn-text-wrapper">
+              <span className="hero-text-old">What we do</span>
+              <span className="hero-text-new">What we do</span>
+            </span>
+          </Link>
         </div>
       </div>
 
-      <style jsx>{`
-        .hero {
-          height: auto;
+      {/* Large rounded video — Cuberto signature */}
+      <div className="cb-hero-media" ref={videoRef}>
+        <video autoPlay muted loop playsInline className="cb-hero-video">
+          <source src="/videos/hero-3d.mp4" type="video/mp4" />
+        </video>
+      </div>
+
+      <style>{`
+        .cb-hero {
           min-height: 100vh;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          position: relative;
-          background: #ffffff !important;
-          padding: calc(var(--nav-height) + 8vh) 0 15vh;
-        }
-
-        .hero-container {
-          position: relative;
-          z-index: 10;
-          width: 100%;
-        }
-        
-        .hero-content {
+          background: #ffffff;
           display: flex;
           flex-direction: column;
           align-items: center;
+          padding: 180px 100px 100px;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .cb-hero-content {
           text-align: center;
+          max-width: 1100px;
+          margin: 0 auto 80px;
         }
 
-        .hero-title {
-          font-size: clamp(3.2rem, 8.5vw, 8.5rem);
-          line-height: 1.1;
-          font-weight: 800;
-          letter-spacing: -0.04em;
-          margin-bottom: 2.5rem;
-          display: flex;
-          flex-direction: column;
-          color: #000000;
-        }
-        
-        .title-line {
-          display: block;
-          position: relative;
-        }
-        
-        .accent-text {
-          display: block;
-          color: #000000 !important;
-          opacity: 0.15 !important;
-        }
-
-        .hero-desc {
-          color: #444444;
-          font-size: clamp(1.1rem, 1.5vw, 1.35rem);
-          max-width: 850px;
-          margin: 0 auto 4rem;
-          line-height: 1.6;
+        /* Title — exact Cuberto: very large, weight 500, tight leading */
+        .cb-hero-title {
+          font-size: clamp(3.2rem, 7.5vw, 6.5rem);
           font-weight: 500;
+          line-height: 1.05;
+          letter-spacing: -0.035em;
+          color: #000;
+          margin-bottom: 28px;
+        }
+        .hero-line {
+          display: block;
+          overflow: hidden;
         }
 
-        /* 16:9 Video Block Structure */
-        .hero-featured-showcase-container {
-            position: relative;
-            width: 100%;
-            max-width: 1100px;
-            aspect-ratio: 16 / 9;
-            margin: 0 auto 5rem;
-            z-index: 5;
+        /* Subtitle — Cuberto: centered, regular weight, muted */
+        .hero-sub {
+          font-size: clamp(1rem, 1.3vw, 1.2rem);
+          font-weight: 400;
+          color: #000;
+          opacity: 0.65;
+          line-height: 1.6;
+          max-width: 650px;
+          margin: 0 auto;
         }
 
-        .showcase-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            border-radius: 40px;
-            overflow: hidden;
-            background: #000000; /* Dark bg while video loads */
-            box-shadow: 0 50px 120px rgba(0,0,0,0.15);
-            border: 1px solid rgba(0,0,0,0.05);
+        /* ─── "What we do" Button — Cuberto liquid fill & rolling text ─── */
+        .hero-cta {
+          margin-top: 40px;
         }
-
-        .hero-main-video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        .showcase-shadow {
-            position: absolute;
-            bottom: -30px;
-            left: 5%;
-            width: 90%;
-            height: 40px;
-            background: rgba(0,0,0,0.08);
-            filter: blur(40px);
-            border-radius: 50%;
-            z-index: -1;
-        }
-
-        .hero-actions {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 2.5rem;
-        }
-
-        .btn-clean {
+        .hero-btn {
           display: inline-flex;
           align-items: center;
-          color: inherit;
-          text-decoration: none;
-          padding: 0;
+          justify-content: center;
+          padding: 18px 38px;
+          border: 1.5px solid #000;
+          border-radius: 100px;
           background: transparent;
-          border: none;
-          font-weight: inherit;
-          font-size: inherit;
+          color: #000;
+          font-family: var(--font-main);
+          font-size: 17px;
+          font-weight: 400;
+          text-decoration: none;
+          cursor: pointer;
+          position: relative;
+          overflow: hidden;
+          transition: border-color 1s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
+        /* Liquid circle that rises from bottom (slower 1s) */
+        .hero-btn::before {
+          content: '';
+          position: absolute;
+          top: 100%;
+          left: -50%;
+          width: 200%;
+          height: 300%;
+          background: #000;
+          border-radius: 50%;
+          transform: translateY(0);
+          transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1);
+          z-index: 0;
+        }
+
+        .hero-btn:hover::before {
+          transform: translateY(-60%);
+        }
+
+        .hero-btn:hover {
+          border-color: #000;
+        }
+
+        /* Rolling Text wrapper */
+        .hero-btn-text-wrapper {
+          position: relative;
+          z-index: 1;
+          display: inline-flex;
+          overflow: hidden;
+          padding-bottom: 1px; /* visual alignment tweak */
+        }
+
+        /* Original black text */
+        .hero-text-old {
+          display: inline-block;
+          color: #000;
+          transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.15s ease-out;
+        }
+
+        /* New white text hidden below */
+        .hero-text-new {
+          position: absolute;
+          top: 100%;
+          left: 0;
+          width: 100%;
+          text-align: center;
+          color: #fff;
+          display: inline-block;
+          transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        /* On hover: old text fades instantly and moves up, new text slides in */
+        .hero-btn:hover .hero-text-old {
+          transform: translateY(-100%);
+          opacity: 0;
+        }
+        .hero-btn:hover .hero-text-new {
+          transform: translateY(-100%);
+        }
+
+        /* Video container — full width, rounded */
+        .cb-hero-media {
+          width: 100%;
+          max-width: 1400px;
+          margin: 0 auto;
+          border-radius: 24px;
+          overflow: hidden;
+          will-change: transform;
+          aspect-ratio: 16 / 9;
+          background: #e0e0e0;
+        }
+        .cb-hero-video {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+        }
+
+        /* ─── Responsive ─── */
         @media (max-width: 1024px) {
-          .hero-featured-showcase-container { max-width: 95%; }
-          .hero-actions { flex-direction: column; gap: 1.5rem; }
+          .cb-hero { padding: 160px 50px 60px; }
         }
         @media (max-width: 768px) {
-          .hero { padding-top: calc(var(--nav-height) + 5vh); }
-          .hero-title { font-size: clamp(2.5rem, 10vw, 4rem); margin-bottom: 2rem; }
-          .hero-featured-showcase-container { margin-bottom: 3.5rem; border-radius: 24px; aspect-ratio: 16 / 10; }
-          .showcase-inner { border-radius: 24px; }
+          .cb-hero { padding: 130px 24px 40px; }
+          .cb-hero-content { margin-bottom: 50px; }
+          .cb-hero-media { border-radius: 20px; }
+          .hero-cta { margin-top: 32px; }
+          .hero-btn { padding: 16px 32px; font-size: 15px; }
         }
         @media (max-width: 480px) {
-          .hero-title { font-size: 2.4rem; }
-          .hero-featured-showcase-container { aspect-ratio: 1 / 1; border-radius: 20px; }
-          .showcase-inner { border-radius: 20px; }
+          .cb-hero { padding: 110px 16px 30px; }
+          .cb-hero-title { font-size: 2.4rem; margin-bottom: 20px; }
+          .cb-hero-media { border-radius: 16px; }
+          .hero-sub { font-size: 0.95rem; }
+          .hero-btn { padding: 14px 28px; font-size: 14px; }
+          .hero-cta { margin-top: 24px; }
         }
       `}</style>
     </section>

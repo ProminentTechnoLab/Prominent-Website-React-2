@@ -192,10 +192,10 @@ const PricingContent = () => {
       </section>
 
       <style>{`
-        .pricing-page-wrapper { background: #fff; overflow: hidden; }
-        
+        .pricing-page-wrapper { background: var(--bg-primary); overflow: hidden; }
+        .badge { display: none !important; }
         /* Hero */
-        .pricing-hero { padding: 150px 0 80px; background: #fff; text-align: left; }
+        .pricing-hero { padding: 160px 0 80px; background: var(--bg-primary); text-align: left; }
         .hero-title { 
             font-size: clamp(3rem, 7vw, 6rem); 
             line-height: 0.9; 
@@ -210,13 +210,13 @@ const PricingContent = () => {
           color: #000 !important; 
           opacity: 0.15 !important; 
         }
-        .hero-description { font-size: 1.4rem; max-width: 800px; color: #666; font-weight: 500; line-height: 1.5; }
+        .hero-description { font-size: 1.2rem; max-width: 800px; color: #666; font-weight: 400; line-height: 1.5; }
 
         /* Tabs Section */
-        .pricing-main { padding: 80px 0; background: #0a0a0b; border-radius: 50px 50px 0 0; position: relative; z-index: 10; }
+        .pricing-main { padding: 100px 0; background: #000; border-radius: 30px 30px 0 0; position: relative; z-index: 10; }
         .pricing-controls { margin-bottom: 4rem; display: flex; justify-content: flex-start; }
         .tabs-container { display: flex; background: rgba(255,255,255,0.05); padding: 8px; border-radius: 100px; gap: 5px; flex-wrap: wrap; }
-        .pricing-tab { padding: 12px 30px; border-radius: 100px; border: none; background: transparent; color: #fff; opacity: 0.6; font-weight: 700; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.1em; cursor: pointer; transition: 0.4s; }
+        .pricing-tab { padding: 12px 28px; border-radius: 100px; border: none; background: transparent; color: #fff; opacity: 0.4; font-weight: 500; font-size: 0.85rem; letter-spacing: 0.02em; cursor: pointer; transition: 0.4s; font-family: inherit; }
         .pricing-tab.active { background: #fff; color: #000; opacity: 1; }
 
         /* Grid & Cards - SYNCHRONIZED WITH PRICING.JS */
@@ -315,7 +315,7 @@ const PricingContent = () => {
         }
 
         /* Enterprise Section */
-        .enterprise-section { padding: 80px 0; background: #fff; }
+        .enterprise-section { padding: 80px 0; background: var(--bg-primary); }
         .enterprise-box { background: #000; border-radius: 30px; padding: 5rem; display: flex; justify-content: space-between; align-items: center; gap: 3rem; color: #fff; }
         .enterprise-content h3 { font-size: 2.5rem; font-weight: 800; margin-bottom: 1.2rem; text-transform: uppercase; letter-spacing: -0.02em; }
         .enterprise-content p { font-size: 1.2rem; opacity: 0.7; max-width: 600px; line-height: 1.5; }
@@ -323,7 +323,7 @@ const PricingContent = () => {
         .cta-link-btn:hover { background: var(--brand-orange) !important; color: #fff !important; transform: translateX(5px); }
 
         /* FAQ Section (Help Center) */
-        .pricing-faq { padding: 100px 0; background: #F5F5F7; }
+        .pricing-faq { padding: 100px 0; background: var(--bg-primary); }
         .faq-main-wrapper { display: flex; flex-direction: column; gap: 3rem; }
         .faq-h { font-size: 3rem; font-weight: 800; margin: 1rem 0; line-height: 0.9; letter-spacing: -0.04em; text-transform: uppercase; }
         .faq-header-info p { font-size: 1.2rem; color: #666; margin-bottom: 2rem; }

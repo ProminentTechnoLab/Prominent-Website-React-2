@@ -1,7 +1,5 @@
 import ServicesSection from '../../components/ServicesSection'
-import QualityServices from '../../components/QualityServices'
 import CTABanner from '../../components/CTABanner'
-import TextReveal from '../../components/animations/TextReveal'
 
 export const metadata = {
     title: 'Our Services — Web, Mobile App, UI/UX & Digital Marketing',
@@ -15,12 +13,7 @@ export default function ServicesPage() {
     return (
         <>
             <ServicesSection />
-
-            <div className="section-wrapper wrapper-dark" style={{ position: 'relative', zIndex: 5 }}>
-              <div className="section-curved section-light" data-reveal data-delay="0.1">
-                <CTABanner />
-              </div>
-            </div>
+            <CTABanner />
         </>
     )
 }

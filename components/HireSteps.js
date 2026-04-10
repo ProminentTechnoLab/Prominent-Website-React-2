@@ -1,161 +1,93 @@
 'use client'
 
 import React from 'react'
-import { IoCloudDone, IoHandLeft, IoRocket } from 'react-icons/io5'
-import TextReveal from './animations/TextReveal'
 
 const HireSteps = () => {
   const steps = [
-    {
-      title: 'Share Requirements',
-      desc: 'Tell us about your project needs, required skills, and timeline.',
-      icon: <IoHandLeft />,
-      color: '#FF6600'
-    },
-    {
-      title: 'Select Developers',
-      desc: 'Review vetted profiles and interview the best talent for your team.',
-      icon: <IoCloudDone />,
-      color: '#0A2463'
-    },
-    {
-      title: 'Start Development',
-      desc: 'Seamlessly onboard your new team and start building immediately.',
-      icon: <IoRocket />,
-      color: '#FF6600'
-    }
+    { num: '01', title: 'Share Requirements', desc: 'Tell us about your project needs, required skills, and timeline.' },
+    { num: '02', title: 'Select Developers', desc: 'Review vetted profiles and interview the best talent for your team.' },
+    { num: '03', title: 'Start Development', desc: 'Seamlessly onboard your new team and start building immediately.' }
   ]
 
   return (
-    <section className="hire-steps section">
-      <div className="container">
-        <div className="section-header-centered">
-          <div className="badge">Simple Process</div>
-          <h2 className="section-h">
-            <TextReveal>Hire Your Dream Team In</TextReveal>
-            <TextReveal delay={0.2} className="accent-text">3 Simple Steps</TextReveal>
-          </h2>
-        </div>
-
-        <div className="steps-row">
-          {steps.map((step, i) => (
-            <div key={step.title} className="step-card">
-              <div className="step-icon-wrap" style={{ '--accent': step.color }}>
-                {step.icon}
-              </div>
-              <h3 className="step-title">{step.title}</h3>
-              <p className="step-desc">{step.desc}</p>
-              {i < steps.length - 1 && <div className="step-connector"></div>}
+    <section className="hs-section">
+      <div className="hs-inner">
+        <h2 className="hs-title">How we work</h2>
+        <div className="hs-grid">
+          {steps.map(s => (
+            <div key={s.num} className="hs-card">
+              <span className="hs-num">{s.num}</span>
+              <h3 className="hs-card-title">{s.title}</h3>
+              <p className="hs-card-desc">{s.desc}</p>
             </div>
           ))}
         </div>
       </div>
 
       <style>{`
-        .hire-steps {
-          padding: 8vw 0;
+        .hs-section {
+          background: var(--bg-primary);
+          padding: 120px 0;
         }
-        .section-header-centered {
-          text-align: left;
-          margin-bottom: 6vw;
-        }
-        .section-h {
-          font-size: clamp(3rem, 6vw, 5.5rem); 
-          color: #000; /* Changed to black */
-          line-height: 0.95;
-          letter-spacing: -0.04em;
-          text-transform: uppercase;
-        }
-        .accent-text { 
+        .hs-inner { max-width: 1400px; margin: 0 auto; padding: 0 40px; }
+        .hs-title {
+          font-size: clamp(3rem, 5.5vw, 5rem);
+          font-weight: 500;
           color: #000;
-          opacity: 0.1; /* Subtler for light */
+          margin-bottom: 60px;
+          letter-spacing: -0.03em;
         }
-
-        .steps-row {
+        .hs-grid {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
-          border-top: 1px solid rgba(0, 0, 0, 0.08);
+          border-top: 1px solid rgba(0,0,0,0.1);
         }
-        .step-card {
-          background: transparent;
-          border-right: 1px solid rgba(0, 0, 0, 0.08);
-          border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-          padding: 5rem 3rem;
-          text-align: left;
-          position: relative;
-          transition: background-color 0.8s var(--ease-expo), color 0.8s var(--ease-expo);
-          cursor: pointer;
+        .hs-card {
+          padding: 40px 30px 40px 0;
+          border-right: 1px solid rgba(0,0,0,0.1);
+          border-bottom: 1px solid rgba(0,0,0,0.1);
+          transition: background 0.5s var(--ease-expo);
         }
-        .step-card:hover {
-          background: #000000 !important; /* Changed from white to black */
-          color: #ffffff !important;
-        }
+        .hs-card:last-child { border-right: none; }
+        .hs-card:hover { background: #000; }
+        .hs-card:hover .hs-num,
+        .hs-card:hover .hs-card-title { color: #fff; }
+        .hs-card:hover .hs-card-desc { color: rgba(255,255,255,0.5); }
 
-        .step-icon-wrap {
-          width: 70px;
-          height: 70px;
-          background: transparent;
-          border: 1px solid rgba(0, 0, 0, 0.1);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 2.2rem;
-          color: #000;
-          margin: 0 0 3rem;
-          transition: all 0.6s var(--ease-expo);
-          opacity: 0.15;
-        }
-        .step-card:hover .step-icon-wrap {
-          background: var(--brand-orange);
-          color: #ffffff;
-          border-color: var(--brand-orange);
-          opacity: 1;
-          transform: scale(1.1) rotate(5deg);
-        }
-
-        .step-title {
-          font-size: 2.2rem;
-          color: #000; /* Black for light theme */
-          margin-bottom: 2rem;
-          font-weight: 700;
-          letter-spacing: -0.02em;
-          text-transform: uppercase;
-          line-height: 1;
+        .hs-num {
+          font-size: 0.8rem;
+          font-weight: 500;
+          color: rgba(0,0,0,0.3);
+          margin-bottom: 30px;
+          display: block;
           transition: color 0.4s;
         }
-        .step-card:hover .step-title,
-        .section-light .step-card:hover .step-title { 
-          color: #ffffff !important; 
+        .hs-card-title {
+          font-size: 1.5rem;
+          font-weight: 500;
+          color: #000;
+          margin-bottom: 16px;
+          letter-spacing: -0.02em;
+          transition: color 0.4s;
         }
-        
-        .step-desc {
-          font-size: 1.2rem;
-          color: #444; /* Dark gray for light theme */
+        .hs-card-desc {
+          font-size: 1rem;
+          color: #666;
           line-height: 1.5;
-          transition: color 0.4s, opacity 0.4s;
-        }
-        .step-card:hover .step-desc,
-        .section-light .step-card:hover .step-desc { 
-          color: #eeeeee !important; 
-          opacity: 1; 
+          transition: color 0.4s;
         }
 
-        @media (max-width: 1024px) {
-          .steps-row { grid-template-columns: repeat(2, 1fr); }
-        }
         @media (max-width: 768px) {
-          .steps-row { grid-template-columns: 1fr; }
-          .step-card { padding: 3rem 2rem; border-right: none; }
-          .step-title { font-size: 1.6rem; }
-          .step-desc { font-size: 1.05rem; }
+          .hs-section { padding: 80px 0; }
+          .hs-inner { padding: 0 20px; }
+          .hs-grid { grid-template-columns: 1fr; }
+          .hs-card { border-right: none; padding: 30px 0; }
+          .hs-card:hover { background: transparent; padding-left: 20px; }
         }
         @media (max-width: 480px) {
-          .hire-steps { padding: 10vw 0; }
-          .section-header-centered { margin-bottom: 8vw; }
-          .step-card { padding: 2.5rem 1.5rem; }
-          .step-icon-wrap { width: 55px; height: 55px; font-size: 1.8rem; margin: 0 0 2rem; }
-          .step-title { font-size: 1.4rem; margin-bottom: 1.2rem; }
-          .step-desc { font-size: 0.95rem; }
+          .hs-section { padding: 60px 0; }
+          .hs-inner { padding: 0 16px; }
+          .hs-card-title { font-size: 1.25rem; }
         }
       `}</style>
     </section>

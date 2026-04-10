@@ -1,142 +1,33 @@
-/* Fonts loaded via next/font/google in layout.js — no @import needed */
+/* Fonts loaded via next/font/google in layout.js */
 
 /* ============================================
-   DESIGN SYSTEM — BRAND DARK AESTHETIC
-   Base: Navy Blue (#0A2463) from Logo
-   Accent: Orange (#FF6600) from Logo
+   CUBERTO EXACT DESIGN SYSTEM
+   Background: #f1f1f1 (off-white)
+   Dark sections: #000000 (pure black)
+   Text: #000 on light, #fff on dark
+   Font: Inter, weight 400-500 for body, 500 for headings
    ============================================ */
 :root {
-  /* ─── Core Colors ─── */
-  --brand-black:   #000000;
-  --brand-white:   #ffffff;
-  --brand-orange:  #FF6600; 
-  
-  /* ─── Grayscale Palette (Cuberto Style) ─── */
-  --bg-dark:       #0a0a0a; /* Premium Dark Shade */
-  --bg-surface:    #121212;
-  --bg-surface-2:  #1a1a1a;
-  
-  /* ─── Neutrals & Text ─── */
-  --text-primary:   #FFFFFF;
-  --text-secondary: #a1a1a1;
-  --text-muted:     #666666;
-  --white:          #FFFFFF;
-  
-  /* ─── Accents ─── */
-  --accent:         var(--brand-orange);
-  --accent-grey:    #222222;
-  
-  /* ─── Glassmorphism ─── */
-  --glass-bg:       rgba(255, 255, 255, 0.02);
-  --glass-border:   rgba(255, 255, 255, 0.05);
-  --glass-glow:     rgba(255, 255, 255, 0.02);
+  --bg-primary:    #f1f1f1;
+  --bg-dark:       #000000;
+  --bg-white:      #ffffff;
+  --text-dark:     #000000;
+  --text-light:    #ffffff;
+  --text-muted:    #999999;
+  --brand-orange:  #FF6600;
 
-  /* ─── Typography ─── */
-  --font-heading:   'Space Grotesk', 'Inter', system-ui, sans-serif;
-  --font-body:      'Inter', system-ui, sans-serif;
+  --font-main:     var(--font-inter), 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
 
-  /* ─── Layout ─── */
   --container-max:  1400px;
-  --section-pad:    10vw 0;
-  --section-gap:    clamp(3rem, 5vw, 5rem);
   --nav-height:     80px;
 
-  /* ─── Transitions ─── */
   --ease-expo:      cubic-bezier(0.19, 1, 0.22, 1);
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
   --trans-smooth:   0.8s var(--ease-expo);
   --trans-fast:     0.4s var(--ease-expo);
-  --trans-liquid:   0.6s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-.section-curved {
-  border-radius: 80px 80px 0 0; /* Slightly larger radius for impact */
-  overflow: hidden;
-  position: relative;
-  margin-top: -80px; /* Matching margin for overlap */
-  z-index: 1;
-}
-
-/* Fix for the corner reveal issue */
-.section-wrapper {
-  background: transparent !important;
-  position: relative;
-  overflow: visible;
-}
-
-/* Standardized Section Labels - Top Right Alignment */
-/* Section labels globally hidden for a cleaner professional look */
-.section-label {
-  display: none !important;
-}
-
-@media (max-width: 768px) {
-  .section-label {
-    top: 25px;
-    left: 6vw;
-    font-size: 0.65rem;
-    letter-spacing: 0.15rem;
-  }
-}
-
-.section-light.section-curved {
-  background-color: #ffffff !important;
-}
-
-/* Force light text color override */
-.section-light h1, .section-light h2, .section-light h3, .section-light h4 {
-  color: #000000 !important;
-}
-
-/* Split-heading pattern: First line black, second line light gray */
-.section-light h1 span, .section-light h2 span,
-.section-light h1 .muted-text, .section-light h2 .muted-text {
-  color: #666666 !important;
-  opacity: 1 !important;
-}
-
-.section-light h1, .section-light h2 {
-    color: #000000 !important;
-}
-
-.section-light p:not(.full-desc):not(.item-desc-mini), 
-.section-light span:not(.accent-text):not(.step-desc):not(.blog-cat):not(.feature-dot):not(.counter-val):not(.suffix):not(.stat-label):not(.price):not(.plan-name):not(.feature-text):not(.badge-text):not(.link-text):not(.section-label) {
-  color: #333333 !important;
-}
-
-.section-light .badge {
-  color: #000000 !important;
-  border-color: rgba(0,0,0,0.2) !important;
-  opacity: 0.6 !important;
-}
-
-/* Force dark text color override for wrappers */
-.section-dark {
-  background-color: var(--bg-dark) !important;
-  color: #ffffff !important;
-}
-
-/* Split-heading pattern: First line white/high-contrast, second line silver/gray */
-.section-dark h1, .section-dark h2 {
-  color: #ffffff !important;
-}
-
-.section-dark h1 span, .section-dark h2 span,
-.section-dark h1 .muted-text, .section-dark h2 .muted-text {
-  color: #a1a1a1 !important;
-  opacity: 1 !important;
-}
-
-.section-dark p, .section-dark span:not(.accent-text):not(.step-title):not(.step-desc):not(.counter-val):not(.suffix):not(.price):not(.period):not(.feature-text):not(.plan-name):not(.section-label) {
-  color: rgba(255,255,255,0.7) !important;
-}
-
-.section-dark .badge {
-  color: #ffffff !important;
-}
-
-/* ============================================
-   RESET & BASE
-   ============================================ */
+/* ─── Reset ─── */
 *, *::before, *::after {
   margin: 0;
   padding: 0;
@@ -144,209 +35,70 @@
 }
 
 html {
-  background-color: var(--bg-dark);
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.2) var(--bg-dark);
+  background-color: var(--bg-primary);
+  scrollbar-width: none;
   overflow-x: hidden;
   width: 100%;
 }
+html::-webkit-scrollbar { display: none; }
 
 body {
-  font-family: var(--font-body);
-  background-color: var(--bg-dark);
-  color: var(--text-primary);
-  line-height: 1.6;
+  font-family: var(--font-main);
+  background-color: var(--bg-primary);
+  color: var(--text-dark);
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
   width: 100%;
-  position: relative;
 }
 
 ::selection {
-  background: var(--brand-orange);
-  color: white;
+  background: #000;
+  color: #fff;
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: var(--bg-dark); }
-::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.3); }
-
-/* ============================================
-   TYPOGRAPHY
-   ============================================ */
+/* ─── Typography ─── */
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-heading);
-  font-weight: 700;
-  line-height: 1.1;
-  color: var(--text-primary);
-  margin-bottom: 1.5rem;
+  font-family: var(--font-main);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: var(--text-dark);
+  margin-bottom: 0;
 }
-
-h2 { font-size: clamp(2.5rem, 5vw, 4.5rem); letter-spacing: -0.03em; }
-h3 { font-size: clamp(1.8rem, 3.5vw, 2.8rem); letter-spacing: -0.02em; }
 
 p {
-  color: var(--text-secondary);
-  font-size: 1.1rem;
-  line-height: 1.7;
-  margin-bottom: 1.5rem;
+  color: var(--text-dark);
+  font-size: 1.125rem;
+  line-height: 1.5;
+  font-weight: 400;
 }
 
-.text-reveal-mask {
-  overflow: hidden;
-  display: block;
-}
-
-/* ============================================
-   LAYOUT UTILITIES
-   ============================================ */
+/* ─── Layout ─── */
 .container {
   max-width: var(--container-max);
   margin: 0 auto;
   padding: 0 40px;
 }
 
-.section {
-  padding: var(--section-pad);
-  position: relative;
-}
-
-.flex-center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* ─── Layout wrappers for Reveal Footer ─── */
 main {
   position: relative;
   z-index: 2;
-  background-color: var(--bg-dark); /* Ensures footer doesn't peek through transparent gaps */
+  background-color: var(--bg-primary);
 }
 
-/* ============================================
-   COMPONENTS
-   ============================================ */
+/* ─── Section label (hidden) ─── */
+.section-label { display: none !important; }
+.badge { display: none !important; }
 
-/* ─── Buttons ─── */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  padding: 1.2rem 2.8rem;
-  border-radius: 100px;
-  font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: 1rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  transition: var(--trans-smooth);
-  cursor: pointer;
-  text-decoration: none;
-  border: none;
-  position: relative;
-  overflow: hidden;
-}
-
-.btn-primary {
-  background: var(--brand-orange);
-  color: var(--brand-white);
-}
-
-.btn-primary:hover {
-  transform: scale(1.02);
-}
-
-.btn-outline {
-  background: transparent;
-  color: white;
-  border: 1px solid rgba(255,255,255,0.4);
-}
-
-.btn-outline:hover {
-  transform: scale(1.02);
-}
-
-.section-light .btn-outline {
-  color: black;
-  border-color: rgba(0,0,0,0.3);
-}
-
-.section-light .btn-outline:hover {
-  filter: brightness(0.8);
-}
-
-/* ─── Cards ─── */
-.glass-card {
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  border-radius: 24px;
-  padding: 3rem;
-  transition: var(--trans-smooth);
-}
-
-.glass-card:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.15);
-  transform: translateY(-10px);
-}
-
-/* ─── Badges ─── */
-.badge {
-  display: inline-block;
-  padding: 0.6rem 1.4rem;
-  background: transparent;
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 100px;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  margin-bottom: 2rem;
-  opacity: 0.5;
-}
-
-/* ============================================
-   RESPONSIVE
-   ============================================ */
+/* ─── Responsive ─── */
 @media (max-width: 1024px) {
   .container { padding: 0 30px; }
-  :root { --section-pad: 10vw 0; }
-  .section-curved {
-    border-radius: 50px 50px 0 0;
-    margin-top: -50px;
-  }
 }
-
 @media (max-width: 768px) {
-  .container { padding: 0 24px; }
-  :root { --section-pad: 12vw 0; }
-  h1 { font-size: 2.8rem; }
-  h2 { font-size: 2.2rem; }
-  h3 { font-size: 1.6rem; }
-  .btn { padding: 1rem 2rem; }
-  .section-header { margin-bottom: 40px; }
-  .glass-card { padding: 2rem; border-radius: 20px; }
-  .section-curved {
-    border-radius: 40px 40px 0 0;
-    margin-top: -40px;
-  }
+  .container { padding: 0 20px; }
 }
-
 @media (max-width: 480px) {
   .container { padding: 0 16px; }
-  :root { --section-pad: 14vw 0; }
-  h1 { font-size: 2.2rem; }
-  h2 { font-size: 1.8rem; }
-  h3 { font-size: 1.4rem; }
-  p { font-size: 1rem; }
-  .btn { padding: 0.9rem 1.6rem; font-size: 0.85rem; }
-  .badge { font-size: 0.6rem; padding: 0.5rem 1rem; margin-bottom: 1.5rem; }
-  .glass-card { padding: 1.5rem; border-radius: 16px; }
-  .section-curved {
-    border-radius: 24px 24px 0 0;
-    margin-top: -24px;
-  }
 }

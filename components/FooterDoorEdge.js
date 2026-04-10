@@ -22,15 +22,19 @@ const FooterDoorEdge = () => {
       // Highly reliable explicit route mapping instead of brittle DOM background scanning across 2% opacity elements
       if (typeof window !== 'undefined' && typeof window.location !== 'undefined') {
         const pathLower = window.location.pathname.toLowerCase();
-        if (pathLower.includes('/services') || pathLower.includes('/about') || pathLower.includes('/portfolio')) {
+        if (pathLower.includes('/about') || pathLower.includes('/portfolio')) {
           newTheme = 'light';
           bgColor = '#ffffff';
-        } else if (pathLower.includes('/contact') || pathLower.includes('/pricing')) {
+        } else if (pathLower.includes('/contact') || pathLower.includes('/services')) {
           newTheme = 'light';
-          bgColor = '#F5F5F7';
-        } else {
+          bgColor = '#ffffff';
+        } else if (pathLower.includes('/pricing')) {
           newTheme = 'dark';
-          bgColor = '#0a0a0a';
+          bgColor = '#1a1a1a';
+        } else {
+          // Homepage ends with Blog (dark bg)
+          newTheme = 'dark';
+          bgColor = '#1a1a1a';
         }
       }
 

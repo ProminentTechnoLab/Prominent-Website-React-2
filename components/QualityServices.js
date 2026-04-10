@@ -1,305 +1,154 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import Link from 'next/link'
-import { IoArrowForward } from 'react-icons/io5'
-import TextReveal from './animations/TextReveal'
-import LiquidButton from './animations/LiquidButton'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 
 const QualityServices = () => {
+  const sectionRef = useRef(null)
+
   const services = [
-    {
-      id: "01",
-      title: "Website Development",
-      desc: "Creating high-performance, responsive websites with cutting-edge technologies like React and Next.js.",
-      tags: ["React", "Next.js", "Tailwind", "Node.js"],
-      path: "/services/website-development/",
-      image: "/images/website-development.png"
-    },
-    {
-      id: "02",
-      title: "Mobile App Development",
-      desc: "Building intuitive cross-platform mobile applications using Flutter and React Native for iOS and Android.",
-      tags: ["Flutter", "React Native", "iOS", "Android"],
-      path: "/services/mobile-app-development/",
-      image: "/images/mobile-app-development.png"
-    },
-    {
-      id: "03",
-      title: "UI/UX Design",
-      desc: "Immersive user experiences through research, wireframing, and high-fidelity prototypes.",
-      tags: ["Figma", "UX Research", "Prototyping", "Design Systems"],
-      path: "/services/ui-ux-design/",
-      image: "/images/ui-ux-design.png"
-    },
-    {
-      id: "04",
-      title: "CMS & E-commerce",
-      desc: "Scalable online stores with seamless payment integration and optimized user journeys.",
-      tags: ["Shopify", "WooCommerce", "Magento", "Headless"],
-      path: "/services/cms-ecommerce/",
-      image: "/images/cms-e-commerce.png"
-    },
-    {
-      id: "05",
-      title: "Digital Marketing",
-      desc: "Driving growth through data-backed SEO strategies, PPC, and targeted social media campaigns.",
-      tags: ["SEO", "PPC", "Analytics", "Social Media"],
-      path: "/services/digital-marketing/",
-      image: "/images/digital-marketing.png"
-    },
-    {
-      id: "06",
-      title: "Payment & Shipping API",
-      desc: "Robust API integrations for payments and logistics to streamline your business operations.",
-      tags: ["Stripe", "Razorpay", "FedEx", "PayPal"],
-      path: "/services/payment-shipping-api/",
-      image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&w=800&q=80"
-    }
+    { id: "01", title: "Website Development", desc: "Creating high-performance, responsive websites with cutting-edge technologies.", tags: ["React", "Next.js", "Node.js"], path: "/services/website-development/", image: "/images/website-development.png" },
+    { id: "02", title: "Mobile App Development", desc: "Building intuitive cross-platform mobile applications for iOS and Android.", tags: ["Flutter", "React Native", "iOS"], path: "/services/mobile-app-development/", image: "/images/mobile-app-development.png" },
+    { id: "03", title: "UI/UX Design", desc: "Immersive user experiences through research, wireframing, and prototypes.", tags: ["Figma", "Prototyping", "Design Systems"], path: "/services/ui-ux-design/", image: "/images/ui-ux-design.png" },
+    { id: "04", title: "CMS & E-commerce", desc: "Scalable online stores with seamless payment integration.", tags: ["Shopify", "WooCommerce", "Headless"], path: "/services/cms-ecommerce/", image: "/images/cms-e-commerce.png" },
+    { id: "05", title: "Digital Marketing", desc: "Driving growth through SEO, PPC, and social media campaigns.", tags: ["SEO", "PPC", "Analytics"], path: "/services/digital-marketing/", image: "/images/digital-marketing.png" },
+    { id: "06", title: "Payment & Shipping API", desc: "Robust API integrations for payments and logistics.", tags: ["Stripe", "Razorpay", "FedEx"], path: "/services/payment-shipping-api/", image: "/images/payment-shipping-api.png" }
   ]
 
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger)
+    const ctx = gsap.context(() => {
+      // Section heading
+      gsap.fromTo('.fp-heading', { y: 80, opacity: 0 }, {
+        y: 0, opacity: 1, duration: 1.2, ease: 'power3.out',
+        scrollTrigger: { trigger: sectionRef.current, start: 'top 80%' }
+      })
+      // Cards stagger
+      gsap.utils.toArray('.fp-card').forEach((card, i) => {
+        gsap.fromTo(card, { y: 100, opacity: 0 }, {
+          y: 0, opacity: 1, duration: 1.2, ease: 'power3.out',
+          scrollTrigger: { trigger: card, start: 'top 92%' }
+        })
+      })
+    }, sectionRef)
+    return () => ctx.revert()
+  }, [])
+
+  const leftCol = services.filter((_, i) => i % 2 === 0)
+  const rightCol = services.filter((_, i) => i % 2 !== 0)
+
+  const Card = ({ s }) => (
+    <Link href={s.path} className="fp-card" style={{ textDecoration: 'none' }}>
+      <div className="fp-card-img">
+        <img src={s.image} alt={s.title} loading="lazy" />
+      </div>
+      <div className="fp-card-meta">
+        <strong>{s.title.split(' ')[0]}</strong> — {s.desc}
+      </div>
+    </Link>
+  )
+
   return (
-    <section className="quality-services section section-dark">
-      <span className="section-label">SERVICES</span>
-      <div className="container">
-        <div className="section-header">
-          <h2 className="section-h">
-            <TextReveal>Transforming Ideas Into</TextReveal>
-            <TextReveal delay={0.2} className="muted-text">Service Excellence</TextReveal>
-          </h2>
-        </div>
+    <section className="fp-section" ref={sectionRef}>
+      <div className="fp-inner">
+        <h2 className="fp-heading">Featured services</h2>
 
-        <div className="services-list">
-          {services.map((s, i) => (
-            <div key={s.id} className={`service-row ${i % 2 !== 0 ? 'reverse' : ''}`}>
-              <div className="service-image-col">
-                <div className="service-image-wrap">
-                  <img src={s.image} alt={s.title} className="service-img" loading="lazy" />
-                  <div className="image-overlay"></div>
-                </div>
-              </div>
-              <div className="service-content-col">
-                <h3 className="service-title">{s.title}</h3>
-                <p className="service-desc">{s.desc}</p>
-                <div className="service-features-mini">
-                  {s.tags.map(tag => (
-                    <span key={tag} className="feature-dot">{tag}</span>
-                  ))}
-                </div>
-                <div className="cta-wrap">
-                  <Link href={s.path} className="btn-text">
-                    Learn More <IoArrowForward className="arrow" />
-                  </Link>
-                </div>
-              </div>
-            </div>
-          ))}
+        <div className="fp-grid">
+          <div className="fp-col fp-col-left">
+            {leftCol.map(s => <Card key={s.id} s={s} />)}
+          </div>
+          <div className="fp-col fp-col-right">
+            {rightCol.map(s => <Card key={s.id} s={s} />)}
+          </div>
         </div>
-
       </div>
 
       <style>{`
-        .quality-services {
+        /* Cuberto "Featured projects" section — black bg, rounded top */
+        .fp-section {
+          background: #000;
+          color: #fff;
+          border-radius: 30px 30px 0 0;
+          padding: 120px 0 80px;
           position: relative;
           z-index: 5;
-          padding: 10vw 0;
+          margin-top: -10px;
         }
-        .section-header {
-          margin-bottom: 5rem;
-          text-align: left;
+        .fp-inner {
+          max-width: 1400px;
+          margin: 0 auto;
+          padding: 0 40px;
         }
-        .section-h {
-          font-size: clamp(3rem, 6vw, 5.5rem);
+        .fp-heading {
+          font-size: clamp(3rem, 5.5vw, 5rem);
+          font-weight: 500;
           color: #fff;
-          max-width: 1000px;
-          line-height: 0.95;
+          margin-bottom: 80px;
           letter-spacing: -0.03em;
-          text-transform: uppercase;
         }
-        .muted-text {
-          color: #a1a1a1;
+
+        /* Staggered 2-col grid — Cuberto signature */
+        .fp-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 30px;
+        }
+        .fp-col-right {
+          margin-top: 120px;
+        }
+
+        .fp-card {
           display: block;
+          margin-bottom: 40px;
+          cursor: pointer;
+          color: #fff;
         }
-
-        .services-list {
-          display: flex;
-          flex-direction: column;
-          gap: 8vw;
-        }
-
-        .service-row {
-          display: flex;
-          align-items: center;
-          gap: 8vw;
-          opacity: 0.8;
-          transition: opacity 0.5s ease;
-        }
-        .service-row:hover {
-          opacity: 1;
-        }
-        .service-row.reverse {
-          flex-direction: row-reverse;
-        }
-
-        .service-image-col {
-          flex: 1.2;
-          position: relative;
-        }
-        .service-image-wrap {
-          aspect-ratio: 16/10;
-          background: rgba(255,255,255,0.03); /* Dark theme bg */
-          border-radius: 30px;
+        .fp-card-img {
+          width: 100%;
+          aspect-ratio: 4 / 3;
+          border-radius: 20px;
           overflow: hidden;
-          position: relative;
-          transition: transform 0.8s var(--ease-expo);
-          box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+          background: #111;
+          margin-bottom: 20px;
         }
-        .service-row:hover .service-image-wrap {
-          transform: translateY(-10px) scale(1.02);
-        }
-        .service-img {
+        .fp-card-img img {
           width: 100%;
           height: 100%;
           object-fit: cover;
-          transition: transform 1.2s var(--ease-expo);
+          display: block;
+          transition: transform 0.8s var(--ease-expo);
         }
-        .service-row:hover .service-img {
-          transform: scale(1.1);
-        }
-        .image-overlay {
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.4));
+        .fp-card:hover .fp-card-img img {
+          transform: scale(1.05);
         }
 
-        .service-content-col {
-          flex: 1;
-          max-width: 500px;
+        .fp-card-meta {
+          font-size: 1rem;
+          font-weight: 400;
+          color: rgba(255,255,255,0.7);
+          line-height: 1.4;
         }
-        .service-title {
-          font-size: clamp(2.2rem, 4vw, 3.5rem);
-          line-height: 1;
-          font-weight: 800;
-          letter-spacing: -0.04em;
-          margin-bottom: 2rem;
-          text-transform: uppercase;
-          color: #fff; /* Changed to white */
-        }
-        .service-desc {
-          font-size: 1.15rem;
-          color: #aaa; /* Lighter for dark theme */
-          margin-bottom: 3rem;
-          line-height: 1.5;
-        }
-        .service-features-mini {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 10px;
-          margin-bottom: 3rem;
-        }
-        
-        .feature-dot {
-          font-size: 0.75rem;
-          font-weight: 700;
-          text-transform: uppercase;
-          letter-spacing: 0.05em;
-          color: #eee;
-          background: rgba(255, 255, 255, 0.08);
-          padding: 8px 18px;
-          border-radius: 100px;
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-          position: relative;
-          cursor: default;
-        }
-        
-        .quality-services .service-features-mini .feature-dot:hover {
-          background: var(--brand-orange) !important;
-          border-color: var(--brand-orange) !important;
-          color: #ffffff !important;
-          transform: translateY(-8px);
-          box-shadow: 0 10px 25px rgba(255, 102, 0, 0.4);
+        .fp-card-meta strong {
+          color: #fff;
+          font-weight: 600;
         }
 
-        .cta-wrap {
-          margin-top: 1rem;
-        }
-        .btn-text {
-          font-family: var(--font-heading);
-          font-weight: 700;
-          font-size: 1.1rem;
-          text-transform: uppercase;
-          letter-spacing: 0.1em;
-          color: #fff; /* Changed to white */
-          text-decoration: none !important;
-          display: inline-flex;
-          align-items: center;
-          gap: 12px;
-          position: relative;
-          padding-bottom: 4px;
-          transition: color 0.4s ease;
-        }
-        .btn-text::after {
-          content: '';
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          width: 0;
-          height: 2px;
-          background: var(--brand-orange);
-          transition: width 0.4s var(--ease-expo);
-        }
-        .btn-text:hover {
-          color: var(--brand-orange) !important;
-        }
-        .btn-text:hover::after {
-          width: 100%;
-        }
-        .arrow {
-          font-size: 1.2rem;
-          transition: transform 0.4s var(--ease-expo), color 0.4s ease;
-        }
-        .btn-text:hover .arrow {
-          transform: translateX(8px);
-          color: var(--brand-orange);
-        }
-
-        .view-all-wrap {
-          margin-top: 10vw;
-          display: flex;
-          justify-content: center;
-        }
-
-        @media (max-width: 1024px) {
-          .service-row, .service-row.reverse {
-            flex-direction: column !important;
-            gap: 3rem;
-          }
-          .service-image-col { width: 100%; }
-          .service-content-col {
-            max-width: 100%;
-            text-align: left;
-          }
-        }
         @media (max-width: 768px) {
-          .quality-services { padding: 8vw 0; }
-          .section-header { margin-bottom: 3rem; }
-          .services-list { gap: 6vw; }
-          .service-title { font-size: 1.8rem; }
-          .service-desc { font-size: 1rem; margin-bottom: 1.5rem; }
-          .service-features-mini { margin-bottom: 2rem; }
-          .service-image-wrap { border-radius: 24px; }
+          .fp-section { border-radius: 20px 20px 0 0; padding: 80px 0 60px; }
+          .fp-grid { grid-template-columns: 1fr; }
+          .fp-col-right { margin-top: 0; }
+          .fp-inner { padding: 0 20px; }
+          .fp-heading { margin-bottom: 50px; }
+          .fp-card { margin-bottom: 30px; }
+          .fp-card-img { border-radius: 16px; }
         }
         @media (max-width: 480px) {
-          .quality-services { padding: 10vw 0; }
-          .section-header { margin-bottom: 2rem; }
-          .services-list { gap: 8vw; }
-          .service-title { font-size: 1.5rem; margin-bottom: 1.2rem; }
-          .service-desc { font-size: 0.95rem; margin-bottom: 1.2rem; line-height: 1.4; }
-          .service-features-mini { gap: 6px; margin-bottom: 1.5rem; }
-          .feature-dot { font-size: 0.65rem; padding: 5px 12px; }
-          .service-image-wrap { border-radius: 18px; }
-          .btn-text { font-size: 0.9rem; }
+          .fp-section { border-radius: 16px 16px 0 0; padding: 60px 0 40px; }
+          .fp-inner { padding: 0 16px; }
+          .fp-card-img { border-radius: 12px; }
+          .fp-card-meta { font-size: 0.9rem; }
         }
       `}</style>
     </section>

@@ -1,351 +1,221 @@
 'use client'
 
-import React, { useState, useEffect, useRef } from 'react'
+import React from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
-import {
-  FaFacebookF, FaLinkedinIn,
-  FaInstagram, FaEnvelope, FaPhoneAlt, FaMapMarkerAlt, FaYoutube
-} from 'react-icons/fa'
+import { FaInstagram, FaLinkedinIn, FaFacebookF, FaYoutube } from 'react-icons/fa'
 import { RiTwitterXFill } from 'react-icons/ri'
-import MagneticButton from './animations/MagneticButton'
 
 const Footer = () => {
-  const [footerHeight, setFooterHeight] = useState(0)
-  const footerRef = useRef(null)
-
-  useEffect(() => {
-    if (!footerRef.current) return
-    const resizeObserver = new window.ResizeObserver((entries) => {
-      for (let entry of entries) {
-        setFooterHeight(entry.contentRect.height)
-
-        // Push height dynamically to the global spacer resting securely inside the scroll context
-        const globalSpacer = document.getElementById('global-footer-spacer')
-        if (globalSpacer) {
-          globalSpacer.style.height = `${entry.contentRect.height}px`
-        }
-      }
-    })
-    resizeObserver.observe(footerRef.current)
-    return () => resizeObserver.disconnect()
-  }, [])
-
   const currentYear = new Date().getFullYear()
 
+  const navLinks = [
+    { label: 'Services', path: '/services/' },
+    { label: 'About', path: '/about/' },
+    { label: 'Pricing', path: '/pricing/' },
+    { label: 'Contact', path: '/contact/' },
+  ]
+
+  const socialLinks = [
+    { icon: <FaInstagram />, url: 'https://instagram.com/prominenttechnolabs/', label: 'Instagram' },
+    { icon: <FaYoutube />, url: 'https://youtube.com/@prominenttechnolabs', label: 'YouTube' },
+    { icon: <FaLinkedinIn />, url: 'https://linkedin.com/company/prominent-technolabs/', label: 'LinkedIn' },
+    { icon: <FaFacebookF />, url: 'https://facebook.com/prominenttechnolabs/', label: 'Facebook' },
+    { icon: <RiTwitterXFill />, url: 'https://twitter.com/prominenttech/', label: 'Twitter' },
+  ]
+
   return (
-    <>
-      <footer ref={footerRef} className="footer reveal-footer">
-        <div className="refokus-container">
-          <div className="refokus-panels">
-            {/* Left Panel - Services */}
-            <Link href="/services/" className="refokus-panel panel-left">
-              <div className="panel-top">
-                <span className="panel-label">SERVICES</span>
-                <span className="panel-arrow">→</span>
-              </div>
-              <div className="panel-body">
-                <h3 className="panel-title">Digital Solutions<br />& Expertise</h3>
-                <p className="panel-desc">Website Development, Mobile App Dev, UI/UX Design, and Digital Marketing.</p>
-              </div>
-            </Link>
+    <footer className="cb-footer">
+      {/* Have an idea section — matching Cuberto's pre-footer CTA */}
+      <div className="cb-footer-cta">
+        <h2 className="cb-footer-title">Have an idea?</h2>
+        <h2 className="cb-footer-title outline">Tell us about it</h2>
+      </div>
 
-            {/* Right Panel - Contact */}
-            <Link href="/contact/" className="refokus-panel panel-right">
-              <div className="panel-top">
-                <span className="panel-label">GET IN TOUCH</span>
-                <span className="panel-arrow">→</span>
-              </div>
-              <div className="panel-body">
-                <h3 className="panel-subtitle">Let's get to it.<br />together.</h3>
-                <div className="panel-bottom-row">
-                  <h2 className="panel-massive-title">Start a Project</h2>
-                  <div className="panel-cta">
-                    <span>Contact us</span>
-                    <span className="panel-cta-arrow">→</span>
-                    <div className="cta-line"></div>
-                  </div>
-                </div>
-              </div>
-            </Link>
+      {/* Footer content grid */}
+      <div className="cb-footer-content">
+        {/* Left: contact pills + address */}
+        <div className="cb-footer-left">
+          <div className="cb-pill-row">
+            <a href="mailto:prominenttechnolabs@gmail.com" className="cb-pill">prominenttechnolabs@gmail.com</a>
+            <a href="tel:+919327603253" className="cb-pill">+91 93276 03253</a>
           </div>
-
-          {/* Repositioned Bottom Legal Bar */}
-          <div className="refokus-bottom-bar">
-            <div className="bottom-left">
-              <span>© {currentYear} Prominent TechnoLabs.</span>
-            </div>
-            <div className="bottom-right">
-              <a href="https://sites.google.com/view/prominettechnolabsprivacy/home" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
-              <a href="https://sites.google.com/view/prominenttearmsconditions/home" target="_blank" rel="noopener noreferrer">Terms of Service</a>
+          <div className="cb-address">
+            <div className="cb-addr-block">
+              <span className="cb-addr-label">OFFICE</span>
+              <strong>G-108, Titanium City Center</strong>
+              <span>Ahmedabad, Gujarat 380015</span>
             </div>
           </div>
         </div>
 
-        <style>{`
-        .reveal-footer {
-          position: fixed;
-          bottom: 0;
-          left: 0;
-          width: 100%;
-          z-index: 1; /* Sits behind main content */
-        }
-        .footer {
-          background: #f4f4f5; /* Professional light background for sharp contrast */
-          color: #000000;
-          overflow: hidden;
-        }
+        {/* Right: nav grid — Cuberto style */}
+        <div className="cb-footer-nav">
+          {navLinks.map(link => (
+            <Link key={link.label} href={link.path} className="cb-footer-link">{link.label}</Link>
+          ))}
+        </div>
+      </div>
 
-        /* Twin-Panel Layout */
-        .refokus-container {
-          padding: 2.5vw;
-          display: flex;
-          flex-direction: column;
-          gap: 2.5vw;
-          max-width: 100%;
-          font-family: var(--font-body);
-        }
-        
-        .refokus-panels {
-          display: grid;
-          grid-template-columns: 1fr 2.15fr; /* Matches Refokus proportions */
-          gap: 2.5vw;
-        }
+      {/* Bottom bar */}
+      <div className="cb-footer-bottom">
+        <div className="cb-bottom-left">
+          <a href="https://sites.google.com/view/prominettechnolabsprivacy/home" target="_blank" rel="noopener noreferrer" className="cb-bottom-link">Privacy Policy</a>
+          <span className="cb-bottom-copy">{currentYear}, Prominent TechnoLabs</span>
+        </div>
+        <div className="cb-bottom-right">
+          {socialLinks.map(s => (
+            <a key={s.label} href={s.url} target="_blank" rel="noopener noreferrer" className="cb-social-icon" aria-label={s.label}>
+              {s.icon}
+            </a>
+          ))}
+        </div>
+      </div>
 
-        .refokus-panel {
-          border-radius: 28px;
-          padding: 3.5vw 4vw;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          text-decoration: none;
-          cursor: pointer;
-          transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-          min-height: 65vh;
+      <style>{`
+        .cb-footer {
+          background: #000;
+          color: #fff;
+          padding: 120px 40px 40px;
           position: relative;
-          overflow: hidden;
         }
 
-        /* Left Panel Styles */
-        .panel-left {
-          background: #141414;
-          color: #ffffff;
-          border: 1px solid rgba(0,0,0,0.1);
+        /* CTA area */
+        .cb-footer-cta {
+          max-width: 1400px;
+          margin: 0 auto 120px;
         }
-        .panel-left:hover {
-          background: #ebebeb; /* Professional gray-based hover instead of pure white */
-          border-color: rgba(0,0,0,0.1);
-          box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        .cb-footer-title {
+          font-size: clamp(4rem, 10vw, 9rem);
+          font-weight: 500;
+          line-height: 1.0;
+          letter-spacing: -0.04em;
+          color: #fff;
         }
-        /* Explicit Hover Typography Flippers */
-        .panel-left:hover .panel-label,
-        .panel-left:hover .panel-title,
-        .panel-left:hover .panel-arrow {
-          color: #000000 !important;
-          opacity: 1 !important;
-        }
-        .panel-left:hover .panel-desc {
-          color: #333333 !important;
-          opacity: 0.9 !important;
+        .cb-footer-title.outline {
+          color: transparent;
+          -webkit-text-stroke: 1px rgba(255,255,255,0.3);
         }
 
-        /* Right Panel Styles */
-        .panel-right {
-          background: var(--brand-orange);
-          color: #ffffff;
-        }
-        .panel-right:hover {
-          background: #e64500;
-        }
-
-        /* Typography & Layout within Panels */
-        .panel-top {
+        /* Footer content grid */
+        .cb-footer-content {
+          max-width: 1400px;
+          margin: 0 auto;
           display: flex;
           justify-content: space-between;
           align-items: flex-start;
-          margin-bottom: 4vw;
-        }
-        .panel-label {
-          font-size: 0.85rem;
-          font-weight: 600;
-          letter-spacing: 0.05em;
-          text-transform: uppercase;
-          opacity: 0.9;
-        }
-        .panel-arrow {
-          font-size: 1.5rem;
-          transition: transform 0.4s ease;
-        }
-        .refokus-panel:hover .panel-arrow {
-          transform: translateX(5px) scale(1.1);
+          padding-bottom: 80px;
         }
 
-        .panel-body {
-          display: flex;
-          flex-direction: column;
-          height: 100%;
-          justify-content: space-between;
-        }
-
-        .panel-title {
-          font-size: clamp(2.5rem, 4vw, 3.5rem);
-          font-weight: 500;
-          line-height: 1.1;
-          margin-bottom: auto;
-          font-family: var(--font-heading);
-          letter-spacing: -0.02em;
-          transition: color 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .panel-desc {
-          font-size: clamp(1rem, 1.2vw, 1.2rem);
-          opacity: 0.8;
-          max-width: 85%;
-          line-height: 1.5;
-          transition: color 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
-        }
-
-        .panel-subtitle {
-          font-size: clamp(2.5rem, 4vw, 3.5rem);
-          font-weight: 500;
-          line-height: 1.1;
-          font-family: var(--font-heading);
-          margin-bottom: auto;
-          letter-spacing: -0.02em;
-        }
-
-        .panel-bottom-row {
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-end;
-          width: 100%;
-        }
-        .panel-massive-title {
-          font-size: clamp(3.5rem, 8.5vw, 9.5rem);
-          font-weight: 600;
-          line-height: 0.85;
-          letter-spacing: -0.03em;
-          font-family: var(--font-heading);
-        }
-        .panel-cta {
-          display: flex;
+        .cb-footer-left { flex: 1; }
+        .cb-pill-row { display: flex; gap: 16px; margin-bottom: 40px; flex-wrap: wrap; }
+        .cb-pill {
+          display: inline-flex;
           align-items: center;
-          gap: 15px;
-          font-size: 1.3rem;
-          font-weight: 500;
-          position: relative;
-          padding-bottom: 12px;
-          margin-bottom: 10px;
-          white-space: nowrap; /* Prevent wrapping as requested */
-        }
-        .panel-cta-arrow {
-          font-size: 1.3rem;
-          transition: transform 0.4s ease;
-        }
-        .refokus-panel:hover .panel-cta-arrow {
-          transform: translateX(5px);
-        }
-        .cta-line {
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          width: 100%;
-          height: 1px;
-          background: rgba(255,255,255,0.4);
-          transition: background 0.3s;
-        }
-        .refokus-panel:hover .cta-line {
-          background: rgba(255,255,255,1);
-        }
-
-        /* Bottom Legal Bar */
-        .refokus-bottom-bar {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 1vw 2vw 0 2vw;
-          font-size: 0.9rem;
-          color: #555555;
-        }
-        .bottom-right {
-          display: flex;
-          gap: 2vw;
-        }
-        .bottom-right a {
-          color: #555555;
+          padding: 14px 28px;
+          border: 1px solid rgba(255,255,255,0.2);
+          border-radius: 100px;
+          color: #fff;
           text-decoration: none;
+          font-size: 1rem;
+          font-weight: 400;
+          transition: all 0.4s var(--ease-expo);
+        }
+        .cb-pill:hover {
+          background: #fff;
+          color: #000;
+          border-color: #fff;
+        }
+
+        .cb-address { display: flex; gap: 60px; }
+        .cb-addr-block { display: flex; flex-direction: column; gap: 4px; }
+        .cb-addr-label {
+          font-size: 0.7rem;
+          font-weight: 500;
+          color: rgba(255,255,255,0.4);
+          letter-spacing: 0.05em;
+          margin-bottom: 4px;
+        }
+        .cb-addr-block strong { font-size: 0.95rem; font-weight: 500; color: #fff; }
+        .cb-addr-block span { font-size: 0.9rem; color: rgba(255,255,255,0.5); }
+
+        /* Nav grid — Cuberto style: 2-column, large links */
+        .cb-footer-nav {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 12px 60px;
+        }
+        .cb-footer-link {
+          font-size: 1.3rem;
+          font-weight: 500;
+          color: #fff;
+          text-decoration: none;
+          transition: opacity 0.3s ease;
+          padding: 4px 0;
+        }
+        .cb-footer-link:hover { opacity: 0.5; }
+
+        /* Bottom bar */
+        .cb-footer-bottom {
+          max-width: 1400px;
+          margin: 0 auto;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding-top: 40px;
+          border-top: 1px solid rgba(255,255,255,0.08);
+        }
+        .cb-bottom-left { display: flex; align-items: center; gap: 24px; }
+        .cb-bottom-link {
+          font-size: 0.85rem;
+          color: rgba(255,255,255,0.4);
+          text-decoration: underline;
+          text-decoration-color: rgba(255,255,255,0.15);
+          text-underline-offset: 3px;
           transition: color 0.3s;
         }
-        .bottom-right a:hover {
-          color: #000000;
+        .cb-bottom-link:hover { color: #fff; }
+        .cb-bottom-copy { font-size: 0.85rem; color: rgba(255,255,255,0.4); }
+
+        .cb-bottom-right { display: flex; gap: 12px; }
+        .cb-social-icon {
+          width: 46px;
+          height: 46px;
+          border-radius: 50%;
+          border: 1px solid rgba(255,255,255,0.15);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #fff;
+          font-size: 1.1rem;
+          text-decoration: none;
+          transition: all 0.4s var(--ease-expo);
+        }
+        .cb-social-icon:hover {
+          background: #fff;
+          color: #000;
+          border-color: #fff;
         }
 
-        /* Responsive Design */
-        @media (max-width: 1200px) {
-          .refokus-panels {
-            grid-template-columns: 1fr 1.5fr;
-          }
-          .panel-massive-title {
-            font-size: clamp(3rem, 6vw, 5rem);
-          }
+        @media (max-width: 1024px) {
+          .cb-footer-content { flex-direction: column; gap: 60px; }
+          .cb-footer-nav { gap: 8px 40px; }
         }
-
-        @media (max-width: 900px) {
-          .refokus-panels {
-            grid-template-columns: 1fr;
-          }
-          .refokus-panel {
-            min-height: 40vh;
-            padding: 5vw;
-          }
-          .panel-massive-title {
-            font-size: clamp(3.5rem, 10vw, 6rem);
-          }
-          .bottom-left {
-            gap: 15px;
-            flex-wrap: wrap;
-          }
+        @media (max-width: 768px) {
+          .cb-footer { padding: 80px 20px 30px; }
+          .cb-footer-cta { margin-bottom: 80px; }
+          .cb-footer-title { font-size: clamp(3rem, 10vw, 5rem); }
+          .cb-pill { padding: 12px 20px; font-size: 0.9rem; }
+          .cb-footer-bottom { flex-direction: column; gap: 24px; align-items: flex-start; }
         }
-
-        @media (max-width: 600px) {
-          .refokus-container {
-            padding: 4vw;
-            gap: 4vw;
-          }
-          .refokus-panels {
-            gap: 4vw;
-          }
-          .refokus-panel {
-            min-height: 45vh;
-            padding: 8vw;
-            border-radius: 20px;
-          }
-          .panel-bottom-row {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 20px;
-          }
-          .panel-cta {
-            padding-bottom: 8px;
-            font-size: 1.1rem;
-          }
-          .refokus-bottom-bar {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 20px;
-            padding: 2vw 1vw;
-          }
-          .bottom-left {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 10px;
-          }
-          .bottom-right {
-            gap: 20px;
-          }
+        @media (max-width: 480px) {
+          .cb-footer { padding: 60px 16px 24px; }
+          .cb-pill-row { flex-direction: column; }
+          .cb-pill { width: 100%; justify-content: center; }
+          .cb-footer-nav { grid-template-columns: 1fr; gap: 6px; }
+          .cb-social-icon { width: 40px; height: 40px; font-size: 1rem; }
         }
       `}</style>
-      </footer>
-    </>
+    </footer>
   )
 }
 

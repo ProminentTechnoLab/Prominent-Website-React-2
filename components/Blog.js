@@ -1,191 +1,108 @@
 'use client'
 
 import React from 'react'
-import Link from 'next/link'
-import { IoCalendarOutline, IoTimeOutline, IoArrowForward } from 'react-icons/io5'
-import TextReveal from './animations/TextReveal'
+import { IoArrowForward } from 'react-icons/io5'
 
 const Blog = () => {
   const posts = [
-    {
-      title: "Why React + Laravel is the Perfect Stack for Modern Web Apps in 2026",
-      excerpt: "Discover why combining React on the frontend with Laravel on the backend creates a powerhouse stack for building scalable web applications.",
-      date: "Mar 15, 2026",
-      time: "5 min",
-      category: "WEB DEVELOPMENT",
-      image: "/images/blog-1.jpg"
-    },
-    {
-      title: "Flutter vs React Native in 2026: Which Should You Choose?",
-      excerpt: "We compare performance, UI flexibility, and ecosystem maturity to help you make the right choice for your next mobile project.",
-      date: "Mar 10, 2026",
-      time: "7 min",
-      category: "MOBILE APPS",
-      image: "/images/blog-2.jpg"
-    },
-    {
-      title: "10 Proven SEO Strategies That Tripled Our Clients' Organic Traffic",
-      excerpt: "From Core Web Vitals to E-E-A-T content frameworks — here are the exact SEO techniques we used for remarkable growth.",
-      date: "Mar 05, 2026",
-      time: "6 min",
-      category: "DIGITAL MARKETING",
-      image: "/images/blog-3.jpg"
-    }
+    { title: "Why React + Laravel is the Perfect Stack for Modern Web Apps", date: "Mar 15, 2026", category: "Web Development" },
+    { title: "Flutter vs React Native in 2026: Which Should You Choose?", date: "Mar 10, 2026", category: "Mobile Apps" },
+    { title: "10 Proven SEO Strategies That Tripled Our Clients' Organic Traffic", date: "Mar 05, 2026", category: "Digital Marketing" }
   ]
 
   return (
-    <section className="blog-section section">
-      <div className="container">
-        <div className="section-header-centered">
-          <div className="badge">Insights & Updates</div>
-          <h2 className="section-h">
-            <TextReveal>Our Latest</TextReveal>
-            <TextReveal delay={0.2} className="accent-text">Perspectives</TextReveal>
-          </h2>
-        </div>
-
-        <div className="blog-grid">
-          {posts.map((post, i) => (
-            <div key={i} className="blog-card">
-              <div className="blog-cat-wrapper">
-                <span className="blog-cat">{post.category}</span>
+    <section className="bl-section">
+      <div className="bl-inner">
+        <h2 className="bl-title">Latest insights</h2>
+        <div className="bl-list">
+          {posts.map((p, i) => (
+            <div key={i} className="bl-item">
+              <div className="bl-item-top">
+                <span className="bl-cat">{p.category}</span>
+                <span className="bl-date">{p.date}</span>
               </div>
-
-              <div className="blog-info">
-                <div className="blog-meta">
-                  <span><IoCalendarOutline /> {post.date}</span>
-                  <span><IoTimeOutline /> {post.time} read</span>
-                </div>
-                <h3 className="blog-h">{post.title}</h3>
-                <p className="blog-p">{post.excerpt}</p>
-                <div className="blog-footer">
-                  <span className="read-more">Read More <IoArrowForward className="arrow" /></span>
-                </div>
-              </div>
+              <h3 className="bl-item-title">{p.title}</h3>
+              <span className="bl-read">
+                Read more <IoArrowForward className="bl-arrow" />
+              </span>
             </div>
           ))}
         </div>
       </div>
 
       <style>{`
-        .blog-section {
-          padding-top: 4rem;
+        .bl-section {
+          background: #000;
+          color: #fff;
+          padding: 120px 0;
+          border-radius: 30px 30px 0 0;
         }
-        .section-header-centered { 
-          text-align: left; 
-          margin-bottom: 5rem; 
+        .bl-inner { max-width: 1400px; margin: 0 auto; padding: 0 40px; }
+        .bl-title {
+          font-size: clamp(3rem, 5.5vw, 5rem);
+          font-weight: 500;
+          color: #fff;
+          margin-bottom: 60px;
+          letter-spacing: -0.03em;
         }
-        .section-h { 
-          font-size: clamp(3rem, 6vw, 5.5rem); 
-          color: white; 
-          line-height: 0.95;
-          letter-spacing: -0.04em;
-          text-transform: uppercase;
+        .bl-list {
+          border-top: 1px solid rgba(255,255,255,0.1);
         }
-        .accent-text {
-          color: white;
-          opacity: 0.15; /* Adjusted for dark */
+        .bl-item {
+          padding: 40px 0;
+          border-bottom: 1px solid rgba(255,255,255,0.1);
+          cursor: pointer;
+          transition: opacity 0.3s;
         }
-
-        .blog-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          border-top: 1px solid rgba(255, 255, 255, 0.1); /* Adjusted for dark */
-        }
-
-        .blog-card {
-          text-decoration: none;
-          padding: 3.5rem 3rem;
-          border-right: 1px solid rgba(255, 255, 255, 0.1);
-          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-          transition: all 0.6s var(--ease-expo);
-          background: rgba(255,255,255,0.02);
+        .bl-item:hover { opacity: 0.7; }
+        .bl-item-top {
           display: flex;
-          flex-direction: column;
-          gap: 1.5rem;
+          justify-content: space-between;
+          margin-bottom: 16px;
         }
-        .blog-card:hover {
-          background: rgba(255,255,255,0.05);
-          transform: translateY(-10px);
-        }
-
-        .blog-cat-wrapper {
-          margin-bottom: 2rem;
-        }
-        .blog-cat {
-          display: inline-block;
-          background: var(--brand-orange);
-          color: white;
-          font-size: 0.7rem;
-          font-weight: 800;
-          padding: 6px 16px;
-          border-radius: 4px;
-          text-transform: uppercase;
-          letter-spacing: 0.1em;
-        }
-
-        .blog-info {
-          padding: 0;
-        }
-        .blog-meta {
-          display: flex;
-          gap: 20px;
-          color: #999; /* Muted for dark */
+        .bl-cat {
           font-size: 0.75rem;
-          margin-bottom: 1.5rem;
+          font-weight: 500;
+          color: rgba(255,255,255,0.4);
           text-transform: uppercase;
-          letter-spacing: 0.1em;
-          font-weight: 700;
+          letter-spacing: 0.08em;
         }
-        
-        .blog-h {
-          font-size: 1.6rem;
-          color: white;
-          margin-bottom: 1.5rem;
-          line-height: 1.2;
-          font-weight: 700;
-          transition: 0.4s;
-        }
-        .blog-card:hover .blog-h { opacity: 0.7; }
-
-        .blog-p {
-          font-size: 1rem;
-          color: #aaa; /* Lighter for dark */
-          margin-bottom: 2rem;
-          line-height: 1.6;
-          opacity: 0.8;
-        }
-
-        .read-more {
-          color: white;
-          font-weight: 700;
+        .bl-date {
           font-size: 0.8rem;
-          display: flex;
+          color: rgba(255,255,255,0.3);
+        }
+        .bl-item-title {
+          font-size: clamp(1.3rem, 2.5vw, 2rem);
+          font-weight: 500;
+          color: #fff;
+          line-height: 1.2;
+          letter-spacing: -0.02em;
+          margin-bottom: 20px;
+        }
+        .bl-read {
+          display: inline-flex;
           align-items: center;
-          gap: 10px;
-          text-transform: uppercase;
-          letter-spacing: 0.15em;
+          gap: 8px;
+          font-size: 0.85rem;
+          font-weight: 500;
+          color: rgba(255,255,255,0.5);
         }
-        .arrow { transform: rotate(-45deg); transition: 0.4s; }
-        .blog-card:hover .arrow { transform: rotate(0deg); }
+        .bl-arrow {
+          transform: rotate(-45deg);
+          transition: transform 0.3s ease;
+          font-size: 0.9rem;
+        }
+        .bl-item:hover .bl-arrow { transform: rotate(0); }
 
-        @media (max-width: 1024px) {
-          .blog-grid { grid-template-columns: repeat(2, 1fr); }
-        }
         @media (max-width: 768px) {
-          .blog-grid { grid-template-columns: 1fr; }
-          .blog-card { padding: 2.5rem 2rem; border-right: none; }
-          .section-header-centered { margin-bottom: 3rem; }
+          .bl-section { padding: 80px 0; border-radius: 20px 20px 0 0; }
+          .bl-inner { padding: 0 20px; }
+          .bl-item { padding: 30px 0; }
         }
         @media (max-width: 480px) {
-          .blog-section { padding-top: 2.5rem; }
-          .blog-card { padding: 2rem 1.2rem; gap: 1.2rem; }
-          .blog-h { font-size: 1.2rem; margin-bottom: 0.8rem; }
-          .blog-p { font-size: 0.88rem; margin-bottom: 1.2rem; }
-          .blog-meta { gap: 10px; font-size: 0.65rem; margin-bottom: 0.8rem; }
-          .blog-cat { font-size: 0.58rem; padding: 4px 10px; }
-          .blog-cat-wrapper { margin-bottom: 0.8rem; }
-          .section-header-centered { margin-bottom: 2.5rem; }
+          .bl-section { padding: 60px 0; border-radius: 16px 16px 0 0; }
+          .bl-inner { padding: 0 16px; }
+          .bl-item-title { font-size: 1.15rem; }
         }
       `}</style>
     </section>

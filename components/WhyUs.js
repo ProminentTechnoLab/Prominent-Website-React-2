@@ -1,243 +1,141 @@
 'use client'
 
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
-import TextReveal from './animations/TextReveal'
 
 const WhyUs = () => {
-  const sectionRef = useRef(null)
-
-  useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger)
-
-    const counters = document.querySelectorAll('.counter-val')
-    counters.forEach((counter) => {
-      const target = parseInt(counter.getAttribute('data-target'))
-      gsap.fromTo(
-        counter,
-        { innerText: 0 },
-        {
-          innerText: target,
-          duration: 2,
-          snap: { innerText: 1 },
-          scrollTrigger: {
-            trigger: counter,
-            start: 'top 85%',
-          },
-        }
-      )
-    })
-  }, [])
-
   const stats = [
-    { label: 'Happy Clients', value: 30, suffix: '+' },
-    { label: 'Successful Projects', value: 50, suffix: '+' },
-    { label: 'Expert Developers', value: 15, suffix: '+' },
-    { label: 'Years of Experience', value: 5, suffix: '+' },
+    { value: '30+', label: 'Happy Clients' },
+    { value: '50+', label: 'Successful Projects' },
+    { value: '15+', label: 'Expert Developers' },
+    { value: '5+', label: 'Years Experience' },
   ]
 
   const reasons = [
-    {
-      title: 'Customer Centric',
-      desc: 'We prioritize your vision and goals, ensuring every solution is tailored to your specific business needs.'
-    },
-    {
-      title: 'Expert Engineering',
-      desc: 'Our team consists of top-tier developers skilled in modern frameworks like React, Flutter, and Laravel.'
-    },
-    {
-      title: 'Transparent Process',
-      desc: 'From planning to deployment, we maintain full transparency with regular updates and clear communication.'
-    }
+    { title: 'Customer Centric', desc: 'We prioritize your vision and goals, ensuring every solution is tailored to your specific business needs.' },
+    { title: 'Expert Engineering', desc: 'Top-tier developers skilled in modern frameworks like React, Flutter, and Laravel.' },
+    { title: 'Transparent Process', desc: 'Full transparency with regular updates and clear communication from planning to deployment.' }
   ]
 
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger)
+    gsap.utils.toArray('.wu-stat').forEach((el) => {
+      gsap.fromTo(el, { y: 40, opacity: 0 }, {
+        y: 0, opacity: 1, duration: 0.8, ease: 'power3.out',
+        scrollTrigger: { trigger: el, start: 'top 90%' }
+      })
+    })
+  }, [])
+
   return (
-    <section className="why-us section section-dark" ref={sectionRef}>
-      <span className="section-label">TRUST</span>
-      <div className="container">
-        <div className="section-grid">
-          {/* Left: Stats & Heading */}
-          <div className="why-left">
-            <h2 className="section-h">
-              <TextReveal>Results Driven</TextReveal>
-              <TextReveal delay={0.2} className="muted-text">Engineering</TextReveal>
-            </h2>
-            <p className="why-desc">
-              We don't just build apps; we build businesses. Our data-driven approach ensures every line of code adds value to your bottom line.
-            </p>
+    <section className="wu-section">
+      <div className="wu-inner">
+        <h2 className="wu-title">Why choose us</h2>
 
-            {/* Stats section restored */}
-            <div className="stats-grid">
-              {stats.map((s) => (
-                <div key={s.label} className="stat-card">
-                  <div className="stat-number">
-                    <span
-                      className="counter-val"
-                      data-target={s.value}
-                    >
-                      0
-                    </span>
-                    <span className="suffix">{s.suffix}</span>
-                  </div>
-                  <div className="stat-label">{s.label}</div>
-                </div>
-              ))}
+        {/* Stats row — Cuberto style: large numbers with thin borders */}
+        <div className="wu-stats">
+          {stats.map(s => (
+            <div key={s.label} className="wu-stat">
+              <div className="wu-stat-val">{s.value}</div>
+              <div className="wu-stat-label">{s.label}</div>
             </div>
-          </div>
+          ))}
+        </div>
 
-          {/* Right: Reasons */}
-          <div className="why-right">
-            {reasons.map((r, i) => (
-              <div key={r.title} className="reason-item">
-                <div className="reason-content">
-                  <h3 className="reason-title">{r.title}</h3>
-                  <p className="reason-desc">{r.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+        {/* Reasons list — horizontal dividers */}
+        <div className="wu-reasons">
+          {reasons.map(r => (
+            <div key={r.title} className="wu-reason">
+              <h3 className="wu-reason-title">{r.title}</h3>
+              <p className="wu-reason-desc">{r.desc}</p>
+            </div>
+          ))}
         </div>
       </div>
 
       <style>{`
-        .why-us {
-          background: transparent;
-          padding-top: 4rem !important; /* Reduced from 12vw to remove unwanted space */
-        }
-        .section-grid {
-          display: grid;
-          grid-template-columns: 1.2fr 1fr;
-          gap: 10vw;
-          align-items: flex-start;
-          padding-top: 0; /* Removed remaining inner padding */
-        }
-
-        .why-left {
-          position: sticky;
-          top: 15vw;
-        }
-        .section-h {
-          font-size: clamp(3rem, 6vw, 5.5rem); 
+        .wu-section {
+          background: #000;
           color: #fff;
-          line-height: 0.95;
-          letter-spacing: -0.04em;
-          text-transform: uppercase;
-          margin-bottom: 3rem;
+          padding: 120px 0;
+          border-radius: 30px 30px 0 0;
         }
-        .muted-text {
-          color: #a1a1a1;
-          display: block;
-        }
-        .why-desc {
-          font-size: 1.3rem;
-          color: #aaa;
-          margin-bottom: 4rem;
-          max-width: 500px;
-          opacity: 0.8;
+        .wu-inner { max-width: 1400px; margin: 0 auto; padding: 0 40px; }
+        .wu-title {
+          font-size: clamp(3rem, 5.5vw, 5rem);
+          font-weight: 500;
+          color: #fff;
+          margin-bottom: 80px;
+          letter-spacing: -0.03em;
         }
 
-        .stats-grid {
+        .wu-stats {
           display: grid;
-          grid-template-columns: repeat(2, 1fr);
-          gap: 2vw; /* Added gap to allow cards to shadow without overlapping */
+          grid-template-columns: repeat(4, 1fr);
+          border-top: 1px solid rgba(255,255,255,0.1);
+          margin-bottom: 80px;
         }
-        .stat-card {
-          padding: 4rem 3rem;
-          border-radius: 20px; /* Modern rounded corners */
-          background: rgba(255, 255, 255, 0.03); /* Subtle background instead of borders */
-          text-align: left;
-          transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1), background 0.6s var(--ease-expo), color 0.4s;
-          will-change: transform;
+        .wu-stat {
+          padding: 40px 0;
+          border-bottom: 1px solid rgba(255,255,255,0.1);
+          border-right: 1px solid rgba(255,255,255,0.1);
         }
-        .stat-card:hover {
-          background: #fff;
-          color: #000;
-          transform: translateY(-12px) scale(1.02);
-          box-shadow: 0 30px 60px rgba(0,0,0,0.4);
-          z-index: 2;
+        .wu-stat:last-child { border-right: none; }
+        .wu-stat-val {
+          font-size: clamp(2.5rem, 4vw, 3.5rem);
+          font-weight: 500;
+          color: #fff;
+          letter-spacing: -0.03em;
+          margin-bottom: 8px;
         }
-        
-        .counter-val, .suffix {
-          font-family: var(--font-heading);
-          font-size: 4rem;
-          font-weight: 700;
-          color: #fff; /* White for dark theme */
-          letter-spacing: -0.04em;
-          transition: color 0.4s;
-        }
-        .stat-card:hover .counter-val,
-        .stat-card:hover .suffix,
-        .section-dark .stat-card:hover .counter-val,
-        .section-dark .stat-card:hover .suffix {
-          color: #000000 !important;
-        }
-        .stat-label {
-          font-size: 0.75rem;
-          color: #999; /* Muted for dark */
+        .wu-stat-label {
+          font-size: 0.8rem;
+          font-weight: 400;
+          color: rgba(255,255,255,0.4);
           text-transform: uppercase;
-          letter-spacing: 0.2em;
-          margin-top: 1rem;
-          font-weight: 700;
-          transition: color 0.4s;
-        }
-        .stat-card:hover .stat-label {
-          color: rgba(0,0,0,0.7) !important;
+          letter-spacing: 0.08em;
         }
 
-        .why-right {
-          display: flex;
-          flex-direction: column;
+        .wu-reasons { border-top: 1px solid rgba(255,255,255,0.1); }
+        .wu-reason {
+          display: grid;
+          grid-template-columns: 1fr 1.5fr;
+          gap: 40px;
+          padding: 40px 0;
+          border-bottom: 1px solid rgba(255,255,255,0.1);
+          align-items: start;
         }
-        .reason-item {
-          display: flex;
-          flex-direction: column;
-          gap: 1.5rem;
-          padding: 4rem 0;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-          transition: all 0.6s var(--ease-expo);
+        .wu-reason-title {
+          font-size: 1.5rem;
+          font-weight: 500;
+          color: #fff;
         }
-        .reason-item:first-child { border-top: 1px solid rgba(255, 255, 255, 0.1); }
-        .reason-item:hover {
-          padding-left: 3rem;
-        }
-        .reason-title {
-          font-size: 2.5rem;
-          color: #fff; /* White for dark */
-          margin-bottom: 1.5rem;
-          font-weight: 700;
-          letter-spacing: -0.02em;
-          text-transform: uppercase;
-          line-height: 1;
-        }
-        .reason-desc {
-          font-size: 1.2rem;
-          color: #aaa; /* Lighter for dark */
+        .wu-reason-desc {
+          font-size: 1.05rem;
+          font-weight: 400;
+          color: rgba(255,255,255,0.5);
           line-height: 1.5;
-          opacity: 0.8;
         }
 
         @media (max-width: 1024px) {
-          .section-grid { grid-template-columns: 1fr; gap: 60px; }
-          .why-left { position: relative; top: 0; }
-          .stats-grid { grid-template-columns: repeat(2, 1fr); }
+          .wu-stats { grid-template-columns: 1fr 1fr; }
+          .wu-stat:nth-child(2) { border-right: none; }
         }
         @media (max-width: 768px) {
-          .stats-grid { grid-template-columns: 1fr; }
-          .stat-card { border-right: none; }
-          .reason-item:hover { padding-left: 0; }
-          .reason-title { font-size: 1.8rem; }
-          .reason-item { padding: 3rem 0; }
-          .why-desc { font-size: 1.1rem; margin-bottom: 3rem; }
+          .wu-section { padding: 80px 0; border-radius: 20px 20px 0 0; }
+          .wu-inner { padding: 0 20px; }
+          .wu-title { margin-bottom: 50px; }
+          .wu-stats { grid-template-columns: 1fr 1fr; }
+          .wu-reason { grid-template-columns: 1fr; gap: 12px; padding: 30px 0; }
         }
         @media (max-width: 480px) {
-          .counter-val, .suffix { font-size: 2.8rem; }
-          .stat-card { padding: 2.5rem 1.5rem; }
-          .reason-title { font-size: 1.5rem; }
-          .reason-desc { font-size: 1rem; }
-          .reason-item { padding: 2.5rem 0; gap: 1.2rem; }
-          .why-desc { font-size: 1rem; margin-bottom: 2.5rem; }
-          .section-h { margin-bottom: 2rem; }
+          .wu-section { padding: 60px 0; border-radius: 16px 16px 0 0; }
+          .wu-inner { padding: 0 16px; }
+          .wu-stats { grid-template-columns: 1fr; }
+          .wu-stat { border-right: none; padding: 24px 0; }
+          .wu-reason-title { font-size: 1.2rem; }
+          .wu-reason-desc { font-size: 0.9rem; }
         }
       `}</style>
     </section>
