@@ -129,7 +129,7 @@ const Hero = () => {
         }
         .hero-line { display: block; overflow: hidden; }
         .hero-sub {
-          font-size: clamp(1rem, 1.3vw, 1.2rem);
+          font-size: clamp(1.1rem, 1.4vw, 1.25rem);
           font-weight: 400;
           color: #000;
           opacity: 0.65;
@@ -162,7 +162,7 @@ const Hero = () => {
           max-width: 1400px;
           width: 100%;
           margin: 0 auto;
-          padding: 60px 0 100px;
+          padding: 60px 0 250px;
         }
         .cb-about-sculpture {
           display: flex;
@@ -234,12 +234,12 @@ const Hero = () => {
 
         /* ═══ Responsive ═══ */
         @media (max-width: 1200px) {
-          .cb-hero-about { padding: 50px 0 80px; }
+          .cb-hero-about { padding: 50px 0 200px; }
           .cb-about-sculpture { min-height: 380px; }
         }
         @media (max-width: 1024px) {
           .cb-hero { padding: 160px 50px 0; }
-          .cb-hero-about { padding: 40px 0 70px; }
+          .cb-hero-about { padding: 40px 0 180px; }
           .cb-about-sculpture { min-height: 340px; }
         }
         @media (max-width: 768px) {
@@ -249,7 +249,7 @@ const Hero = () => {
           .cb-hero-about {
             grid-template-columns: 1fr;
             gap: 20px;
-            padding: 35px 0 50px;
+            padding: 35px 0 150px;
           }
           .cb-about-sculpture { min-height: 300px; }
           .cb-about-text {
@@ -265,7 +265,7 @@ const Hero = () => {
           .cb-hero-title { font-size: 2.4rem; margin-bottom: 20px; }
           .cb-hero-media { border-radius: 16px; }
           .hero-sub { font-size: 0.95rem; }
-          .cb-hero-about { gap: 10px; padding: 30px 0 35px; }
+          .cb-hero-about { gap: 10px; padding: 30px 0 120px; }
           .cb-about-sculpture { min-height: 260px; }
           .cb-about-text p { font-size: 0.95rem; }
           .hero-btn { padding: 14px 28px; font-size: 14px; }
