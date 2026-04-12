@@ -148,26 +148,30 @@ const Navbar = () => {
             <img src="/images/logo-color.svg" alt="Prominent TechnoLabs" className="cb-logo-img" />
           </Link>
           <button className="cb-close-btn" onClick={() => setMenuOpen(false)} aria-label="Close">
-            <svg width="18" height="18" viewBox="0 0 18 18">
-              <line x1="1" y1="1" x2="17" y2="17" stroke="#000" strokeWidth="1.5" />
-              <line x1="17" y1="1" x2="1" y2="17" stroke="#000" strokeWidth="1.5" />
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
           </button>
         </div>
 
         <div className="cb-overlay-body">
           <div className="cb-overlay-label">Menu</div>
-          {[{ title: 'Home', path: '/' }, ...navLinks].map((link) => (
-            <Link key={link.title} href={link.path} className="mob-link" onClick={() => setMenuOpen(false)}>
-              {link.title}
-            </Link>
-          ))}
+          <div className="mob-link-container">
+            {[{ title: 'Home', path: '/' }, ...navLinks].map((link) => (
+              <Link key={link.title} href={link.path} className="mob-link" onClick={() => setMenuOpen(false)}>
+                {link.title}
+              </Link>
+            ))}
+          </div>
         </div>
 
         <div className="cb-overlay-footer">
           <div className="cb-overlay-label">Get in touch</div>
-          <a href="mailto:prominenttechnolabs@gmail.com" className="mob-email">prominenttechnolabs@gmail.com</a>
-          <a href="tel:+919327603253" className="mob-email">+91 93276 03253</a>
+          <div className="cb-footer-links-row">
+            <a href="mailto:info@prominenttechnolabs.com" className="mob-footer-link">info@prominenttechnolabs.com</a>
+            <a href="tel:+919327603253" className="mob-footer-link">+91 93276 03253</a>
+          </div>
         </div>
       </div>
 
@@ -295,46 +299,63 @@ const Navbar = () => {
           flex: 1;
           display: flex;
           flex-direction: column;
-          padding: 0 24px;
-          justify-content: center;
+          padding: 80px 12vw 0;
+          justify-content: flex-start;
         }
         .cb-overlay-label {
-          font-size: 0.7rem;
-          font-weight: 500;
+          font-size: 0.85rem;
+          font-weight: 400;
           color: #999;
-          margin-bottom: 20px;
-          text-transform: uppercase;
-          letter-spacing: 0.08em;
+          margin-bottom: 30px;
+          text-transform: capitalize;
+          letter-spacing: 0;
+        }
+        .mob-link-container {
+          display: flex;
+          flex-direction: column;
         }
         .mob-link {
           font-family: var(--font-main);
-          font-size: clamp(2.2rem, 7vw, 3.8rem);
-          font-weight: 500;
+          font-size: clamp(2.5rem, 8vw, 4.2rem);
+          font-weight: 400;
           color: #000;
           text-decoration: none;
-          line-height: 1.25;
-          padding: 4px 0;
+          line-height: 1.1;
+          padding: 6px 0;
           transition: opacity 0.3s;
+          letter-spacing: -0.02em;
         }
         .mob-link:hover { opacity: 0.35; }
 
         .cb-overlay-footer {
-          padding: 24px;
-          border-top: 1px solid rgba(0, 0, 0, 0.06);
+          padding: 40px 12vw 60px;
+          border-top: 1px solid rgba(0, 0, 0, 0.05);
         }
-        .mob-email {
+        .cb-footer-links-row {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 30px 60px;
+          margin-top: 10px;
+        }
+        .mob-footer-link {
           display: block;
           color: #000;
           text-decoration: none;
-          font-size: 0.95rem;
+          font-size: 1rem;
           font-weight: 400;
-          margin-top: 6px;
-          transition: opacity 0.3s;
+          border-bottom: 1.5px solid rgba(0,0,0,0.1);
+          padding-bottom: 2px;
+          transition: border-color 0.3s;
         }
-        .mob-email:hover { opacity: 0.5; }
+        .mob-footer-link:hover { border-color: #000; }
 
         /* ─── Responsive ─── */
         @media (max-width: 1024px) {
+          .cb-nav-inner { padding: 0 40px; }
+          .cb-nav-links { gap: 25px; } /* Slightly tighter gap for tablets */
+        }
+
+        @media (max-width: 768px) {
           .cb-nav-links { display: none; }
           .cb-menu-btn { display: block; }
           .cb-nav-inner { padding: 0 24px; }
@@ -342,8 +363,8 @@ const Navbar = () => {
         @media (max-width: 480px) {
           .cb-nav-inner { padding: 0 16px; }
           .cb-overlay-header { padding: 0 16px; }
-          .cb-overlay-body { padding: 0 16px; }
-          .cb-overlay-footer { padding: 20px 16px; }
+          .cb-overlay-body { padding: 60px 8vw 0; }
+          .cb-overlay-footer { padding: 30px 8vw 50px; }
         }
       `}</style>
     </>

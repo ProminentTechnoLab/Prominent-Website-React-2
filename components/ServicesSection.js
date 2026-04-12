@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import SERVICE_CONFIGS from './serviceConfigs'
@@ -8,11 +8,42 @@ import SERVICE_CONFIGS from './serviceConfigs'
 const ServicesSection = () => {
   const sectionRef = useRef(null)
   const [hoveredIdx, setHoveredIdx] = useState(null)
+  const rowRefs = useRef([])
+
+  useEffect(() => {
+    // Only apply scroll-expansion on touch devices or tablet/mobile viewports
+    // to avoid interference with precise mouse hover on desktop.
+    const isTouch = window.matchMedia('(max-width: 1024px)').matches
+    if (!isTouch) return
+
+    const observerOptions = {
+      root: null,
+      rootMargin: '-40% 0% -40% 0%', // Center focus zone
+      threshold: 0.1
+    }
+
+    const observerCallback = (entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const idx = parseInt(entry.target.getAttribute('data-index'))
+          setHoveredIdx(idx)
+        }
+      });
+    }
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions)
+    
+    rowRefs.current.forEach(row => {
+      if (row) observer.observe(row)
+    })
+
+    return () => observer.disconnect()
+  }, [])
 
   const servicesConfigList = [
     { id: 'website-development', hoverColor: '#0A2463', imgLg: '/images/serv_web_lg.png', imgSm1: '/images/refokus_web_dev.png', imgSm2: '/images/refokus_web_dev.png' },
-    { id: 'mobile-app-development', hoverColor: '#EA4335', imgLg: '/images/serv_mob_lg.png', imgSm1: '/images/refokus_mobile_dev.png', imgSm2: '/images/refokus_mobile_dev.png' }, 
-    { id: 'ui-ux-design', hoverColor: '#3F51B5', imgLg: '/images/serv_ui_lg.png', imgSm1: '/images/refokus_uiux.png', imgSm2: '/images/refokus_uiux.png' }, 
+    { id: 'mobile-app-development', hoverColor: '#EA4335', imgLg: '/images/serv_mob_lg.png', imgSm1: '/images/refokus_mobile_dev.png', imgSm2: '/images/refokus_mobile_dev.png' },
+    { id: 'ui-ux-design', hoverColor: '#3F51B5', imgLg: '/images/serv_ui_lg.png', imgSm1: '/images/refokus_uiux.png', imgSm2: '/images/refokus_uiux.png' },
     { id: 'cms-ecommerce', hoverColor: '#00838F', imgLg: '/images/serv_ecom_lg.png', imgSm1: '/images/refokus_ecommerce.png', imgSm2: '/images/refokus_ecommerce.png' },
     { id: 'payment-shipping-api', hoverColor: '#2E7D32', imgLg: '/images/serv_api_lg.png', imgSm1: '/images/refokus_api.png', imgSm2: '/images/refokus_api.png' },
     { id: 'digital-marketing', hoverColor: '#E65100', imgLg: '/images/serv_mark_lg.png', imgSm1: '/images/refokus_marketing.png', imgSm2: '/images/refokus_marketing.png' }
@@ -21,17 +52,17 @@ const ServicesSection = () => {
   const mappedServices = servicesConfigList.map(item => {
     const config = SERVICE_CONFIGS[item.id]
     return {
-       ...item,
-       title: config.serviceName,
-       desc: config.heroSubtitle,
-       tags: config.technologies.slice(0, 4).map(t => t.name),
-       path: `/services/${item.id}/`
+      ...item,
+      title: config.serviceName,
+      desc: config.heroSubtitle,
+      tags: config.technologies.slice(0, 4).map(t => t.name),
+      path: `/services/${item.id}/`
     }
   })
 
   return (
-    <section 
-      className="ss-section" 
+    <section
+      className="ss-section"
       ref={sectionRef}
     >
       <div className="ss-inner">
@@ -43,70 +74,81 @@ const ServicesSection = () => {
         </div>
 
         <div className="ss-list-wrap">
-           {mappedServices.map((service, idx) => {
-              const isHovered = hoveredIdx === idx
-              
-              return (
-                 <div 
-                   key={idx} 
-                   className={`ss-row ${isHovered ? 'is-hovered' : ''}`}
-                   onMouseEnter={() => setHoveredIdx(idx)}
-                   onMouseLeave={() => setHoveredIdx(null)}
-                   style={{
-                     '--hover-bg': servicesConfigList[idx].hoverColor
-                   }}
-                 >
-                    <div className="ss-row-top">
-                       <div className="ss-col flex-1" style={{ display: 'flex', flexDirection: 'column' }}>
-                          <h3 className="ss-row-title">{service.title}</h3>
-                          
-                          {/* Link moved UPPER of images and DIRECTLY below title, fading in softly on hover */}
-                          <div className="ss-col-link-wrap">
-                             <Link href={service.path} className="ss-case-study-link">
-                                <span className="link-text-wrap">
-                                   <span className="link-text-old">Explore Service</span>
-                                   <span className="link-text-new">Explore Service</span>
-                                </span>
-                                <span className="link-arrow-wrap">
-                                   <span className="link-arrow-old">&rarr;</span>
-                                   <span className="link-arrow-new">&rarr;</span>
-                                </span>
-                             </Link>
-                          </div>
-                          
-                       </div>
-                       <div className="ss-col flex-2 ss-col-desc">
-                          <p className="ss-row-desc">{service.desc}</p>
-                       </div>
-                       <div className="ss-col flex-1 ss-col-tags">
-                          <ul className="ss-row-tags">
-                            {service.tags.map((tag, i) => <li key={i}>{tag}</li>)}
-                          </ul>
-                       </div>
-                    </div>
+          {mappedServices.map((service, idx) => {
+            const isHovered = hoveredIdx === idx
+
+            return (
+              <div
+                key={idx}
+                ref={el => rowRefs.current[idx] = el}
+                data-index={idx}
+                className={`ss-row ${isHovered ? 'is-hovered' : ''}`}
+                onMouseEnter={() => {
+                  // Keep hover on desktop
+                  if (!window.matchMedia('(max-width: 1024px)').matches) {
+                    setHoveredIdx(idx)
+                  }
+                }}
+                onMouseLeave={() => {
+                  if (!window.matchMedia('(max-width: 1024px)').matches) {
+                    setHoveredIdx(null)
+                  }
+                }}
+                style={{
+                  '--hover-bg': servicesConfigList[idx].hoverColor
+                }}
+              >
+                <div className="ss-row-top">
+                  <div className="ss-col flex-1" style={{ display: 'flex', flexDirection: 'column' }}>
+                    <h3 className="ss-row-title">{service.title}</h3>
                     
-                    <div className="ss-row-bottom">
-                       <div className="ss-row-bottom-inner">
-                          
-                          {/* Image Gallery spans exact 100% full width mirroring Refokus exact layout */}
-                          <div className="ss-col-media-wrap" style={{ width: '100%' }}>
-                              <div className="ss-gallery-matrix">
-                                 <div className="ss-media-box ss-media-lg">
-                                    <Image src={service.imgLg} alt={`${service.title} feature`} fill style={{ objectFit: 'cover' }} quality={95} />
-                                 </div>
-                                 <div className="ss-media-box ss-media-sm">
-                                    <Image src={service.imgSm1} alt={`${service.title} detail one`} fill style={{ objectFit: 'cover' }} quality={90} />
-                                 </div>
-                                 <div className="ss-media-box ss-media-sm">
-                                    <Image src={service.imgSm2} alt={`${service.title} detail two`} fill style={{ objectFit: 'cover' }} quality={90} />
-                                 </div>
-                              </div>
-                          </div>
-                       </div>
+                    <div className="ss-col-link-wrap">
+                      <Link href={service.path} className="ss-case-study-link">
+                        <span className="link-text-wrap">
+                          <span className="link-text-old">Explore Service</span>
+                          <span className="link-text-new">Explore Service</span>
+                        </span>
+                        <span className="link-arrow-wrap">
+                          <span className="link-arrow-old">&rarr;</span>
+                          <span className="link-arrow-new">&rarr;</span>
+                        </span>
+                      </Link>
                     </div>
-                 </div>
-              )
-           })}
+                  </div>
+                  <div className="ss-col flex-2 ss-col-desc">
+                    <p className="ss-row-desc">{service.desc}</p>
+                  </div>
+                  <div className="ss-col flex-1 ss-col-tags">
+                    <ul className="ss-row-tags">
+                      {service.tags.map((tag, i) => <li key={i}>{tag}</li>)}
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="ss-row-bottom">
+                  <div className="ss-row-bottom-inner">
+
+
+                    {/* Image Gallery stays as matrix for desktop, handled by CSS for mobile */}
+                    <div className="ss-col-media-wrap" style={{ width: '100%' }}>
+                      <div className="ss-gallery-matrix">
+                        <div className="ss-media-box ss-media-lg">
+                          <Image src={service.imgLg} alt={`${service.title} feature`} fill style={{ objectFit: 'cover' }} quality={95} />
+                        </div>
+                        <div className="ss-media-box ss-media-sm">
+                          <Image src={service.imgSm1} alt={`${service.title} detail one`} fill style={{ objectFit: 'cover' }} quality={90} />
+                        </div>
+                        <div className="ss-media-box ss-media-sm">
+                          <Image src={service.imgSm2} alt={`${service.title} detail two`} fill style={{ objectFit: 'cover' }} quality={90} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            )
+          })}
         </div>
       </div>
 
@@ -192,7 +234,6 @@ const ServicesSection = () => {
           color: #ffffff !important;
         }
 
-        /* The link wrapper now sits directly under the title */
         .ss-col-link-wrap {
           margin-top: 24px;
         }
@@ -216,6 +257,16 @@ const ServicesSection = () => {
           opacity: 1;
           transform: translateY(0);
           transition-delay: 0.2s; 
+        }
+
+        /* Desktop Positioning Fix: Link stays under title area on large screens */
+        @media (min-width: 1025px) {
+           .ss-col-link-wrap {
+             position: absolute;
+             top: 110px;
+             left: 5vw;
+             z-index: 20;
+           }
         }
 
         .ss-case-study-link::before {
@@ -343,7 +394,6 @@ const ServicesSection = () => {
           padding-top: 40px; 
         }
 
-        /* FULL WIDTH GALLERY Exact Match (50% / 25% / 25%) */
         .ss-col-media-wrap {
           width: 100%;
         }
@@ -388,48 +438,134 @@ const ServicesSection = () => {
           opacity: 0.25;
         }
 
-        /* Responsive Breakpoints */
         @media (max-width: 1024px) {
-          /* Force Always Open on Touch Devices */
-          .ss-row { background-color: var(--hover-bg) !important; }
-          .ss-row-bottom { grid-template-rows: 1fr !important; }
-          .ss-row-bottom-inner { padding-top: 40px !important; }
-          .ss-case-study-link { opacity: 1 !important; transform: translateY(0) !important; }
-          .ss-media-box { transform: translateY(0) scale(1) !important; opacity: 1 !important; }
-          .ss-list-wrap:hover .ss-row:not(.is-hovered) { opacity: 1 !important; }
-
+          .ss-section {
+            border-top-left-radius: 40px !important;
+            border-top-right-radius: 40px !important;
+            margin-top: -40px !important;
+          }
           .ss-intro-group {
             flex-direction: column;
             gap: 20px;
+            padding: 0 5vw 40px !important;
           }
           .ss-row-top {
-             flex-direction: column;
-             gap: 24px;
+             display: grid !important;
+             grid-template-columns: 1.2fr 2fr 1fr !important;
+             gap: 6vw !important;
+             align-items: flex-start !important;
+             flex-direction: row !important;
           }
-          .ss-col-desc { max-width: 100%; }
-          .ss-row-tags { margin-left: 0; display: flex; flex-wrap: wrap; gap: 15px; }
-          .ss-row-tags li { margin-bottom: 0; }
-          .ss-row-bottom-inner {
-             flex-direction: column;
-             gap: 30px;
+          .ss-row-title { font-size: 1.8rem !important; margin: 0; line-height: 1.1; }
+          .ss-row-desc { max-width: 100%; font-size: 1rem; opacity: 0.8; }
+          .ss-row-tags { 
+            margin-left: 0; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 8px; 
+            margin-top: 0;
+            align-items: flex-start !important; /* Column on right, but content aligned left */
+            text-align: left !important;
           }
-          
+          .ss-row-tags li { margin-bottom: 0; font-size: 0.7rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4px; width: fit-content; }
+
+          /* The link is now inside ss-row-bottom-inner, so it's only visible on expand by default */
+          /* Link positioning under title on Tablet */
+          .ss-col-link-wrap { 
+            position: relative !important;
+            margin-top: 20px !important;
+            display: none !important; /* Hidden by default on tablet */
+            z-index: 5;
+          }
+          .is-hovered .ss-col-link-wrap {
+            display: flex !important; /* Revealed when expanded */
+          }
+          .ss-case-study-link {
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+            font-size: 0.95rem !important;
+            padding-bottom: 5px !important;
+          }
+          .link-arrow-wrap { margin-left: 15px !important; }
+
           .ss-gallery-matrix {
-             grid-template-columns: 1fr;
+             grid-template-columns: 2fr 1fr 1fr;
+             gap: 15px;
           }
-          .ss-media-lg { height: 260px; }
-          .ss-media-sm { height: 260px; }
+          .ss-media-sm { display: block !important; height: 160px; }
+          .ss-media-lg { height: 260px; border-radius: 12px; }
+          
+          .link-arrow-wrap { margin-left: 20px !important; }
+          .ss-col-link-wrap { margin-top: 20px !important; }
         }
+
         @media (max-width: 768px) {
           .ss-section {
              padding: 60px 0;
-             border-top-left-radius: 40px;
-             border-top-right-radius: 40px;
-             margin-top: -40px;
+             border-top-left-radius: 0 !important;
+             border-top-right-radius: 0 !important;
+             margin-top: 0 !important;
           }
-          .ss-title { font-size: clamp(3rem, 10vw, 4rem); }
-          .ss-row { padding: 40px 5vw; }
-          .ss-media-lg, .ss-media-sm { border-radius: 8px; height: 220px; }
+          .ss-title { font-size: clamp(3rem, 10vw, 4rem); padding-left: 20px; }
+
+          /* Force Always Open Cards on Mobile only */
+          .ss-list-wrap { 
+            padding: 12px !important; 
+            gap: 12px !important; 
+            border-top: none !important;
+          }
+          .ss-row { 
+            background-color: var(--hover-bg) !important; 
+            margin: 0 !important;
+            border-radius: 8px !important;
+            width: 100% !important;
+            display: flex;
+            flex-direction: column;
+            border: none !important;
+            padding: 24px !important;
+            opacity: 1 !important;
+          }
+          .ss-row-top { display: flex !important; flex-direction: column !important; gap: 15px !important; }
+          
+          /* Link at bottom on Mobile cards */
+          .ss-col-link-wrap { 
+            order: 10 !important; 
+            margin-top: 25px !important; 
+            display: flex !important; 
+          }
+          .ss-row-tags { 
+            flex-direction: row !important; 
+            flex-wrap: wrap !important;
+            gap: 8px !important;
+            margin-top: 10px !important;
+          }
+          
+          .ss-row-bottom { grid-template-rows: 1fr !important; }
+          .ss-row-bottom-inner { 
+            display: flex !important;
+            flex-direction: column !important;
+            padding-top: 24px !important; 
+          }
+          .ss-col-media-wrap { order: 5 !important; }
+          .ss-case-study-link { 
+            opacity: 1 !important; 
+            transform: translateY(0) !important; 
+            display: flex !important;
+            width: 100% !important;
+            justify-content: space-between !important;
+            margin-top: 0 !important;
+          }
+          .ss-case-study-link::after, .ss-case-study-link::before { display: none !important; }
+          .ss-media-box { transform: translateY(0) scale(1) !important; opacity: 1 !important; }
+          .ss-list-wrap:hover .ss-row:not(.is-hovered) { opacity: 1 !important; }
+          
+          .ss-row-title { font-size: 2rem !important; }
+          .ss-row-desc { font-size: 0.95rem; }
+          .ss-gallery-matrix {
+             grid-template-columns: 1fr;
+          }
+          .ss-media-sm { display: none !important; }
+          .ss-media-lg { height: 220px; }
         }
       `}</style>
     </section>

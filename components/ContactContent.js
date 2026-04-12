@@ -122,7 +122,14 @@ const ContactContent = () => {
               )}
 
               <button type="submit" className="ct-submit" disabled={status.submitting}>
-                {status.submitting ? 'Sending...' : 'Send message'}
+                <span className="ct-submit-text-wrapper">
+                  <span className="ct-submit-text-old">
+                    {status.submitting ? 'Sending...' : 'Send request'}
+                  </span>
+                  <span className="ct-submit-text-new">
+                    {status.submitting ? 'Sending...' : 'Send request'}
+                  </span>
+                </span>
               </button>
             </form>
           )}
@@ -131,17 +138,17 @@ const ContactContent = () => {
 
       <style>{`
         .ct-page {
-          background: var(--bg-primary);
+          background: #ffffff;
           padding: 160px 0 120px;
           min-height: 100vh;
         }
         .ct-inner { max-width: 1000px; margin: 0 auto; padding: 0 40px; }
 
         .ct-title {
-          font-size: clamp(3.5rem, 8vw, 7rem);
+          font-size: clamp(3.2rem, 7.5vw, 6.5rem);
           font-weight: 500;
-          line-height: 1.0;
-          letter-spacing: -0.04em;
+          line-height: 1.05;
+          letter-spacing: -0.035em;
           color: #000;
           text-align: center;
           margin-bottom: 80px;
@@ -209,19 +216,51 @@ const ContactContent = () => {
         .ct-submit {
           display: inline-flex;
           align-items: center;
-          padding: 18px 40px;
-          border: 1px solid rgba(0,0,0,0.15);
+          justify-content: center;
+          padding: 18px 45px;
+          border: 1.5px solid #000;
           border-radius: 100px;
           background: transparent;
           color: #000;
-          font-size: 1rem;
-          font-weight: 500;
+          font-size: 17px;
+          font-weight: 400;
           cursor: pointer;
-          transition: all 0.4s var(--ease-expo);
-          font-family: inherit;
+          position: relative;
+          overflow: hidden;
+          transition: border-color 1s cubic-bezier(0.19, 1, 0.22, 1);
           margin-top: 16px;
+          font-family: inherit;
         }
-        .ct-submit:hover { background: #000; color: #fff; border-color: #000; }
+        .ct-submit::before {
+          content: '';
+          position: absolute;
+          top: 100%; left: -50%;
+          width: 200%; height: 300%;
+          background: #000;
+          border-radius: 50%;
+          transform: translateY(0);
+          transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1);
+          z-index: 0;
+        }
+        .ct-submit:hover::before { transform: translateY(-70%); }
+        .ct-submit:hover { border-color: #000; }
+        
+        .ct-submit-text-wrapper {
+          position: relative; z-index: 1;
+          display: inline-flex; overflow: hidden;
+          height: 1.2em;
+        }
+        .ct-submit-text-old {
+          display: inline-block; color: #000;
+          transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.15s ease-out;
+        }
+        .ct-submit-text-new {
+          position: absolute; top: 100%; left: 0; width: 100%;
+          text-align: center; color: #fff; display: inline-block;
+          transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        .ct-submit:hover .ct-submit-text-old { transform: translateY(-100%); opacity: 0; }
+        .ct-submit:hover .ct-submit-text-new { transform: translateY(-100%); }
         .ct-submit:disabled { opacity: 0.4; cursor: not-allowed; }
 
         .ct-error {

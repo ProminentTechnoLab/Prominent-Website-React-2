@@ -163,6 +163,14 @@ const Pricing = () => {
         .pr-tabs-container {
           display: flex;
           gap: 40px;
+          overflow-x: auto;
+          scrollbar-width: none; /* Firefox */
+          -ms-overflow-style: none; /* IE/Edge */
+          padding-bottom: 2px;
+          -webkit-overflow-scrolling: touch;
+        }
+        .pr-tabs-container::-webkit-scrollbar {
+          display: none; /* Chrome/Safari/Opera */
         }
         .pr-tab-btn {
           background: none;
@@ -345,21 +353,50 @@ const Pricing = () => {
         }
 
         /* Responsive */
-        @media (max-width: 1280px) {
-          .pr-grid { grid-template-columns: repeat(2, 1fr); }
-          .pr-card:last-child { grid-column: span 2; }
-          /* Reset if 2 cols */
-          .pr-grid .pr-card:nth-child(2).popular { grid-column: auto; }
-        }
-
         @media (max-width: 1024px) {
+          .pr-section {
+            border-top-left-radius: 40px !important;
+            border-top-right-radius: 40px !important;
+            margin-top: -40px !important;
+          }
           .pr-header { flex-direction: column; gap: 20px; }
+          .pr-grid { grid-template-columns: 1fr; } /* Stack cards for better tablet/mobile experience */
+          .pr-card { padding: 45px 35px; }
           .pr-tabs-container { overflow-x: auto; padding-bottom: 0; }
           .pr-tab-btn { white-space: nowrap; }
         }
 
         @media (max-width: 768px) {
-          .pr-section { padding: 80px 0; }
+          .pr-section { 
+            padding: 80px 0; 
+            border-top-left-radius: 0 !important;
+            border-top-right-radius: 0 !important;
+            margin-top: 0 !important;
+          }
+          .pr-tabs-nav { border-bottom: none; }
+          .pr-tabs-container { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 12px; 
+            overflow: visible;
+          }
+          .pr-tab-btn {
+            background: #f8f8f8;
+            border-radius: 12px;
+            padding: 15px 10px;
+            font-size: 0.85rem;
+            text-align: center;
+            white-space: normal;
+            height: auto;
+            border: 1px solid #eeeeee;
+          }
+          .pr-tab-btn.active {
+            background: #000000;
+            color: #ffffff;
+            border-color: #000000;
+          }
+          .tab-indicator { display: none; } /* Hide the underline on mobile grid mode */
+          
           .pr-grid { grid-template-columns: 1fr; }
           .pr-card:last-child { grid-column: auto; }
           .pr-card { padding: 40px 30px; }
