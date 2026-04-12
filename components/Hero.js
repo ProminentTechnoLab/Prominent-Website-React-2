@@ -4,7 +4,6 @@ import React, { useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
-import LiquidSculpture from './animations/LiquidSculpture'
 
 const Hero = () => {
   const heroRef = useRef(null)
@@ -74,14 +73,16 @@ const Hero = () => {
 
       <div className="cb-hero-media" ref={videoRef}>
         <video autoPlay muted loop playsInline className="cb-hero-video">
-          <source src="/videos/hero-3d.mp4" type="video/mp4" />
+          <source src="/videos/hero-video.mp4" type="video/mp4" />
         </video>
       </div>
 
       {/* ─── Cuberto-style about section — 50/50 grid ─── */}
       <div className="cb-hero-about" ref={aboutRef}>
         <div className="cb-about-sculpture">
-          <LiquidSculpture />
+          <video autoPlay muted loop playsInline className="cb-about-video">
+            <source src="/videos/about-summary.mp4" type="video/mp4" />
+          </video>
         </div>
         <div className="cb-about-text">
           <p>
@@ -169,6 +170,13 @@ const Hero = () => {
           justify-content: center;
           align-items: center;
           min-height: 420px;
+        }
+        .cb-about-video {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+          border-radius: 16px;
         }
         .cb-about-text {
           padding-left: 20px;
