@@ -4,6 +4,63 @@ import React, { useState, useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { IoCheckmarkCircle, IoAlertCircle } from 'react-icons/io5'
 
+const ServiceChip = ({ label, active, onClick }) => {
+  const chipRef = useRef(null)
+
+  useEffect(() => {
+    const chip = chipRef.current
+    if (!chip) return
+
+    const handleMouseMove = (e) => {
+      const { left, top, width, height } = chip.getBoundingClientRect()
+      const centerX = left + width / 2
+      const centerY = top + height / 2
+      const x = (e.clientX - centerX) * 0.15
+      const y = (e.clientY - centerY) * 0.15
+
+      gsap.to(chip, {
+        x: x,
+        y: y,
+        duration: 0.3,
+        ease: 'power2.out',
+        overwrite: 'auto'
+      })
+    }
+
+    const handleMouseLeave = () => {
+      gsap.to(chip, {
+        x: 0,
+        y: 0,
+        duration: 0.8,
+        ease: 'elastic.out(1, 0.3)',
+        overwrite: 'auto'
+      })
+    }
+
+    chip.addEventListener('mousemove', handleMouseMove)
+    chip.addEventListener('mouseleave', handleMouseLeave)
+
+    return () => {
+      chip.removeEventListener('mousemove', handleMouseMove)
+      chip.removeEventListener('mouseleave', handleMouseLeave)
+    }
+  }, [])
+
+  return (
+    <button
+      ref={chipRef}
+      className={`ct-chip ${active ? 'active' : ''}`}
+      onClick={onClick}
+      type="button"
+    >
+      <span className="ct-chip-content">
+        <span className="ct-chip-text">{label}</span>
+        <span className="ct-chip-text ct-chip-text-hover">{label}</span>
+      </span>
+    </button>
+  )
+}
+
 const ContactContent = () => {
   const sectionRef = useRef(null)
   const [selected, setSelected] = useState([])
@@ -71,14 +128,12 @@ const ContactContent = () => {
           <p className="ct-label">I'm interested in...</p>
           <div className="ct-chips-row">
             {interests.map(item => (
-              <button
+              <ServiceChip
                 key={item}
-                className={`ct-chip ${selected.includes(item) ? 'active' : ''}`}
+                label={item}
+                active={selected.includes(item)}
                 onClick={() => toggleInterest(item)}
-                type="button"
-              >
-                {item}
-              </button>
+              />
             ))}
           </div>
         </div>
@@ -87,50 +142,47 @@ const ContactContent = () => {
         <div className="ct-form">
           {status.success ? (
             <div className="ct-success">
-              <IoCheckmarkCircle className="ct-success-icon" />
-              <h3>Message sent!</h3>
-              <p>We'll get back to you within 24 hours.</p>
+              <div className="ct-success-icon-wrap">
+                <IoCheckmarkCircle className="ct-success-icon" />
+              </div>
+              <h3>Thank you!</h3>
+              <p>Your message has been sent successfully. We'll get back to you within 24 hours.</p>
               <button className="ct-reset" onClick={() => setStatus({ ...status, success: false })}>Send another message</button>
             </div>
           ) : (
             <form onSubmit={handleSubmit}>
               <div className="ct-field">
-                <label>Your name</label>
-                <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="John Doe" required />
+                <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Your name" required />
               </div>
               <div className="ct-field">
-                <label>Your email</label>
-                <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="john@example.com" required />
-              </div>
-              <div className="ct-field-row">
-                <div className="ct-field">
-                  <label>Phone (optional)</label>
-                  <input type="tel" name="phone" value={formData.phone} onChange={handleChange} placeholder="+1 (555) 000-0000" />
-                </div>
-                <div className="ct-field">
-                  <label>Subject</label>
-                  <input type="text" name="subject" value={formData.subject} onChange={handleChange} placeholder="Project inquiry" required />
-                </div>
+                <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email" required />
               </div>
               <div className="ct-field">
-                <label>Tell us about your project</label>
-                <textarea name="message" value={formData.message} onChange={handleChange} placeholder="I need help with..." rows="3" required></textarea>
+                <input type="tel" name="phone" value={formData.phone} onChange={handleChange} placeholder="Phone (optional)" />
+              </div>
+              <div className="ct-field">
+                <input type="text" name="subject" value={formData.subject} onChange={handleChange} placeholder="Subject" required />
+              </div>
+              <div className="ct-field">
+                <textarea name="message" value={formData.message} onChange={handleChange} placeholder="Tell us about your project" rows="1" required></textarea>
               </div>
 
               {status.error && (
                 <div className="ct-error"><IoAlertCircle /> {status.error}</div>
               )}
 
-              <button type="submit" className="ct-submit" disabled={status.submitting}>
-                <span className="ct-submit-text-wrapper">
-                  <span className="ct-submit-text-old">
-                    {status.submitting ? 'Sending...' : 'Send request'}
+              <div className="ct-submit-container">
+                <button type="submit" className="ct-submit" disabled={status.submitting}>
+                  <span className="ct-submit-text-wrapper">
+                    <span className="ct-submit-text-old">
+                      {status.submitting ? 'Sending...' : 'Send request'}
+                    </span>
+                    <span className="ct-submit-text-new">
+                      {status.submitting ? 'Sending...' : 'Send request'}
+                    </span>
                   </span>
-                  <span className="ct-submit-text-new">
-                    {status.submitting ? 'Sending...' : 'Send request'}
-                  </span>
-                </span>
-              </button>
+                </button>
+              </div>
             </form>
           )}
         </div>
@@ -142,7 +194,7 @@ const ContactContent = () => {
           padding: 160px 0 120px;
           min-height: 100vh;
         }
-        .ct-inner { max-width: 1000px; margin: 0 auto; padding: 0 40px; }
+        .ct-inner { width: 100%; margin: 0; padding: 0 100px; }
 
         .ct-title {
           font-size: clamp(3.2rem, 7.5vw, 6.5rem);
@@ -156,62 +208,92 @@ const ContactContent = () => {
         .ct-line { display: block; overflow: hidden; }
 
         /* Chips — Cuberto "I'm interested in" */
-        .ct-chips-section { margin-bottom: 60px; }
+        .ct-chips-section { margin-bottom: 60px; text-align: left; }
         .ct-label {
           font-size: 1.2rem;
           font-weight: 400;
           color: #000;
           margin-bottom: 24px;
+          text-align: left;
         }
-        .ct-chips-row { display: flex; flex-wrap: wrap; gap: 12px; }
+        .ct-chips-row {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 15px 12px;
+          justify-content: flex-start;
+          max-width: 800px;
+        }
         .ct-chip {
           padding: 14px 28px;
-          border: 1px solid rgba(0,0,0,0.15);
+          border: 1px solid #000;
           border-radius: 100px;
           background: transparent;
           color: #000;
           font-size: 1rem;
           font-weight: 400;
           cursor: pointer;
-          transition: all 0.3s var(--ease-expo);
+          transition: background 0.3s, color 0.3s;
           font-family: inherit;
+          position: relative;
+          display: inline-block;
+          overflow: hidden;
+          z-index: 1;
         }
-        .ct-chip:hover { border-color: #000; }
         .ct-chip.active {
           background: #000;
           color: #fff;
           border-color: #000;
         }
 
-        /* Form — Cuberto style: borderless inputs with underlines */
-        .ct-field { margin-bottom: 32px; }
-        .ct-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
-        .ct-field label {
-          display: block;
-          font-size: 0.75rem;
-          font-weight: 500;
-          color: #999;
-          text-transform: uppercase;
-          letter-spacing: 0.05em;
-          margin-bottom: 8px;
+        .ct-chip-content {
+          display: flex;
+          flex-direction: column;
+          position: relative;
+          height: 1.2em;
+          overflow: hidden;
+          pointer-events: none;
         }
+        .ct-chip-text {
+          display: block;
+          line-height: 1.2;
+          transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        .ct-chip-text-hover {
+          position: absolute;
+          top: 100%;
+          left: 0;
+          width: 100%;
+        }
+        .ct-chip:hover .ct-chip-text {
+          transform: translateY(-100%);
+        }
+        .ct-chip.active .ct-chip-text {
+          color: #fff;
+        }
+
+        /* Form — Cuberto style: borderless inputs with underlines */
+        .ct-form { max-width: 700px; text-align: left; }
+        .ct-field { margin-bottom: 60px; position: relative; }
         .ct-field input, .ct-field textarea {
           width: 100%;
           background: transparent;
           border: none;
-          border-bottom: 1px solid rgba(0,0,0,0.12);
-          padding: 12px 0;
-          font-size: 1.1rem;
-          font-weight: 500;
+          border-bottom: 1.5px solid rgba(0,0,0,0.1);
+          padding: 40px 0 15px;
+          font-size: clamp(1.4rem, 3.5vw, 1.8rem);
+          font-weight: 400;
           color: #000;
           font-family: inherit;
           outline: none;
           border-radius: 0;
-          transition: border-color 0.3s;
+          transition: border-bottom-color 0.4s cubic-bezier(0.19, 1, 0.22, 1);
         }
-        .ct-field input:focus, .ct-field textarea:focus { border-color: #000; }
-        .ct-field input::placeholder, .ct-field textarea::placeholder { color: rgba(0,0,0,0.2); font-weight: 400; }
-        .ct-field textarea { resize: vertical; min-height: 60px; }
+        .ct-field input:focus, .ct-field textarea:focus { border-bottom-color: #000; }
+        .ct-field input::placeholder, .ct-field textarea::placeholder { color: rgba(0,0,0,0.45); font-weight: 300; transition: color 0.3s; }
+        .ct-field input:focus::placeholder, .ct-field textarea:focus::placeholder { color: rgba(0,0,0,0.7); }
+        .ct-field textarea { resize: none; min-height: 120px; vertical-align: bottom; }
+
+        .ct-submit-container { text-align: left; }
 
         .ct-submit {
           display: inline-flex;
@@ -269,31 +351,50 @@ const ContactContent = () => {
           font-size: 0.9rem; font-weight: 500;
         }
 
-        .ct-success { text-align: center; padding: 60px 0; }
-        .ct-success-icon { font-size: 3rem; color: #4ade80; display: block; margin-bottom: 16px; }
-        .ct-success h3 { font-size: 1.5rem; font-weight: 500; margin-bottom: 8px; }
-        .ct-success p { color: #666; margin-bottom: 32px; }
+        .ct-success { text-align: left; padding: 100px 0; max-width: 600px; animation: fadeInUp 0.8s var(--ease-expo); }
+        .ct-success-icon-wrap { margin-bottom: 32px; }
+        .ct-success-icon { font-size: 4rem; color: #000; }
+        .ct-success h3 { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 500; margin-bottom: 20px; letter-spacing: -0.03em; }
+        .ct-success p { font-size: 1.25rem; color: #666; margin-bottom: 48px; line-height: 1.5; font-weight: 300; }
         .ct-reset {
-          padding: 14px 28px; border: 1px solid rgba(0,0,0,0.15);
+          padding: 18px 40px; border: 1.5px solid #000;
           border-radius: 100px; background: transparent; color: #000;
-          font-size: 0.9rem; font-weight: 500; cursor: pointer; font-family: inherit;
-          transition: all 0.3s;
+          font-size: 1rem; font-weight: 400; cursor: pointer; font-family: inherit;
+          transition: all 0.4s var(--ease-expo);
         }
         .ct-reset:hover { background: #000; color: #fff; }
 
+        @keyframes fadeInUp {
+          from { opacity: 0; transform: translateY(30px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 1024px) {
+          .ct-inner { padding: 0 40px !important; }
+        }
         @media (max-width: 768px) {
           .ct-page { padding: 120px 0 80px; }
-          .ct-inner { padding: 0 20px; }
-          .ct-field-row { grid-template-columns: 1fr; gap: 0; }
-          .ct-title { margin-bottom: 50px; }
-          .ct-chip { padding: 10px 18px; font-size: 0.9rem; }
+          .ct-inner { padding: 0 24px !important; }
+          .ct-title { margin-bottom: 50px; font-size: clamp(2.5rem, 8vw, 4rem); }
+          .ct-chip { padding: 10px 20px; font-size: 0.95rem; }
+          .ct-field { margin-bottom: 50px !important; }
+          .ct-field input, .ct-field textarea { font-size: 1.5rem; padding: 30px 0 15px; }
+          .ct-success { padding: 60px 0; }
         }
         @media (max-width: 480px) {
-          .ct-page { padding: 100px 0 60px; }
-          .ct-inner { padding: 0 16px; }
-          .ct-title { font-size: 2.5rem; }
-          .ct-chip { padding: 8px 14px; font-size: 0.8rem; }
-          .ct-submit { padding: 14px 28px; font-size: 0.9rem; }
+          .ct-page { padding: 80px 0 60px; }
+          .ct-inner { padding: 0 16px !important; }
+          .ct-title { font-size: 2.22rem; margin-bottom: 40px; }
+          .ct-label { font-size: 1.1rem; margin-bottom: 16px; }
+          .ct-chips-row { gap: 10px 8px; }
+          .ct-chip { padding: 8px 16px; font-size: 0.85rem; }
+          .ct-field { margin-bottom: 40px !important; }
+          .ct-field input, .ct-field textarea { font-size: 1.25rem; padding: 24px 0 12px; }
+          .ct-submit-container { width: 100%; }
+          .ct-submit { padding: 16px 32px; font-size: 0.95rem; width: 100%; display: flex; justify-content: center; }
+          .ct-success { padding: 40px 0; }
+          .ct-success h3 { font-size: 2.2rem; }
+          .ct-success p { font-size: 1.1rem; }
         }
       `}</style>
     </section>
