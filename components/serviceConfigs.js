@@ -83,7 +83,7 @@ const SERVICE_CONFIGS = {
             { q: 'How long does it take to build a website?', a: 'A standard 5-10 page corporate website takes 3-4 weeks. Complex web applications with custom portals and APIs typically take 8-16 weeks depending on scope.' },
             { q: 'What technologies do you use for website development?', a: 'We primarily use React and Next.js for the frontend, Laravel for the backend API, and MySQL for the database. For WordPress projects we use custom themes and plugins.' },
             { q: 'Do you provide website hosting and domain setup?', a: 'Yes, we help you choose the right hosting (Hostinger, AWS, DigitalOcean), set up your domain DNS, configure SSL certificates, and deploy your website.' },
-            { q: 'How much does a website cost?', a: 'Website costs range from $199 for a landing page to $2,000+ for large enterprise web applications. Check our Pricing page for standard packages.' },
+            { q: 'How much does a website cost?', a: 'Website costs range from $199 for a landing page to $2,000+ for large enterprise web applications. Contact us for a detailed quote tailored to your requirements.' },
             { q: 'Will my website be mobile-friendly?', a: 'Absolutely. Every website we build is fully responsive and tested across iPhone, Android, iPad, and all major browsers (Chrome, Safari, Firefox, Edge).' },
         ],
     },

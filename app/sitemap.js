@@ -8,7 +8,7 @@ export default function sitemap() {
         { path: '', priority: 1.0, freq: 'weekly' },
         { path: '/about', priority: 0.8, freq: 'monthly' },
         { path: '/services', priority: 0.9, freq: 'weekly' },
-        { path: '/pricing', priority: 0.8, freq: 'monthly' },
+
         { path: '/contact', priority: 0.7, freq: 'monthly' },
     ]
 

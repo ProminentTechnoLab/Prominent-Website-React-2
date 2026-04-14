@@ -63,7 +63,7 @@ const WhyUs = () => {
         }
         .wu-inner { max-width: 1400px; margin: 0 auto; padding: 0 40px; }
         .wu-title {
-          font-size: clamp(3rem, 5.5vw, 5rem);
+          font-size: clamp(2.5rem, 6vw, 5.2rem); /* Standardized across all sections */
           font-weight: 500;
           color: #fff;
           margin-bottom: 80px;

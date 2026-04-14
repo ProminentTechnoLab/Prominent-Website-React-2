@@ -128,7 +128,7 @@ const Hero = () => {
           margin: 0 auto 40px;
         }
         .cb-hero-title {
-          font-size: clamp(3.2rem, 7.5vw, 6.5rem);
+          font-size: clamp(2.5rem, 6vw, 5.2rem); /* Further refined for a more sophisticated typography balance */
           font-weight: 500;
           line-height: 1.05;
           letter-spacing: -0.035em;
@@ -180,10 +180,11 @@ const Hero = () => {
           min-height: 420px;
         }
         .cb-about-video {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
+          width: 85%; /* Reduced from 100% */
+          height: 85%; /* Reduced from 100% */
+          object-fit: contain; /* Changed from cover to ensure full visibility of the object */
           display: block;
+          margin: 0 auto;
           border-radius: 16px;
         }
         .cb-about-text {
@@ -226,7 +227,7 @@ const Hero = () => {
           background: #000;
           border-radius: 50%;
           transform: translateY(0);
-          transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1);
+          transition: transform 1.2s cubic-bezier(0.19, 1, 0.22, 1);
           z-index: 0;
         }
         .hero-btn:hover::before { transform: translateY(-60%); }
@@ -238,12 +239,12 @@ const Hero = () => {
         }
         .hero-text-old {
           display: inline-block; color: #000;
-          transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.15s ease-out;
+          transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.15s ease-out;
         }
         .hero-text-new {
           position: absolute; top: 100%; left: 0; width: 100%;
           text-align: center; color: #fff; display: inline-block;
-          transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1);
+          transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
         }
         .hero-btn:hover .hero-text-old { transform: translateY(-100%); opacity: 0; }
         .hero-btn:hover .hero-text-new { transform: translateY(-100%); }

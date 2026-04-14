@@ -74,7 +74,7 @@ const Technologies = () => {
           padding: 0 40px;
         }
         .tech-title {
-          font-size: clamp(2.5rem, 5vw, 4rem);
+          font-size: clamp(2.5rem, 6vw, 5.2rem); /* Standardized across all sections */
           font-weight: 500;
           color: #000;
           letter-spacing: -0.03em;

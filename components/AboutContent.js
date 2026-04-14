@@ -108,7 +108,7 @@ const AboutContent = () => {
         }
         .ab-inner { max-width: 1400px; margin: 0 auto; padding: 0 40px; }
         .ab-title {
-          font-size: clamp(3.5rem, 8vw, 7.5rem);
+          font-size: clamp(2.5rem, 6vw, 5.2rem); /* Standardized across all sections */
           font-weight: 500;
           line-height: 1.0;
           letter-spacing: -0.04em;

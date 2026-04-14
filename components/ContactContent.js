@@ -197,7 +197,7 @@ const ContactContent = () => {
         .ct-inner { width: 100%; margin: 0; padding: 0 100px; }
 
         .ct-title {
-          font-size: clamp(3.2rem, 7.5vw, 6.5rem);
+          font-size: clamp(2.5rem, 6vw, 5.2rem); /* Standardized across all sections */
           font-weight: 500;
           line-height: 1.05;
           letter-spacing: -0.035em;
@@ -232,7 +232,7 @@ const ContactContent = () => {
           font-size: 1rem;
           font-weight: 400;
           cursor: pointer;
-          transition: background 0.3s, color 0.3s;
+          transition: background 0.8s cubic-bezier(0.19, 1, 0.22, 1), color 0.8s cubic-bezier(0.19, 1, 0.22, 1), border-color 0.8s cubic-bezier(0.19, 1, 0.22, 1);
           font-family: inherit;
           position: relative;
           display: inline-block;
@@ -256,7 +256,7 @@ const ContactContent = () => {
         .ct-chip-text {
           display: block;
           line-height: 1.2;
-          transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+          transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
         }
         .ct-chip-text-hover {
           position: absolute;
@@ -273,12 +273,30 @@ const ContactContent = () => {
 
         /* Form — Cuberto style: borderless inputs with underlines */
         .ct-form { max-width: 700px; text-align: left; }
-        .ct-field { margin-bottom: 60px; position: relative; }
+        .ct-field { 
+          margin-bottom: 60px; 
+          position: relative; 
+        }
+        .ct-field::after {
+          content: '';
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 0;
+          height: 2px;
+          background: #000;
+          transition: width 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+          pointer-events: none;
+          z-index: 2;
+        }
+        .ct-field:focus-within::after {
+          width: 100%;
+        }
         .ct-field input, .ct-field textarea {
           width: 100%;
           background: transparent;
           border: none;
-          border-bottom: 1.5px solid rgba(0,0,0,0.1);
+          border-bottom: 1.5px solid rgba(0,0,0,0.08); /* Light track for the rope */
           padding: 40px 0 15px;
           font-size: clamp(1.4rem, 3.5vw, 1.8rem);
           font-weight: 400;
@@ -286,9 +304,9 @@ const ContactContent = () => {
           font-family: inherit;
           outline: none;
           border-radius: 0;
-          transition: border-bottom-color 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+          transition: border-bottom-color 0.4s ease;
         }
-        .ct-field input:focus, .ct-field textarea:focus { border-bottom-color: #000; }
+        .ct-field input:focus, .ct-field textarea:focus { border-bottom-color: rgba(0,0,0,0.08); }
         .ct-field input::placeholder, .ct-field textarea::placeholder { color: rgba(0,0,0,0.45); font-weight: 300; transition: color 0.3s; }
         .ct-field input:focus::placeholder, .ct-field textarea:focus::placeholder { color: rgba(0,0,0,0.7); }
         .ct-field textarea { resize: none; min-height: 120px; vertical-align: bottom; }
@@ -309,7 +327,7 @@ const ContactContent = () => {
           cursor: pointer;
           position: relative;
           overflow: hidden;
-          transition: border-color 1s cubic-bezier(0.19, 1, 0.22, 1);
+          transition: border-color 0.8s cubic-bezier(0.19, 1, 0.22, 1);
           margin-top: 16px;
           font-family: inherit;
         }
@@ -321,7 +339,7 @@ const ContactContent = () => {
           background: #000;
           border-radius: 50%;
           transform: translateY(0);
-          transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1);
+          transition: transform 1.2s cubic-bezier(0.19, 1, 0.22, 1);
           z-index: 0;
         }
         .ct-submit:hover::before { transform: translateY(-70%); }
@@ -334,12 +352,12 @@ const ContactContent = () => {
         }
         .ct-submit-text-old {
           display: inline-block; color: #000;
-          transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.15s ease-out;
+          transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.15s ease-out;
         }
         .ct-submit-text-new {
           position: absolute; top: 100%; left: 0; width: 100%;
           text-align: center; color: #fff; display: inline-block;
-          transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1);
+          transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
         }
         .ct-submit:hover .ct-submit-text-old { transform: translateY(-100%); opacity: 0; }
         .ct-submit:hover .ct-submit-text-new { transform: translateY(-100%); }

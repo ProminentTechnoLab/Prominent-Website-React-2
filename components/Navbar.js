@@ -11,15 +11,14 @@ const Navbar = () => {
   const pathname = usePathname()
   const navRef = useRef(null)
   const overlayRef = useRef(null)
-  const linkRefs = useRef([])
   const lastScrollY = useRef(0)
   const ticking = useRef(false)
 
   const navLinks = [
     { title: 'Services', path: '/services/' },
-    { title: 'About', path: '/about/' },
-    { title: 'Pricing', path: '/pricing/' },
-    { title: 'Contact', path: '/contact/' },
+    { title: 'Company', path: '/about/' },
+    { title: 'Blog', path: '/blog/' },
+    { title: 'Contacts', path: '/contact/' },
   ]
 
   // Close menu on route change
@@ -55,30 +54,6 @@ const Navbar = () => {
 
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
-  // Magnetic hover effect on desktop nav links
-  useEffect(() => {
-    const links = linkRefs.current.filter(Boolean)
-    const handlers = []
-    links.forEach((el) => {
-      const onMove = (e) => {
-        const rect = el.getBoundingClientRect()
-        const x = (e.clientX - (rect.left + rect.width / 2)) * 0.2
-        const y = (e.clientY - (rect.top + rect.height / 2)) * 0.2
-        gsap.to(el, { x, y, duration: 0.3, ease: 'power2.out' })
-      }
-      const onLeave = () => {
-        gsap.to(el, { x: 0, y: 0, duration: 0.6, ease: 'elastic.out(1, 0.3)' })
-      }
-      el.addEventListener('mousemove', onMove)
-      el.addEventListener('mouseleave', onLeave)
-      handlers.push({ el, onMove, onLeave })
-    })
-    return () => handlers.forEach(({ el, onMove, onLeave }) => {
-      el.removeEventListener('mousemove', onMove)
-      el.removeEventListener('mouseleave', onLeave)
-    })
   }, [])
 
   // Mobile overlay animation
@@ -123,10 +98,12 @@ const Navbar = () => {
               <Link
                 key={link.title}
                 href={link.path}
-                ref={el => linkRefs.current[i] = el}
                 className={`cb-nav-link ${pathname.startsWith(link.path) ? 'active' : ''}`}
               >
-                {link.title}
+                <span className="cb-nav-link-inner">
+                  <span className="cb-nav-link-old">{link.title}</span>
+                  <span className="cb-nav-link-new">{link.title}</span>
+                </span>
               </Link>
             ))}
           </div>
@@ -183,7 +160,7 @@ const Navbar = () => {
           left: 0;
           width: 100%;
           z-index: 1000;
-          height: 80px;
+          height: 70px; /* Reduced from 80px */
           background: #ffffff;
           display: flex;
           align-items: center;
@@ -207,7 +184,7 @@ const Navbar = () => {
           flex-shrink: 0;
         }
         .cb-logo-img {
-          height: 46px;
+          height: 40px; /* Reduced from 46px */
           width: auto;
           display: block;
           /* NO filter — original brand colors */
@@ -222,19 +199,52 @@ const Navbar = () => {
 
         .cb-nav-link {
           font-family: var(--font-main);
-          font-size: 18px;
+          font-size: 16px; /* Reduced from 18px for better proportion in 70px header */
           font-weight: 400;
           color: #000000;
           text-decoration: none;
-          padding: 6px 0;
+          padding: 8px 0;
           position: relative;
           will-change: transform;
           transition: opacity 0.3s ease;
           letter-spacing: 0;
           line-height: 1;
+          display: inline-block;
+        }
+        .cb-nav-link-inner {
+          display: flex;
+          flex-direction: column;
+          height: 1.1em;
+          overflow: hidden;
+          position: relative;
+        }
+        .cb-nav-link-old, .cb-nav-link-new {
+          display: block;
+          transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        .cb-nav-link-new {
+          position: absolute;
+          top: 100%;
+          left: 0;
+          width: 100%;
+        }
+        .cb-nav-link:hover .cb-nav-link-old {
+          transform: translateY(-120%);
+        }
+        .cb-nav-link:hover .cb-nav-link-new {
+          transform: translateY(-100%);
+        }
+        .cb-nav-link.active::after {
+          content: '';
+          position: absolute;
+          bottom: 0; /* Reduced gap between text and underline */
+          left: 0;
+          width: 100%;
+          height: 1px; /* Ultra-thin for a premium, delicate appearance */
+          background: #000;
         }
         .cb-nav-link:hover {
-          opacity: 0.5;
+          /* Color remains the same on hover */
         }
 
         /* Hamburger — mobile only */
@@ -285,7 +295,7 @@ const Navbar = () => {
           justify-content: space-between;
           align-items: center;
           padding: 0 24px;
-          height: 80px;
+          height: 70px; /* Reduced from 80px */
           flex-shrink: 0;
         }
         .cb-close-btn {
@@ -299,7 +309,7 @@ const Navbar = () => {
           flex: 1;
           display: flex;
           flex-direction: column;
-          padding: 80px 12vw 0;
+          padding: 70px 12vw 0; /* Reduced from 80px to match new header height */
           justify-content: flex-start;
         }
         .cb-overlay-label {

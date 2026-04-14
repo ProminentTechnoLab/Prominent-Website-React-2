@@ -32,7 +32,7 @@ const ServicesSection = () => {
     }
 
     const observer = new IntersectionObserver(observerCallback, observerOptions)
-    
+
     rowRefs.current.forEach(row => {
       if (row) observer.observe(row)
     })
@@ -41,12 +41,12 @@ const ServicesSection = () => {
   }, [])
 
   const servicesConfigList = [
-    { id: 'website-development', hoverColor: '#0A2463', imgLg: '/images/serv_web_lg.png', imgSm1: '/images/refokus_web_dev.png', imgSm2: '/images/refokus_web_dev.png' },
-    { id: 'mobile-app-development', hoverColor: '#EA4335', imgLg: '/images/serv_mob_lg.png', imgSm1: '/images/refokus_mobile_dev.png', imgSm2: '/images/refokus_mobile_dev.png' },
-    { id: 'ui-ux-design', hoverColor: '#3F51B5', imgLg: '/images/serv_ui_lg.png', imgSm1: '/images/refokus_uiux.png', imgSm2: '/images/refokus_uiux.png' },
-    { id: 'cms-ecommerce', hoverColor: '#00838F', imgLg: '/images/serv_ecom_lg.png', imgSm1: '/images/refokus_ecommerce.png', imgSm2: '/images/refokus_ecommerce.png' },
-    { id: 'payment-shipping-api', hoverColor: '#2E7D32', imgLg: '/images/serv_api_lg.png', imgSm1: '/images/refokus_api.png', imgSm2: '/images/refokus_api.png' },
-    { id: 'digital-marketing', hoverColor: '#E65100', imgLg: '/images/serv_mark_lg.png', imgSm1: '/images/refokus_marketing.png', imgSm2: '/images/refokus_marketing.png' }
+    { id: 'website-development', hoverColor: '#0A2463', imgLg: '/images/serv_web_lg.png', imgSm1: '/images/refokus_web_dev.png', imgSm2: '/images/refokus_web_dev_3.png' },
+    { id: 'mobile-app-development', hoverColor: '#EA4335', imgLg: '/images/serv_mob_lg.png', imgSm1: '/images/refokus_mobile_dev.png', imgSm2: '/images/refokus_mobile_dev_3.png' },
+    { id: 'ui-ux-design', hoverColor: '#3F51B5', imgLg: '/images/serv_ui_lg.png', imgSm1: '/images/refokus_uiux.png', imgSm2: '/images/refokus_uiux_3.png' },
+    { id: 'cms-ecommerce', hoverColor: '#00838F', imgLg: '/images/serv_ecom_lg.png', imgSm1: '/images/refokus_ecommerce.png', imgSm2: '/images/refokus_ecommerce_3.png' },
+    { id: 'payment-shipping-api', hoverColor: '#2E7D32', imgLg: '/images/serv_api_lg.png', imgSm1: '/images/refokus_api_v2.png', imgSm2: '/images/refokus_api_3.png' },
+    { id: 'digital-marketing', hoverColor: '#E65100', imgLg: '/images/serv_mark_lg.png', imgSm1: '/images/refokus_marketing.png', imgSm2: '/images/refokus_marketing_3.png' }
   ]
 
   const mappedServices = servicesConfigList.map(item => {
@@ -68,9 +68,6 @@ const ServicesSection = () => {
       <div className="ss-inner">
         <div className="ss-intro-group">
           <h2 className="ss-title">Our services</h2>
-          <div className="ss-intro-text">
-            From motion design to AI-powered products — we design and build interfaces for the future.
-          </div>
         </div>
 
         <div className="ss-list-wrap">
@@ -101,7 +98,7 @@ const ServicesSection = () => {
                 <div className="ss-row-top">
                   <div className="ss-col flex-1" style={{ display: 'flex', flexDirection: 'column' }}>
                     <h3 className="ss-row-title">{service.title}</h3>
-                    
+
                     <div className="ss-col-link-wrap">
                       <Link href={service.path} className="ss-case-study-link">
                         <span className="link-text-wrap">
@@ -178,7 +175,7 @@ const ServicesSection = () => {
         }
         .ss-title {
           flex: 1;
-          font-size: clamp(3.2rem, 5.5vw, 5.2rem);
+          font-size: clamp(2.5rem, 6vw, 5.2rem); /* Standardized across all sections */
           font-weight: 500;
           line-height: 1.05;
           letter-spacing: -0.04em;

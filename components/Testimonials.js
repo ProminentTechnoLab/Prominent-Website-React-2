@@ -46,7 +46,7 @@ const Testimonials = () => {
         .t-inner { max-width: 1400px; margin: 0 auto; padding: 0 40px; }
         .t-layout { display: grid; grid-template-columns: 0.7fr 1.3fr; gap: 80px; align-items: start; }
         .t-heading {
-          font-size: clamp(3rem, 5.5vw, 5rem);
+          font-size: clamp(2.5rem, 6vw, 5.2rem); /* Standardized across all sections */
           font-weight: 500;
           color: #000;
           letter-spacing: -0.03em;

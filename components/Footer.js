@@ -16,9 +16,9 @@ const Footer = () => {
 
   const navLinks = [
     { label: 'Services', path: '/services/' },
-    { label: 'Pricing', path: '/pricing/' },
-    { label: 'About', path: '/about/' },
-    { label: 'Contact', path: '/contact/' },
+    { label: 'Company', path: '/about/' },
+    { label: 'Blog', path: '/blog/' },
+    { label: 'Contacts', path: '/contact/' },
   ]
 
   return (
@@ -60,8 +60,18 @@ const Footer = () => {
               <div className="cb-info-flex-row">
                 <div className="cb-info-block">
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                    <a href="mailto:info@prominenttechnolabs.com" className="cb-pill">info@prominenttechnolabs.com</a>
-                    <a href="tel:+919327603253" className="cb-pill">+91 93276 03253</a>
+                    <a href="mailto:info@prominenttechnolabs.com" className="cb-pill">
+                      <span className="cb-pill-inner">
+                        <span className="cb-pill-old">info@prominenttechnolabs.com</span>
+                        <span className="cb-pill-new">info@prominenttechnolabs.com</span>
+                      </span>
+                    </a>
+                    <a href="tel:+919327603253" className="cb-pill">
+                      <span className="cb-pill-inner">
+                        <span className="cb-pill-old">+91 93276 03253</span>
+                        <span className="cb-pill-new">+91 93276 03253</span>
+                      </span>
+                    </a>
                   </div>
                 </div>
 
@@ -83,7 +93,10 @@ const Footer = () => {
               <div className="cb-footer-navs">
                 {navLinks.map(link => (
                   <Link key={link.label} href={link.path} className="cb-footer-nav">
-                    <span className="cb-footer-nav-inner">{link.label}</span>
+                    <span className="cb-footer-nav-inner">
+                      <span className="cb-footer-nav-old">{link.label}</span>
+                      <span className="cb-footer-nav-new">{link.label}</span>
+                    </span>
                   </Link>
                 ))}
               </div>
@@ -156,6 +169,43 @@ const Footer = () => {
           overflow: hidden; 
           background: #000;
         }
+        .cb-footer-nav { 
+          text-decoration: none; 
+          color: #fff; 
+          font-size: 1.3rem; /* Matched to previously preferred 1.3rem */
+          font-weight: 500; /* Matched to previously preferred 500 */
+          position: relative;
+          overflow: hidden;
+          padding: 4px 0;
+          display: inline-block;
+          transition: opacity 0.3s ease;
+        }
+        .cb-footer-nav-inner {
+          display: flex;
+          flex-direction: column;
+          height: 1.4em; /* Increased from 1.1em to prevent clipping descenders */
+          line-height: 1.4;
+          overflow: hidden;
+          position: relative;
+        }
+        .cb-footer-nav-old, .cb-footer-nav-new {
+          display: block;
+          transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+          color: #fff;
+        }
+        .cb-footer-nav-new {
+          position: absolute;
+          top: 100%;
+          left: 0;
+          width: 100%;
+        }
+        .cb-footer .cb-footer-nav:hover .cb-footer-nav-old {
+          transform: translateY(-120%);
+        }
+        .cb-footer .cb-footer-nav:hover .cb-footer-nav-new {
+          transform: translateY(-100%);
+        }
+        .cb-footer .cb-footer-nav:hover { opacity: 1; }
         .cb-footer-video {
           width: 100%;
           height: 100%;
@@ -250,10 +300,56 @@ const Footer = () => {
           font-size: 1.25rem;
           font-weight: 500;
           width: fit-content;
-          transition: all 0.4s ease;
+          position: relative;
+          overflow: hidden;
           background: transparent;
         }
-        .cb-footer .cb-pill:hover { background: #fff !important; color: #000 !important; border-color: #fff !important; }
+        .cb-pill::before {
+          content: '';
+          position: absolute;
+          top: 100%;
+          left: -50%;
+          width: 200%;
+          height: 300%;
+          background: #fff;
+          border-radius: 50%;
+          transform: translateY(0);
+          transition: transform 1.2s cubic-bezier(0.19, 1, 0.22, 1);
+          z-index: 0;
+        }
+        .cb-pill:hover::before {
+          transform: translateY(-60%);
+        }
+        .cb-pill:hover {
+          border-color: #fff !important;
+        }
+        .cb-pill-inner {
+          position: relative;
+          z-index: 1;
+          display: flex;
+          flex-direction: column;
+          height: 1.4em; /* Increased from 1.1em to prevent clipping */
+          line-height: 1.4;
+          overflow: hidden;
+        }
+        .cb-pill-old, .cb-pill-new {
+          display: block;
+          transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+          white-space: nowrap;
+        }
+        .cb-pill-new {
+          position: absolute;
+          top: 100%;
+          left: 0;
+          width: 100%;
+          color: #000 !important;
+        }
+        .cb-pill:hover .cb-pill-old {
+          transform: translateY(-120%);
+        }
+        .cb-pill:hover .cb-pill-new {
+          transform: translateY(-100%);
+        }
         
         .cb-footer .cb-address-group { display: flex; flex-direction: column; gap: 8px; }
         .cb-footer .cb-address-line { display: flex; align-items: baseline; gap: 8px; }
@@ -269,19 +365,6 @@ const Footer = () => {
           justify-content: end;
           text-align: right;
         }
-        .cb-footer .cb-footer-nav, .cb-footer .cb-footer-nav * { 
-          font-size: 1.3rem !important; 
-          font-weight: 500 !important; 
-          color: #ffffff !important; 
-          text-decoration: none !important; 
-          display: inline-block !important;
-          transition: opacity 0.3s ease !important;
-          opacity: 1 !important;
-          outline: none !important;
-          border: none !important;
-          background: none !important;
-        }
-        .cb-footer .cb-footer-nav:hover { opacity: 0.6 !important; }
 
         /* 3. LEGAL & SOCIAL */
         .cb-footer-bottom-row { padding: 40px 0 60px; background: #000; }

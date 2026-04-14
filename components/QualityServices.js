@@ -116,7 +116,7 @@ const QualityServices = () => {
 
         /* ═══ Header — Cuberto exact ═══ */
         .os-title {
-          font-size: clamp(3rem, 5.5vw, 5rem);
+          font-size: clamp(2.5rem, 6vw, 5.2rem); /* Standardized across all sections */
           font-weight: 500;
           color: #fff;
           letter-spacing: -0.03em;
@@ -211,7 +211,7 @@ const QualityServices = () => {
           cursor: pointer;
           position: relative;
           overflow: hidden;
-          transition: border-color 1s cubic-bezier(0.19, 1, 0.22, 1);
+          transition: border-color 0.8s cubic-bezier(0.19, 1, 0.22, 1);
         }
         .os-btn::before {
           content: '';
@@ -221,7 +221,7 @@ const QualityServices = () => {
           background: #fff;
           border-radius: 50%;
           transform: translateY(0);
-          transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1);
+          transition: transform 1.2s cubic-bezier(0.19, 1, 0.22, 1);
           z-index: 0;
         }
         .os-btn:hover::before { transform: translateY(-60%); }
@@ -233,12 +233,12 @@ const QualityServices = () => {
         }
         .os-btn-text-old {
           display: inline-block; color: #fff;
-          transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.15s ease-out;
+          transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.15s ease-out;
         }
         .os-btn-text-new {
           position: absolute; top: 100%; left: 0; width: 100%;
           text-align: center; color: #000; display: inline-block;
-          transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1);
+          transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
         }
         .os-btn:hover .os-btn-text-old { transform: translateY(-100%); opacity: 0; }
         .os-btn:hover .os-btn-text-new { transform: translateY(-100%); }
