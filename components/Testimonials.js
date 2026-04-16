@@ -4,8 +4,10 @@ import React, { useState, useEffect } from 'react'
 import { gsap } from 'gsap'
 import { IoArrowBack, IoArrowForward } from 'react-icons/io5'
 
-const Testimonials = () => {
+const Testimonials = ({ variant = 'light' }) => {
   const [idx, setIdx] = useState(0)
+  const isDark = variant === 'dark'
+
   const testimonials = [
     { name: 'Michael Chen', role: 'Project Manager, US', text: "The quality of work from Prominent TechnoLabs is exceptional. Their developers integrated seamlessly with our team and delivered ahead of schedule." },
     { name: 'Sarah Jenkins', role: 'CEO, Digital Pulse (UK)', text: "Transformative results! Our e-commerce conversion rate increased by 40% after the redesign. They truly understand modern UX." },
@@ -21,20 +23,20 @@ const Testimonials = () => {
   }, [idx])
 
   return (
-    <section className="t-section">
+    <section className={`t-section ${isDark ? 't-dark' : ''}`}>
       <div className="t-inner">
         <div className="t-layout">
-          <h2 className="t-heading">What clients say</h2>
+          <h2 className={`t-heading ${isDark ? 'text-white' : ''}`}>What clients say</h2>
           <div className="t-content">
-            <blockquote className="t-quote">"{testimonials[idx].text}"</blockquote>
+            <blockquote className={`t-quote ${isDark ? 'text-white' : ''}`}>"{testimonials[idx].text}"</blockquote>
             <div className="t-bottom">
               <div className="t-author">
-                <div className="t-name">{testimonials[idx].name}</div>
+                <div className={`t-name ${isDark ? 'text-white' : ''}`}>{testimonials[idx].name}</div>
                 <div className="t-role">{testimonials[idx].role}</div>
               </div>
               <div className="t-nav">
-                <button onClick={prev} className="t-btn"><IoArrowBack /></button>
-                <button onClick={next} className="t-btn"><IoArrowForward /></button>
+                <button onClick={prev} className={`t-btn ${isDark ? 't-btn-dark' : ''}`}><IoArrowBack /></button>
+                <button onClick={next} className={`t-btn ${isDark ? 't-btn-dark' : ''}`}><IoArrowForward /></button>
               </div>
             </div>
           </div>
@@ -43,6 +45,8 @@ const Testimonials = () => {
 
       <style>{`
         .t-section { background: var(--bg-primary); padding: 120px 0; }
+        .t-section.t-dark { background: #000000; }
+        .text-white { color: #ffffff !important; }
         .t-inner { max-width: 1400px; margin: 0 auto; padding: 0 40px; }
         .t-layout { display: grid; grid-template-columns: 0.7fr 1.3fr; gap: 80px; align-items: start; }
         .t-heading {
@@ -83,7 +87,9 @@ const Testimonials = () => {
           cursor: pointer;
           transition: all 0.3s ease;
         }
+        .t-btn-dark { color: #ffffff; border-color: rgba(255,255,255,0.2); }
         .t-btn:hover { background: #000; color: #fff; border-color: #000; }
+        .t-btn-dark:hover { background: #fff; color: #000; border-color: #fff; }
 
         @media (max-width: 1024px) {
           .t-layout { grid-template-columns: 1fr; gap: 40px; }

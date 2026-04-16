@@ -110,9 +110,9 @@ const Footer = () => {
             {/* Left: Privacy, Terms, Copyright */}
             <div className="cb-legal-col">
               <div className="cb-legal-links">
+                <span className="cb-copyright">© {new Date().getFullYear()}, Prominent TechnoLabs</span>
                 <a href="https://sites.google.com/view/prominettechnolabsprivacy/home" target="_blank" rel="noopener noreferrer" className="cb-legal-link">Privacy Policy</a>
                 <a href="https://sites.google.com/view/prominenttearmsconditions/home" target="_blank" rel="noopener noreferrer" className="cb-legal-link">Terms and Conditions</a>
-                <span className="cb-copyright">© {new Date().getFullYear()}, Prominent TechnoLabs</span>
               </div>
             </div>
 
