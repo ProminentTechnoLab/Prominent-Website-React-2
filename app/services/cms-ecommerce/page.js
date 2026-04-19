@@ -1,4 +1,4 @@
-import ServicePageLayout from '../../../components/ServicePageLayout'
+import ServicePagePremium from '../../../components/ServicePagePremium'
 
 export const metadata = {
     title: 'CMS & E-Commerce Development — WooCommerce, Shopify | Prominent TechnoLabs',
@@ -13,5 +13,5 @@ export const metadata = {
 }
 
 export default function CmsEcommercePage() {
-    return <ServicePageLayout slug="cms-ecommerce" />
+    return <ServicePagePremium slug="cms-ecommerce" />
 }

@@ -71,17 +71,19 @@ const Hero = () => {
         </p>
       </div>
 
-      <div className="cb-hero-media" ref={videoRef}>
-        <video 
-          autoPlay 
-          muted 
-          loop 
-          playsInline 
-          className="cb-hero-video"
-          style={{ width: '100% !important', height: '100% !important', objectFit: 'cover !important' }}
-        >
-          <source src="/videos/hero-video.mp4" type="video/mp4" />
-        </video>
+      <div className="cb-hero-video-container">
+        <div className="cb-hero-media" ref={videoRef}>
+          <video 
+            autoPlay 
+            muted 
+            loop 
+            playsInline 
+            className="cb-hero-video"
+            style={{ width: '100% !important', height: '100% !important', objectFit: 'cover !important' }}
+          >
+            <source src="/videos/hero-video.mp4" type="video/mp4" />
+          </video>
+        </div>
       </div>
 
       {/* ─── Cuberto-style about section — 50/50 grid ─── */}
@@ -118,7 +120,7 @@ const Hero = () => {
           display: flex;
           flex-direction: column;
           align-items: center;
-          padding: 160px 100px 0;
+          padding: 160px 0 0;
           position: relative;
           overflow: hidden;
         }
@@ -145,9 +147,12 @@ const Hero = () => {
           max-width: 650px;
           margin: 0 auto;
         }
+        .cb-hero-video-container {
+          width: 100%;
+          padding: 0 100px;
+        }
         .cb-hero-media {
           width: 100%;
-          max-width: 1400px;
           margin: 0 auto;
           border-radius: 24px;
           overflow: hidden;
@@ -171,7 +176,7 @@ const Hero = () => {
           max-width: 1400px;
           width: 100%;
           margin: 0 auto;
-          padding: 60px 0 250px;
+          padding: 60px 100px 250px;
         }
         .cb-about-sculpture {
           display: flex;
@@ -255,20 +260,21 @@ const Hero = () => {
           .cb-about-sculpture { min-height: 380px; }
         }
         @media (max-width: 1024px) {
-          .cb-hero { padding: 140px 50px 0; }
+          .cb-hero { padding: 140px 0 0; }
+          .cb-hero-video-container { padding: 0 40px; }
+          .cb-hero-about { padding: 30px 40px 140px; }
           .cb-hero-content { margin-bottom: 30px; }
-          .cb-hero-about { padding: 30px 0 140px; }
           .cb-about-sculpture { min-height: 300px; }
         }
         @media (max-width: 768px) {
-          .cb-hero { padding: 110px 24px 0; }
-          .cb-hero-content { margin-bottom: 25px; }
-          .cb-hero-media { border-radius: 20px; }
+          .cb-hero { padding: 110px 0 0; }
+          .cb-hero-video-container { padding: 0 24px; }
           .cb-hero-about {
             grid-template-columns: 1fr;
             gap: 20px;
-            padding: 30px 0 100px;
+            padding: 30px 24px 100px;
           }
+          .cb-hero-media { border-radius: 20px; }
           .cb-about-sculpture { min-height: 260px; }
           .cb-about-text {
             text-align: center;
@@ -279,11 +285,12 @@ const Hero = () => {
           .hero-btn { padding: 16px 32px; font-size: 15px; }
         }
         @media (max-width: 480px) {
-          .cb-hero { padding: 110px 16px 0; }
+          .cb-hero { padding: 110px 0 0; }
+          .cb-hero-video-container { padding: 0 16px; }
           .cb-hero-title { font-size: 2.4rem; margin-bottom: 20px; }
           .cb-hero-media { border-radius: 16px; }
           .hero-sub { font-size: 0.95rem; }
-          .cb-hero-about { gap: 10px; padding: 30px 0 120px; }
+          .cb-hero-about { gap: 10px; padding: 30px 16px 120px; }
           .cb-about-sculpture { min-height: 260px; }
           .cb-about-text p { font-size: 0.95rem; }
           .hero-btn { padding: 14px 28px; font-size: 14px; }

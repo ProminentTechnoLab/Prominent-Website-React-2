@@ -36,11 +36,9 @@
 
 html {
   background-color: var(--bg-primary);
-  scrollbar-width: none;
   overflow-x: hidden;
   width: 100%;
 }
-html::-webkit-scrollbar { display: none; }
 
 body {
   font-family: var(--font-main);

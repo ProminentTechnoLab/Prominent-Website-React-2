@@ -171,7 +171,7 @@ const ServicesSection = () => {
           align-items: flex-start;
           justify-content: space-between;
           margin-bottom: 80px;
-          padding: 0 5vw; 
+          padding: 0 100px; 
         }
         .ss-title {
           flex: 1;
@@ -197,14 +197,14 @@ const ServicesSection = () => {
           display: flex;
           flex-direction: column;
           width: 100%;
-          border-top: 1px solid rgba(255, 255, 255, 0.15);
+          border-top: 1px solid rgba(255, 255, 255, 0.8);
         }
 
         .ss-row {
           position: relative;
           width: 100%;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-          padding: 50px 5vw; 
+          border-bottom: 1px solid rgba(255, 255, 255, 0.8);
+          padding: 50px 100px; 
           transition: opacity 0.5s ease, background-color 0.5s ease;
           border-radius: 0px !important; 
           background-color: transparent;
@@ -260,8 +260,8 @@ const ServicesSection = () => {
         @media (min-width: 1025px) {
            .ss-col-link-wrap {
              position: absolute;
-             top: 110px;
-             left: 5vw;
+             top: 130px;
+             left: 100px;
              z-index: 20;
            }
         }
@@ -388,7 +388,7 @@ const ServicesSection = () => {
           transition: padding-top 0.4s ease;
         }
         .ss-row.is-hovered .ss-row-bottom-inner {
-          padding-top: 40px; 
+          padding-top: 70px; 
         }
 
         .ss-col-media-wrap {
@@ -444,7 +444,8 @@ const ServicesSection = () => {
           .ss-intro-group {
             flex-direction: column;
             gap: 20px;
-            padding: 0 5vw 40px !important;
+            padding: 0 40px 10px !important;
+            margin-bottom: 30px !important;
           }
           .ss-row-top {
              display: grid !important;
@@ -503,7 +504,8 @@ const ServicesSection = () => {
              border-top-right-radius: 0 !important;
              margin-top: 0 !important;
           }
-          .ss-title { font-size: clamp(3rem, 10vw, 4rem); padding-left: 20px; }
+          .ss-title { font-size: clamp(3rem, 10vw, 4rem); padding-left: 24px; }
+          .ss-intro-group { padding: 0 24px 10px !important; margin-bottom: 25px !important; }
 
           /* Force Always Open Cards on Mobile only */
           .ss-list-wrap { 
@@ -563,6 +565,11 @@ const ServicesSection = () => {
           }
           .ss-media-sm { display: none !important; }
           .ss-media-lg { height: 220px; }
+        }
+        @media (max-width: 480px) {
+          .ss-title { padding-left: 16px; }
+          .ss-intro-group { padding: 0 16px 10px !important; margin-bottom: 20px !important; }
+          .ss-row { padding: 20px 16px !important; }
         }
       `}</style>
     </section>

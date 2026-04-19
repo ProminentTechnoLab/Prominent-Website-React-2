@@ -11,40 +11,40 @@ const BenefitIcon = ({ type }) => {
   const svgs = {
     globe: (
       <svg viewBox="0 0 80 80" className="ab-benefit-svg" fill="none">
-        <circle cx="40" cy="40" r="28" stroke="currentColor" strokeWidth="0.8" opacity="0.2"/>
-        <ellipse cx="40" cy="40" rx="28" ry="10" stroke="currentColor" strokeWidth="0.8" opacity="0.4" className="ab-orbit-1"/>
-        <ellipse cx="40" cy="40" rx="28" ry="10" stroke="currentColor" strokeWidth="0.8" opacity="0.3" className="ab-orbit-2"/>
-        <ellipse cx="40" cy="40" rx="28" ry="10" stroke="currentColor" strokeWidth="0.8" opacity="0.2" className="ab-orbit-3"/>
-        <circle cx="40" cy="40" r="3" fill="currentColor" opacity="0.5" className="ab-pulse-dot"/>
+        <circle cx="40" cy="40" r="28" stroke="currentColor" strokeWidth="1.5" opacity="0.3" />
+        <ellipse cx="40" cy="40" rx="28" ry="10" stroke="currentColor" strokeWidth="1.5" opacity="0.6" className="ab-orbit-1" />
+        <ellipse cx="40" cy="40" rx="28" ry="10" stroke="currentColor" strokeWidth="1.5" opacity="0.5" className="ab-orbit-2" />
+        <ellipse cx="40" cy="40" rx="28" ry="10" stroke="currentColor" strokeWidth="1.5" opacity="0.3" className="ab-orbit-3" />
+        <circle cx="40" cy="40" r="3" fill="currentColor" opacity="0.7" className="ab-pulse-dot" />
       </svg>
     ),
     diamond: (
       <svg viewBox="0 0 80 80" className="ab-benefit-svg" fill="none">
-        <rect x="16" y="16" width="48" height="48" stroke="currentColor" strokeWidth="0.8" opacity="0.15" rx="2" className="ab-diamond-1"/>
-        <rect x="24" y="24" width="32" height="32" stroke="currentColor" strokeWidth="0.8" opacity="0.3" rx="2" className="ab-diamond-2"/>
-        <rect x="32" y="32" width="16" height="16" stroke="currentColor" strokeWidth="1" opacity="0.6" rx="1" className="ab-diamond-3"/>
-        <circle cx="40" cy="40" r="2" fill="currentColor" opacity="0.4" className="ab-pulse-dot"/>
+        <rect x="16" y="16" width="48" height="48" stroke="currentColor" strokeWidth="1.5" opacity="0.3" rx="2" className="ab-diamond-1" />
+        <rect x="24" y="24" width="32" height="32" stroke="currentColor" strokeWidth="1.5" opacity="0.5" rx="2" className="ab-diamond-2" />
+        <rect x="32" y="32" width="16" height="16" stroke="currentColor" strokeWidth="1.8" opacity="0.8" rx="1" className="ab-diamond-3" />
+        <circle cx="40" cy="40" r="2" fill="currentColor" opacity="0.6" className="ab-pulse-dot" />
       </svg>
     ),
     compass: (
       <svg viewBox="0 0 80 80" className="ab-benefit-svg" fill="none">
-        <circle cx="40" cy="40" r="28" stroke="currentColor" strokeWidth="0.8" opacity="0.15"/>
-        <circle cx="40" cy="40" r="20" stroke="currentColor" strokeWidth="0.8" opacity="0.2"/>
-        <line x1="40" y1="10" x2="40" y2="70" stroke="currentColor" strokeWidth="0.4" opacity="0.12"/>
-        <line x1="10" y1="40" x2="70" y2="40" stroke="currentColor" strokeWidth="0.4" opacity="0.12"/>
-        <polygon points="40,16 46,42 40,64 34,42" fill="currentColor" opacity="0.12" className="ab-compass-needle"/>
-        <polygon points="40,22 43,40 40,58 37,40" fill="currentColor" opacity="0.2" className="ab-compass-needle"/>
-        <circle cx="40" cy="40" r="2.5" fill="currentColor" opacity="0.5"/>
+        <circle cx="40" cy="40" r="28" stroke="currentColor" strokeWidth="1.5" opacity="0.3" />
+        <circle cx="40" cy="40" r="20" stroke="currentColor" strokeWidth="1.5" opacity="0.5" />
+        <line x1="40" y1="10" x2="40" y2="70" stroke="currentColor" strokeWidth="1" opacity="0.4" />
+        <line x1="10" y1="40" x2="70" y2="40" stroke="currentColor" strokeWidth="1" opacity="0.4" />
+        <polygon points="40,16 46,42 40,64 34,42" fill="currentColor" opacity="0.5" className="ab-compass-needle" />
+        <polygon points="40,22 43,40 40,58 37,40" fill="currentColor" opacity="0.7" className="ab-compass-needle" />
+        <circle cx="40" cy="40" r="2.5" fill="currentColor" opacity="0.8" />
       </svg>
     ),
     links: (
       <svg viewBox="0 0 80 80" className="ab-benefit-svg" fill="none">
-        <circle cx="30" cy="40" r="16" stroke="currentColor" strokeWidth="0.8" opacity="0.3" className="ab-link-1"/>
-        <circle cx="50" cy="40" r="16" stroke="currentColor" strokeWidth="0.8" opacity="0.3" className="ab-link-2"/>
-        <circle cx="40" cy="40" r="4" fill="currentColor" opacity="0.15" className="ab-pulse-dot"/>
-        <circle cx="40" cy="40" r="1.5" fill="currentColor" opacity="0.4"/>
+        <circle cx="30" cy="40" r="16" stroke="currentColor" strokeWidth="1.5" opacity="0.6" className="ab-link-1" />
+        <circle cx="50" cy="40" r="16" stroke="currentColor" strokeWidth="1.5" opacity="0.6" className="ab-link-2" />
+        <circle cx="40" cy="40" r="4" fill="currentColor" opacity="0.4" className="ab-pulse-dot" />
+        <circle cx="40" cy="40" r="1.5" fill="currentColor" opacity="0.8" />
       </svg>
-    )
+    ),
   }
   return <div className="ab-benefit-icon-box">{svgs[type]}</div>
 }
@@ -124,25 +124,25 @@ const AboutContent = () => {
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger)
-    
+
     const ctx = gsap.context(() => {
       // Hero Title Animation
-      gsap.fromTo('.ab-hero-title span', 
-        { y: 100, opacity: 0 }, 
+      gsap.fromTo('.ab-hero-title span',
+        { y: 100, opacity: 0 },
         { y: 0, opacity: 1, stagger: 0.1, duration: 1.2, ease: 'power4.out', delay: 0.2 }
       )
 
       // Hero Media Reveal
-      gsap.fromTo('.ab-hero-media', 
-        { scale: 0.9, opacity: 0 }, 
+      gsap.fromTo('.ab-hero-media',
+        { scale: 0.9, opacity: 0 },
         { scale: 1, opacity: 1, duration: 1.5, ease: 'expo.out', delay: 0.4 }
       )
 
       // Reusable Scroll Reveal
       gsap.utils.toArray('.reveal').forEach(el => {
-        gsap.fromTo(el, 
-          { y: 50, opacity: 0 }, 
-          { 
+        gsap.fromTo(el,
+          { y: 50, opacity: 0 },
+          {
             y: 0, opacity: 1, duration: 1.2, ease: 'power3.out',
             scrollTrigger: {
               trigger: el,
@@ -214,27 +214,27 @@ const AboutContent = () => {
   ]
 
   const benefits = [
-    { 
-      label: 'Sync', 
-      title: 'Timezone Agnostic', 
+    {
+      label: 'Sync',
+      title: 'Timezone Agnostic',
       desc: 'We sync with your schedule, ensuring seamless global collaboration across any time difference. Your project never sleeps.',
       icon: 'globe'
     },
-    { 
-      label: 'Quality', 
-      title: 'Precision Obsessed', 
+    {
+      label: 'Quality',
+      title: 'Precision Obsessed',
       desc: 'No shortcuts. We develop digital products exactly as they were designed, pixel for pixel, ensuring flawless performance.',
       icon: 'diamond'
     },
-    { 
-      label: 'Terms', 
-      title: 'Transparent Terms', 
+    {
+      label: 'Terms',
+      title: 'Transparent Terms',
       desc: 'Flexible engagement models from fixed-price projects to dedicated time & materials squads. Total clarity in every contract.',
       icon: 'compass'
     },
-    { 
-      label: 'Unity', 
-      title: 'Full Stack Partnership', 
+    {
+      label: 'Unity',
+      title: 'Full Stack Partnership',
       desc: 'A unified partner for design, engineering, and strategy. We handle the complexity so you can focus on your vision.',
       icon: 'links'
     }
@@ -265,11 +265,11 @@ const AboutContent = () => {
             </div>
             <div className="ab-col-right">
               <h2 className="ab-goal-text">
-                We believe in the power of digital transformation to solve complex business problems. 
+                We believe in the power of digital transformation to solve complex business problems.
                 Our team is dedicated to crafting premium experiences that resonate with users and drive growth.
               </h2>
               <p className="ab-sub-text">
-                Since 2018, Prominent TechnoLabs has been at the forefront of innovation, 
+                Since 2018, Prominent TechnoLabs has been at the forefront of innovation,
                 partnering with startups and enterprises to build the digital future.
               </p>
             </div>
@@ -280,9 +280,13 @@ const AboutContent = () => {
       {/* ─── Stats Section (WHITE) ─── */}
       <section className="ab-stats ab-white-bg">
         <div className="ab-wide-container">
-          <div className="ab-stats-header reveal">
-            <span className="ab-label">Our Scale</span>
-            <h2 className="ab-stats-title">Turning ambition into tangible digital success.</h2>
+          <div className="ab-grid ab-stats-header reveal">
+            <div className="ab-col-left">
+              <span className="ab-label">Our Scale</span>
+            </div>
+            <div className="ab-col-right">
+              <h2 className="ab-stats-title">Turning ambition into tangible digital success.</h2>
+            </div>
           </div>
           <div className="ab-stats-grid">
             {stats.map((s, i) => (
@@ -302,7 +306,7 @@ const AboutContent = () => {
           <div className="ab-benefits-list">
             {benefits.map((b, i) => (
               <div key={i}>
-                <StretchableLine color="rgba(255,255,255,0.12)" />
+                <StretchableLine color="rgba(255,255,255,1)" />
                 <div className="ab-benefit-row">
                   <div className="ab-benefit-col-icon">
                     <BenefitIcon type={b.icon} />
@@ -317,7 +321,6 @@ const AboutContent = () => {
                 </div>
               </div>
             ))}
-            <StretchableLine color="rgba(255,255,255,0.12)" />
           </div>
         </div>
       </section>
@@ -353,10 +356,10 @@ const AboutContent = () => {
           color: rgba(0,0,0,0.4);
           font-weight: 600;
         }
-        .ab-black-bg .ab-label { color: rgba(255,255,255,0.4); }
+        .ab-black-bg .ab-label { color: rgba(255,255,255,0.6); }
 
         /* ─── Hero ─── */
-        .ab-hero { padding: 80px 0 0; text-align: center; }
+        .ab-hero { padding: 40px 0 0; text-align: center; }
         .ab-hero-title {
           font-size: clamp(2.5rem, 6vw, 5.2rem);
           line-height: 1.05;
@@ -384,7 +387,7 @@ const AboutContent = () => {
           display: grid;
           grid-template-columns: 0.6fr 2fr;
           gap: 5vw;
-          padding: 120px 0;
+          padding: 120px 0 40px;
         }
 
         /* ─── Goal ─── */
@@ -404,13 +407,13 @@ const AboutContent = () => {
         }
 
         /* ─── Stats Section ─── */
-        .ab-stats { padding: 100px 0 120px; }
+        .ab-stats { padding: 80px 0 180px; }
         .ab-stats .ab-label { color: rgba(0,0,0,0.4); }
         .ab-stats-header { margin-bottom: 60px; }
         .ab-stats-title {
           font-size: clamp(1.5rem, 3.5vw, 3rem);
           font-weight: 500;
-          margin-top: 20px;
+          margin-top: 0;
           letter-spacing: -0.03em;
           max-width: 800px;
           color: #000;
@@ -506,7 +509,14 @@ const AboutContent = () => {
         }
 
         /* ─── Benefits Section ─── */
-        .ab-benefits { padding: 120px 0; }
+        .ab-benefits {
+          padding: 120px 0 180px;
+          border-top-left-radius: 80px;
+          border-top-right-radius: 80px;
+          position: relative;
+          z-index: 2;
+          margin-top: -80px;
+        }
         .ab-benefits-header { margin-bottom: 60px; }
         .ab-benefits-main-title {
           font-size: clamp(1.5rem, 3.5vw, 3rem);
@@ -521,14 +531,14 @@ const AboutContent = () => {
           grid-template-columns: 0.6fr 1.4fr 3fr;
           gap: 30px;
           padding: 60px 0;
-          align-items: center;
+          align-items: flex-start;
         }
-        .ab-benefit-col-icon { display: flex; align-items: center; }
+        .ab-benefit-col-icon { display: flex; align-items: flex-start; margin-top: -12px; }
         .ab-benefit-icon-box {
           width: 80px;
           height: 80px;
           position: relative;
-          color: rgba(255,255,255,0.7);
+          color: rgba(255,255,255,0.9);
         }
         .ab-benefit-svg {
           width: 100%;
@@ -567,7 +577,7 @@ const AboutContent = () => {
         }
         .ab-benefit-desc {
           font-size: 1.05rem;
-          color: rgba(255,255,255,0.45);
+          color: rgba(255,255,255,0.6);
           line-height: 1.6;
           max-width: 600px;
         }
@@ -575,6 +585,16 @@ const AboutContent = () => {
         /* ─── Testimonials Outer ─── */
         .ab-testimonials-outer {
           padding: 0;
+          border-top-left-radius: 80px;
+          border-top-right-radius: 80px;
+          position: relative;
+          z-index: 3;
+          margin-top: -80px;
+          background: #ffffff;
+          overflow: hidden;
+        }
+        .ab-testimonials-outer .tm-section {
+          background: #ffffff;
         }
 
         /* ─── Responsive ─── */
@@ -585,9 +605,19 @@ const AboutContent = () => {
         @media (max-width: 1024px) {
           .ab-grid { grid-template-columns: 1fr; gap: 40px; padding: 100px 0; }
           .ab-stats-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+          .ab-stats { padding: 100px 0; }
           .ab-benefit-row { grid-template-columns: 1fr; gap: 24px; padding: 50px 0; }
           .ab-benefit-icon-box { width: 64px; height: 64px; }
-
+          .ab-benefits {
+            border-top-left-radius: 40px;
+            border-top-right-radius: 40px;
+            margin-top: -40px;
+          }
+          .ab-testimonials-outer {
+            border-top-left-radius: 40px;
+            border-top-right-radius: 40px;
+            margin-top: -40px;
+          }
         }
         @media (max-width: 768px) {
           .ab-hero-title { font-size: 2.8rem; margin-bottom: 50px; }
@@ -596,10 +626,11 @@ const AboutContent = () => {
           .ab-stat-num { font-size: 2.8rem; }
 
           .ab-wide-container { padding: 0 6vw; }
-          .ab-grid { padding: 80px 0; }
-          .ab-benefits { padding: 80px 0; }
+          .ab-grid { padding: 80px 0 20px; }
+          .ab-benefits { padding: 80px 0; border-top-left-radius: 0; border-top-right-radius: 0; margin-top: 0; }
+          .ab-testimonials-outer { border-top-left-radius: 0; border-top-right-radius: 0; margin-top: 0; }
 
-          .ab-stats { padding: 80px 0; }
+          .ab-stats { padding: 40px 0 80px; }
         }
         @media (max-width: 480px) {
           .ab-hero-title { font-size: 2.2rem; }
@@ -609,7 +640,8 @@ const AboutContent = () => {
           .ab-stat-suffix { font-size: 1.2rem; }
           .ab-wide-container { padding: 0 20px; }
 
-          .ab-grid { padding: 60px 0; }
+          .ab-grid { padding: 60px 0 15px; }
+          .ab-stats { padding: 30px 0 60px; }
         }
       `}</style>
     </div>

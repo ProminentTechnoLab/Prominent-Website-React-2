@@ -24,7 +24,7 @@ import {
 
 const SERVICE_CONFIGS = {
     'website-development': {
-        badge: 'Web Development',
+        badge: 'Website Development',
         heroTitle: 'Custom Website Development Services',
         heroSubtitle: 'From corporate websites to complex web applications — we build fast, secure, and SEO-optimised websites using React, Next.js, and Laravel that drive real business results.',
         heroIcon: FiMonitor,
@@ -89,7 +89,7 @@ const SERVICE_CONFIGS = {
     },
 
     'mobile-app-development': {
-        badge: 'Mobile Apps',
+        badge: 'Mobile App Development',
         heroTitle: 'Mobile App Development Services',
         heroSubtitle: 'Build beautiful, high-performance iOS and Android apps using Flutter and React Native. Our mobile team delivers apps that users love — from MVP to enterprise-grade products.',
         heroIcon: FiSmartphone,
@@ -152,7 +152,7 @@ const SERVICE_CONFIGS = {
     },
 
     'ui-ux-design': {
-        badge: 'Design Services',
+        badge: 'UI/UX Design',
         heroTitle: 'UI/UX Design Services',
         heroSubtitle: 'We create stunning, intuitive interfaces that captivate users and convert visitors into customers. From wireframes to pixel-perfect Figma prototypes — every pixel is purposeful.',
         heroIcon: FiLayout,
@@ -212,7 +212,7 @@ const SERVICE_CONFIGS = {
     },
 
     'cms-ecommerce': {
-        badge: 'E-Commerce',
+        badge: 'CMS & E-Commerce',
         heroTitle: 'CMS & E-Commerce Development',
         heroSubtitle: 'Build a powerful, scalable online store that converts visitors into customers. We develop on WooCommerce, Shopify, Magento, and custom Laravel — with full payment, inventory, and order management.',
         heroIcon: FiShoppingCart,
@@ -273,7 +273,7 @@ const SERVICE_CONFIGS = {
     },
 
     'payment-shipping-api': {
-        badge: 'API Integration',
+        badge: 'Payment & Shipping API',
         heroTitle: 'Payment & Shipping API Integration',
         heroSubtitle: 'Streamline your checkout and fulfilment pipeline with battle-tested payment gateway and shipping API integrations. We connect Stripe, Razorpay, PayPal, Shiprocket, and more — securely and reliably.',
         heroIcon: FiCreditCard,

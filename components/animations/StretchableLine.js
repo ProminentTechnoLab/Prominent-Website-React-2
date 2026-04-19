@@ -3,7 +3,7 @@
 import React, { useRef, useEffect } from 'react'
 import { gsap } from 'gsap'
 
-const StretchableLine = ({ className = '', color = 'rgba(0,0,0,0.1)' }) => {
+const StretchableLine = ({ className = '', color = 'rgba(0,0,0,0.4)' }) => {
   const lineRef = useRef(null)
   const pathRef = useRef(null)
 

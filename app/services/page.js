@@ -1,5 +1,4 @@
-import ServicesSection from '../../components/ServicesSection'
-import CTABanner from '../../components/CTABanner'
+import ServicesContent from '../../components/ServicesContent'
 
 export const metadata = {
     title: 'Our Services — Web, Mobile App, UI/UX & Digital Marketing',
@@ -12,8 +11,7 @@ export const metadata = {
 export default function ServicesPage() {
     return (
         <>
-            <ServicesSection />
-            <CTABanner />
+            <ServicesContent />
         </>
     )
 }
