@@ -1,11 +1,123 @@
 'use client'
 
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState, useCallback } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
-import Link from 'next/link'
 import StretchableLine from './animations/StretchableLine'
 import Testimonials from './Testimonials'
+
+// ─── Animated SVG Benefit Icons ───
+const BenefitIcon = ({ type }) => {
+  const svgs = {
+    globe: (
+      <svg viewBox="0 0 80 80" className="ab-benefit-svg" fill="none">
+        <circle cx="40" cy="40" r="28" stroke="currentColor" strokeWidth="0.8" opacity="0.2"/>
+        <ellipse cx="40" cy="40" rx="28" ry="10" stroke="currentColor" strokeWidth="0.8" opacity="0.4" className="ab-orbit-1"/>
+        <ellipse cx="40" cy="40" rx="28" ry="10" stroke="currentColor" strokeWidth="0.8" opacity="0.3" className="ab-orbit-2"/>
+        <ellipse cx="40" cy="40" rx="28" ry="10" stroke="currentColor" strokeWidth="0.8" opacity="0.2" className="ab-orbit-3"/>
+        <circle cx="40" cy="40" r="3" fill="currentColor" opacity="0.5" className="ab-pulse-dot"/>
+      </svg>
+    ),
+    diamond: (
+      <svg viewBox="0 0 80 80" className="ab-benefit-svg" fill="none">
+        <rect x="16" y="16" width="48" height="48" stroke="currentColor" strokeWidth="0.8" opacity="0.15" rx="2" className="ab-diamond-1"/>
+        <rect x="24" y="24" width="32" height="32" stroke="currentColor" strokeWidth="0.8" opacity="0.3" rx="2" className="ab-diamond-2"/>
+        <rect x="32" y="32" width="16" height="16" stroke="currentColor" strokeWidth="1" opacity="0.6" rx="1" className="ab-diamond-3"/>
+        <circle cx="40" cy="40" r="2" fill="currentColor" opacity="0.4" className="ab-pulse-dot"/>
+      </svg>
+    ),
+    compass: (
+      <svg viewBox="0 0 80 80" className="ab-benefit-svg" fill="none">
+        <circle cx="40" cy="40" r="28" stroke="currentColor" strokeWidth="0.8" opacity="0.15"/>
+        <circle cx="40" cy="40" r="20" stroke="currentColor" strokeWidth="0.8" opacity="0.2"/>
+        <line x1="40" y1="10" x2="40" y2="70" stroke="currentColor" strokeWidth="0.4" opacity="0.12"/>
+        <line x1="10" y1="40" x2="70" y2="40" stroke="currentColor" strokeWidth="0.4" opacity="0.12"/>
+        <polygon points="40,16 46,42 40,64 34,42" fill="currentColor" opacity="0.12" className="ab-compass-needle"/>
+        <polygon points="40,22 43,40 40,58 37,40" fill="currentColor" opacity="0.2" className="ab-compass-needle"/>
+        <circle cx="40" cy="40" r="2.5" fill="currentColor" opacity="0.5"/>
+      </svg>
+    ),
+    links: (
+      <svg viewBox="0 0 80 80" className="ab-benefit-svg" fill="none">
+        <circle cx="30" cy="40" r="16" stroke="currentColor" strokeWidth="0.8" opacity="0.3" className="ab-link-1"/>
+        <circle cx="50" cy="40" r="16" stroke="currentColor" strokeWidth="0.8" opacity="0.3" className="ab-link-2"/>
+        <circle cx="40" cy="40" r="4" fill="currentColor" opacity="0.15" className="ab-pulse-dot"/>
+        <circle cx="40" cy="40" r="1.5" fill="currentColor" opacity="0.4"/>
+      </svg>
+    )
+  }
+  return <div className="ab-benefit-icon-box">{svgs[type]}</div>
+}
+
+// ─── Standalone StatCard with reliable IntersectionObserver counter ───
+const StatCard = ({ stat, index }) => {
+  const [count, setCount] = useState(0)
+  const cardRef = useRef(null)
+  const hasAnimated = useRef(false)
+
+  useEffect(() => {
+    const el = cardRef.current
+    if (!el) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !hasAnimated.current) {
+          hasAnimated.current = true
+          const target = stat.num
+          const duration = 2000
+          const startTime = performance.now()
+
+          const animate = (currentTime) => {
+            const elapsed = currentTime - startTime
+            const progress = Math.min(elapsed / duration, 1)
+            const eased = 1 - Math.pow(1 - progress, 3)
+            setCount(Math.ceil(eased * target))
+
+            if (progress < 1) {
+              requestAnimationFrame(animate)
+            }
+          }
+          requestAnimationFrame(animate)
+        }
+      },
+      { threshold: 0.3 }
+    )
+
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [stat.num])
+
+  const handleMouseMove = useCallback((e) => {
+    const el = cardRef.current
+    if (!el) return
+    const { left, top, width, height } = el.getBoundingClientRect()
+    const x = ((e.clientX - left) / width - 0.5) * 2
+    const y = ((e.clientY - top) / height - 0.5) * 2
+    el.style.transform = `translateY(-8px) perspective(800px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg)`
+  }, [])
+
+  const handleMouseLeave = useCallback(() => {
+    const el = cardRef.current
+    if (!el) return
+    el.style.transform = ''
+  }, [])
+
+  return (
+    <div
+      ref={cardRef}
+      className="ab-stat-item"
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+    >
+      <div className="ab-stat-num-wrap">
+        <span className="ab-stat-num">{count}</span>
+        <span className="ab-stat-suffix">{stat.suffix}</span>
+      </div>
+      <div className="ab-stat-divider" />
+      <span className="ab-stat-label">{stat.label}</span>
+    </div>
+  )
+}
 
 const AboutContent = () => {
   const containerRef = useRef(null)
@@ -53,70 +165,42 @@ const AboutContent = () => {
         }
       })
 
-      // Stats Counter Animation
-      gsap.utils.toArray('.ab-stat-num').forEach(el => {
-        const target = parseInt(el.getAttribute('data-target'))
-        const suffix = el.getAttribute('data-suffix') || ''
-        const obj = { val: 0 }
-        gsap.to(obj, {
-          val: target,
-          duration: 2.5,
-          ease: 'power4.out',
-          scrollTrigger: {
-            trigger: el,
-            start: 'top 90%',
-            toggleActions: 'play none none none'
-          },
-          onUpdate: () => {
-            el.innerText = Math.ceil(obj.val) + suffix
-          }
-        })
-      })
-
-      // Magnetic Perspective for Stats
-      gsap.utils.toArray('.ab-stat-item').forEach(item => {
-        item.addEventListener('mousemove', (e) => {
-          const { left, top, width, height } = item.getBoundingClientRect()
-          const centerX = left + width / 2
-          const centerY = top + height / 2
-          const x = (e.clientX - centerX) / (width / 2)
-          const y = (e.clientY - centerY) / (height / 2)
-          
-          gsap.to(item, {
-            rotateY: x * 15,
-            rotateX: -y * 15,
-            duration: 0.5,
-            ease: 'power2.out',
-            transformPerspective: 1000,
-            overwrite: 'auto'
-          })
-        })
-        
-        item.addEventListener('mouseleave', () => {
-          gsap.to(item, {
-            rotateY: 0,
-            rotateX: 0,
-            duration: 1,
-            ease: 'power2.out',
-            overwrite: 'auto'
-          })
-        })
-      })
-
-      // Benefit icon entrance (scale/fade)
-      gsap.utils.toArray('.ab-benefit-icon-box').forEach(box => {
-        gsap.fromTo(box, 
-          { scale: 0.5, opacity: 0, rotate: -10 },
-          { 
-            scale: 1, opacity: 1, rotate: 0, 
-            duration: 1.5, ease: 'expo.out',
+      // Stats card entrance animation
+      gsap.utils.toArray('.ab-stat-item').forEach((item, i) => {
+        gsap.fromTo(item,
+          { y: 80, opacity: 0, scale: 0.9 },
+          {
+            y: 0, opacity: 1, scale: 1,
+            duration: 1.2,
+            ease: 'power3.out',
+            delay: i * 0.12,
             scrollTrigger: {
-              trigger: box,
-              start: 'top 90%'
+              trigger: item,
+              start: 'top 92%',
+              toggleActions: 'play none none none'
             }
           }
         )
       })
+
+      // Benefit rows stagger in
+      gsap.utils.toArray('.ab-benefit-row').forEach((row, i) => {
+        gsap.fromTo(row,
+          { y: 60, opacity: 0 },
+          {
+            y: 0, opacity: 1,
+            duration: 1.2,
+            ease: 'power3.out',
+            delay: i * 0.08,
+            scrollTrigger: {
+              trigger: row,
+              start: 'top 90%',
+              toggleActions: 'play none none none'
+            }
+          }
+        )
+      })
+
     }, containerRef)
 
     return () => ctx.revert()
@@ -134,34 +218,28 @@ const AboutContent = () => {
       label: 'Sync', 
       title: 'Timezone Agnostic', 
       desc: 'We sync with your schedule, ensuring seamless global collaboration across any time difference. Your project never sleeps.',
-      icon: '/images/benefits_globe_3d.png'
+      icon: 'globe'
     },
     { 
       label: 'Quality', 
       title: 'Precision Obsessed', 
       desc: 'No shortcuts. We develop digital products exactly as they were designed, pixel for pixel, ensuring flawless performance.',
-      icon: '/images/benefits_prism_3d.png'
+      icon: 'diamond'
     },
     { 
       label: 'Terms', 
       title: 'Transparent Terms', 
       desc: 'Flexible engagement models from fixed-price projects to dedicated time & materials squads. Total clarity in every contract.',
-      icon: '/images/benefits_compass_3d.png'
+      icon: 'compass'
     },
     { 
       label: 'Unity', 
       title: 'Full Stack Partnership', 
       desc: 'A unified partner for design, engineering, and strategy. We handle the complexity so you can focus on your vision.',
-      icon: '/images/benefits_links_3d.png'
+      icon: 'links'
     }
   ]
 
-  const services = [
-    { title: 'Product Design', desc: 'UI/UX Design, Prototyping, Design Systems' },
-    { title: 'Web Development', desc: 'React, Next.js, High Performance Web Apps' },
-    { title: 'Mobile Apps', desc: 'iOS, Android, Cross-platform Solutions' },
-    { title: 'Branding', desc: 'Visual Identity, Motion Design, Strategy' }
-  ]
 
   return (
     <div className="ab-container" ref={containerRef}>
@@ -177,8 +255,6 @@ const AboutContent = () => {
           </div>
         </div>
       </section>
-
-      <StretchableLine color="#333333" />
 
       {/* ─── Our Goal Section (WHITE) ─── */}
       <section className="ab-goal ab-white-bg">
@@ -201,10 +277,8 @@ const AboutContent = () => {
         </div>
       </section>
 
-      <StretchableLine color="rgba(255,255,255,0.15)" />
-
-      {/* ─── Stats Section (BLACK) ─── */}
-      <section className="ab-stats ab-black-bg">
+      {/* ─── Stats Section (WHITE) ─── */}
+      <section className="ab-stats ab-white-bg">
         <div className="ab-wide-container">
           <div className="ab-stats-header reveal">
             <span className="ab-label">Our Scale</span>
@@ -212,16 +286,11 @@ const AboutContent = () => {
           </div>
           <div className="ab-stats-grid">
             {stats.map((s, i) => (
-              <div key={i} className="ab-stat-item reveal">
-                <span className="ab-stat-num" data-target={s.num} data-suffix={s.suffix}>0</span>
-                <span className="ab-stat-label">{s.label}</span>
-              </div>
+              <StatCard key={i} stat={s} index={i} />
             ))}
           </div>
         </div>
       </section>
-
-      <StretchableLine color="rgba(255,255,255,0.15)" />
 
       {/* ─── Benefits Section (BLACK) ─── */}
       <section className="ab-benefits ab-black-bg">
@@ -232,58 +301,31 @@ const AboutContent = () => {
           </div>
           <div className="ab-benefits-list">
             {benefits.map((b, i) => (
-              <div key={i} className="ab-benefit-row reveal">
-                <div className="ab-benefit-col-icon">
-                  <div className="ab-benefit-icon-box">
-                    <img src={b.icon} alt={b.title} className="ab-benefit-img" />
+              <div key={i}>
+                <StretchableLine color="rgba(255,255,255,0.12)" />
+                <div className="ab-benefit-row">
+                  <div className="ab-benefit-col-icon">
+                    <BenefitIcon type={b.icon} />
                   </div>
-                </div>
-                <div className="ab-benefit-col-label">
-                  <span className="ab-label">{b.label}</span>
-                </div>
-                <div className="ab-benefit-col-desc">
-                  <h3 className="ab-benefit-title">{b.title}</h3>
-                  <p className="ab-benefit-desc">{b.desc}</p>
+                  <div className="ab-benefit-col-label">
+                    <span className="ab-label">{b.label}</span>
+                  </div>
+                  <div className="ab-benefit-col-desc">
+                    <h3 className="ab-benefit-title">{b.title}</h3>
+                    <p className="ab-benefit-desc">{b.desc}</p>
+                  </div>
                 </div>
               </div>
             ))}
+            <StretchableLine color="rgba(255,255,255,0.12)" />
           </div>
         </div>
       </section>
 
-      <StretchableLine color="#333333" />
-
-      {/* ─── What We Do (WHITE) ─── */}
-      <section className="ab-services ab-white-bg">
-        <div className="ab-wide-container">
-          <div className="ab-grid">
-            <div className="ab-col-left">
-              <span className="ab-label">What we do best</span>
-            </div>
-            <div className="ab-col-right">
-              <div className="ab-service-list">
-                {services.map((s, i) => (
-                  <div key={i} className="ab-service-item">
-                    <StretchableLine color="#333333" />
-                    <div className="ab-service-content reveal">
-                      <h3 className="ab-service-title">{s.title}</h3>
-                      <p className="ab-service-desc">{s.desc}</p>
-                    </div>
-                  </div>
-                ))}
-                <StretchableLine color="#333333" />
-              </div>
-            </div>
-          </div>
-        </div>
+      {/* ─── Testimonials (WHITE) ─── */}
+      <section className="ab-testimonials-outer ab-white-bg">
+        <Testimonials variant="light" />
       </section>
-
-      <StretchableLine color="rgba(255,255,255,0.15)" />
-
-      {/* ─── Testimonials (BLACK) ─── */}
-      <div className="ab-testimonials-outer ab-black-bg reveal">
-        <Testimonials variant="dark" />
-      </div>
 
       <style>{`
         .ab-container {
@@ -295,7 +337,7 @@ const AboutContent = () => {
 
         .ab-wide-container {
           width: 100%;
-          padding: 0 12vw; /* Increased Side Gutters for Universal Consistency */
+          padding: 0 12vw;
         }
         .ab-narrow-container {
           width: 85%;
@@ -313,8 +355,8 @@ const AboutContent = () => {
         }
         .ab-black-bg .ab-label { color: rgba(255,255,255,0.4); }
 
-        /* Hero */
-        .ab-hero { padding: 80px 0; text-align: center; }
+        /* ─── Hero ─── */
+        .ab-hero { padding: 80px 0 0; text-align: center; }
         .ab-hero-title {
           font-size: clamp(2.5rem, 6vw, 5.2rem);
           line-height: 1.05;
@@ -337,15 +379,15 @@ const AboutContent = () => {
           display: block;
         }
 
-        /* Grid General */
+        /* ─── Grid General ─── */
         .ab-grid {
           display: grid;
           grid-template-columns: 0.6fr 2fr;
           gap: 5vw;
-          padding: 180px 0;
+          padding: 120px 0;
         }
 
-        /* Goal */
+        /* ─── Goal ─── */
         .ab-goal-text {
           font-size: clamp(1.2rem, 2.8vw, 2.2rem);
           line-height: 1.35;
@@ -361,139 +403,213 @@ const AboutContent = () => {
           line-height: 1.8;
         }
 
-        /* Stats Section */
-        .ab-stats { padding: 180px 0; }
-        .ab-stats-header { margin-bottom: 80px; }
+        /* ─── Stats Section ─── */
+        .ab-stats { padding: 100px 0 120px; }
+        .ab-stats .ab-label { color: rgba(0,0,0,0.4); }
+        .ab-stats-header { margin-bottom: 60px; }
         .ab-stats-title {
           font-size: clamp(1.5rem, 3.5vw, 3rem);
           font-weight: 500;
           margin-top: 20px;
           letter-spacing: -0.03em;
           max-width: 800px;
+          color: #000;
         }
         .ab-stats-grid {
           display: grid;
           grid-template-columns: repeat(4, 1fr);
-          gap: 24px;
+          gap: 28px;
         }
         .ab-stat-item {
-          background: #0d0d0d;
-          padding: 80px 40px;
+          position: relative;
+          background: linear-gradient(165deg, #ffffff 0%, #fafafa 100%);
+          padding: 70px 36px 60px;
           display: flex;
           flex-direction: column;
           align-items: center;
           text-align: center;
-          border-radius: 20px;
-          border: 1px solid rgba(255,255,255,0.05);
-          transition: transform 0.1s ease-out; /* For magnetic perspective logic */
+          border-radius: 24px;
+          border: 1px solid rgba(0,0,0,0.06);
+          transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+          overflow: hidden;
+          cursor: default;
+        }
+        .ab-stat-item::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          border-radius: 24px;
+          padding: 1.5px;
+          background: linear-gradient(135deg, rgba(0,0,0,0.08), transparent 40%, transparent 60%, rgba(0,0,0,0.04));
+          -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+          -webkit-mask-composite: xor;
+          mask-composite: exclude;
+          pointer-events: none;
+          opacity: 0;
+          transition: opacity 0.5s ease;
+        }
+        .ab-stat-item:hover::before { opacity: 1; }
+        .ab-stat-item::after {
+          content: '';
+          position: absolute;
+          top: -60%;
+          left: -60%;
+          width: 220%;
+          height: 220%;
+          background: radial-gradient(circle, rgba(0,0,0,0.015) 0%, transparent 60%);
+          pointer-events: none;
+          opacity: 0;
+          transition: opacity 0.6s ease;
+        }
+        .ab-stat-item:hover::after { opacity: 1; }
+        .ab-stat-item:hover {
+          transform: translateY(-8px);
+          box-shadow: 0 24px 60px -12px rgba(0,0,0,0.08), 0 8px 20px -8px rgba(0,0,0,0.04);
+        }
+        .ab-stat-num-wrap {
+          position: relative;
+          margin-bottom: 20px;
         }
         .ab-stat-num {
-          font-size: clamp(3rem, 7vw, 5rem);
-          font-weight: 500;
+          font-size: clamp(3rem, 6vw, 4.5rem);
+          font-weight: 600;
           line-height: 1;
-          margin-bottom: 12px;
+          letter-spacing: -0.04em;
+          background: linear-gradient(135deg, #1a1a1a 0%, #555 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+        .ab-stat-suffix {
+          font-size: clamp(1.5rem, 3vw, 2.2rem);
+          font-weight: 400;
+          background: linear-gradient(135deg, #888 0%, #bbb 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          margin-left: 2px;
+        }
+        .ab-stat-divider {
+          width: 40px;
+          height: 1.5px;
+          background: linear-gradient(90deg, transparent, rgba(0,0,0,0.12), transparent);
+          margin-bottom: 20px;
+          transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .ab-stat-item:hover .ab-stat-divider { width: 60px; }
+        .ab-stat-label {
+          font-size: 0.7rem;
+          color: rgba(0,0,0,0.4);
+          text-transform: uppercase;
+          letter-spacing: 0.15em;
+          font-weight: 600;
+        }
+
+        /* ─── Benefits Section ─── */
+        .ab-benefits { padding: 120px 0; }
+        .ab-benefits-header { margin-bottom: 60px; }
+        .ab-benefits-main-title {
+          font-size: clamp(1.5rem, 3.5vw, 3rem);
+          font-weight: 500;
+          margin-top: 20px;
           letter-spacing: -0.03em;
           color: #fff;
         }
-        .ab-stat-label {
-          font-size: 0.75rem;
-          color: rgba(255,255,255,0.4);
-          text-transform: uppercase;
-          letter-spacing: 0.1em;
-        }
-
-        /* Benefits Segment (Reproduction of Cuberto "Architecture") */
-        .ab-benefits { padding-bottom: 180px; }
-        .ab-benefits-header { padding-bottom: 80px; }
-        .ab-benefits-main-title {
-          font-size: clamp(1.5rem, 3.5vw, 3rem);
-          font-style: normal;
-          font-weight: 500;
-          margin-top: 20px;
-        }
-        .ab-benefits-list { border-top: 1px solid rgba(255,255,255,0.15); }
+        .ab-benefits-list { }
         .ab-benefit-row {
           display: grid;
           grid-template-columns: 0.6fr 1.4fr 3fr;
           gap: 30px;
-          padding: 100px 0;
-          border-bottom: 1px solid rgba(255,255,255,0.15);
+          padding: 60px 0;
           align-items: center;
         }
         .ab-benefit-col-icon { display: flex; align-items: center; }
         .ab-benefit-icon-box {
-          width: 100px;
-          height: 100px;
+          width: 80px;
+          height: 80px;
           position: relative;
+          color: rgba(255,255,255,0.7);
         }
-        .ab-benefit-img {
+        .ab-benefit-svg {
           width: 100%;
           height: 100%;
-          object-fit: contain;
-          filter: drop-shadow(0 0 20px rgba(255,255,255,0.1));
         }
+
+        /* SVG Animations */
+        .ab-orbit-1 { transform-origin: 40px 40px; animation: abOrbit1 18s linear infinite; }
+        .ab-orbit-2 { transform-origin: 40px 40px; animation: abOrbit2 22s linear infinite; }
+        .ab-orbit-3 { transform-origin: 40px 40px; animation: abOrbit3 28s linear infinite; }
+        @keyframes abOrbit1 { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes abOrbit2 { from { transform: rotate(60deg); } to { transform: rotate(420deg); } }
+        @keyframes abOrbit3 { from { transform: rotate(120deg); } to { transform: rotate(480deg); } }
+
+        .ab-diamond-1 { transform-origin: 40px 40px; animation: abDiamondSpin 30s linear infinite; }
+        .ab-diamond-2 { transform-origin: 40px 40px; animation: abDiamondSpin 20s linear infinite reverse; }
+        .ab-diamond-3 { transform-origin: 40px 40px; animation: abDiamondSpin 14s linear infinite; }
+        @keyframes abDiamondSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        .ab-compass-needle { transform-origin: 40px 40px; animation: abCompassSwing 6s ease-in-out infinite; }
+        @keyframes abCompassSwing { 0%, 100% { transform: rotate(0deg); } 30% { transform: rotate(12deg); } 70% { transform: rotate(-12deg); } }
+
+        .ab-link-1 { animation: abLinkPulse1 4s ease-in-out infinite; }
+        .ab-link-2 { animation: abLinkPulse2 4s ease-in-out infinite; }
+        @keyframes abLinkPulse1 { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(3px); } }
+        @keyframes abLinkPulse2 { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-3px); } }
+
+        .ab-pulse-dot { animation: abPulseDot 3s ease-in-out infinite; }
+        @keyframes abPulseDot { 0%, 100% { opacity: 0.5; } 50% { opacity: 0.2; } }
+
         .ab-benefit-title {
           font-size: clamp(1.5rem, 2.5vw, 2.2rem);
           font-weight: 500;
-          margin-bottom: 20px;
+          margin-bottom: 16px;
+          color: #fff;
         }
         .ab-benefit-desc {
-          font-size: 1.1rem;
-          color: rgba(255,255,255,0.5);
+          font-size: 1.05rem;
+          color: rgba(255,255,255,0.45);
           line-height: 1.6;
           max-width: 600px;
         }
 
-        /* Services */
-        .ab-service-list { margin-top: -20px; }
-        .ab-service-item { position: relative; }
-        .ab-service-content {
-          padding: 70px 0;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        }
-        .ab-service-title {
-          font-size: clamp(1.8rem, 3vw, 2.5rem);
-          font-weight: 500;
-        }
-        .ab-service-desc {
-          font-size: 1rem;
-          color: rgba(0,0,0,0.5);
-          max-width: 320px;
-          text-align: right;
-          line-height: 1.5;
-        }
-
-        /* Testimonials Outer */
+        /* ─── Testimonials Outer ─── */
         .ab-testimonials-outer {
-          padding-bottom: 60px;
+          padding: 0;
         }
 
-        /* Mobile */
+        /* ─── Responsive ─── */
         @media (max-width: 1200px) {
           .ab-wide-container { padding: 0 8vw; }
           .ab-benefit-row { grid-template-columns: 0.6fr 1.2fr 2.5fr; }
         }
         @media (max-width: 1024px) {
           .ab-grid { grid-template-columns: 1fr; gap: 40px; padding: 100px 0; }
-          .ab-stats-grid { grid-template-columns: repeat(2, 1fr); }
-          .ab-benefit-row { grid-template-columns: 1fr; gap: 40px; padding: 80px 0; }
-          .ab-benefit-icon-box { width: 80px; height: 80px; }
+          .ab-stats-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+          .ab-benefit-row { grid-template-columns: 1fr; gap: 24px; padding: 50px 0; }
+          .ab-benefit-icon-box { width: 64px; height: 64px; }
+
         }
         @media (max-width: 768px) {
           .ab-hero-title { font-size: 2.8rem; margin-bottom: 50px; }
           .ab-hero-media { height: 50vh; border-radius: 24px; }
-          .ab-stat-item { padding: 60px 20px; }
-          .ab-stat-num { font-size: 3rem; }
-          .ab-service-content { flex-direction: column; align-items: flex-start; gap: 15px; padding: 50px 0; }
-          .ab-service-desc { text-align: left; }
+          .ab-stat-item { padding: 50px 20px 40px; }
+          .ab-stat-num { font-size: 2.8rem; }
+
           .ab-wide-container { padding: 0 6vw; }
+          .ab-grid { padding: 80px 0; }
+          .ab-benefits { padding: 80px 0; }
+
+          .ab-stats { padding: 80px 0; }
         }
         @media (max-width: 480px) {
           .ab-hero-title { font-size: 2.2rem; }
-          .ab-stats-grid { grid-template-columns: 1fr; }
+          .ab-stats-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+          .ab-stat-item { padding: 40px 16px 32px; border-radius: 18px; }
+          .ab-stat-num { font-size: 2.2rem; }
+          .ab-stat-suffix { font-size: 1.2rem; }
           .ab-wide-container { padding: 0 20px; }
+
+          .ab-grid { padding: 60px 0; }
         }
       `}</style>
     </div>

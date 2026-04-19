@@ -62,37 +62,30 @@ const ServiceChip = ({ label, active, onClick }) => {
 }
 
 const InputField = ({ type, name, value, onChange, placeholder, required, isTextArea }) => {
-  const lineRef = useRef(null)
-  const highlighterRef = useRef(null)
+  const pathRef = useRef(null)
 
-  const handleMouseMove = (e) => {
-    const rect = lineRef.current.getBoundingClientRect()
-    const x = e.clientX - rect.left
-    
-    gsap.to(highlighterRef.current, {
-      x: x,
-      opacity: 1,
-      scaleX: 1,
-      duration: 0.6,
-      ease: 'power3.out',
-      overwrite: 'auto'
-    })
-  }
+  const handleFocus = () => {
+    const path = pathRef.current
+    if (!path) return
 
-  const handleMouseLeave = () => {
-    gsap.to(highlighterRef.current, {
-      opacity: 0,
-      scaleX: 0,
-      duration: 0.6,
-      ease: 'power3.out',
-      overwrite: 'auto'
-    })
+    // Pluck the rope — big smooth wave distortion
+    gsap.timeline()
+      .to(path, {
+        attr: { d: 'M0,5 C120,-8 280,18 350,-4 C420,18 580,-8 700,5' },
+        duration: 0.3,
+        ease: 'power2.out'
+      })
+      .to(path, {
+        attr: { d: 'M0,5 Q350,5 700,5' },
+        duration: 2,
+        ease: 'elastic.out(1, 0.25)'
+      })
   }
 
   const Tag = isTextArea ? 'textarea' : 'input'
 
   return (
-    <div className="ct-field" onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}>
+    <div className="ct-field">
       <Tag 
         type={type} 
         name={name} 
@@ -101,9 +94,18 @@ const InputField = ({ type, name, value, onChange, placeholder, required, isText
         placeholder={placeholder} 
         required={required} 
         rows={isTextArea ? "1" : undefined}
+        onFocus={handleFocus}
       />
-      <div className="ct-line-track" ref={lineRef}>
-        <div className="ct-line-highlighter" ref={highlighterRef}></div>
+      <div className="ct-line-track">
+        <svg className="ct-wave-svg" viewBox="0 0 700 10" preserveAspectRatio="none">
+          <path
+            ref={pathRef}
+            d="M0,5 Q350,5 700,5"
+            stroke="rgba(0,0,0,0.2)"
+            strokeWidth="1.5"
+            fill="none"
+          />
+        </svg>
       </div>
     </div>
   )
@@ -300,30 +302,19 @@ const ContactContent = () => {
           border-radius: 0;
         }
         .ct-field textarea { resize: none; min-height: 120px; vertical-align: bottom; }
-        .ct-field input::placeholder, .ct-field textarea::placeholder { color: rgba(0,0,0,0.3); font-weight: 300; }
+        .ct-field input::placeholder, .ct-field textarea::placeholder { color: rgba(0,0,0,0.5); font-weight: 400; }
         
         .ct-line-track {
           position: absolute;
-          bottom: 0;
+          bottom: -2px;
           left: 0;
           width: 100%;
-          height: 1px;
-          background: rgba(0,0,0,0.1);
+          height: 10px;
           pointer-events: none;
-          overflow: visible;
         }
-        .ct-line-highlighter {
-          position: absolute;
-          top: -1px;
-          left: -40px; /* Offset to center the dot/segment */
-          width: 80px;
-          height: 3px;
-          background: #000000;
-          opacity: 0;
-          transform: scaleX(0);
-          transform-origin: center;
-          pointer-events: none;
-          border-radius: 10px;
+        .ct-wave-svg {
+          width: 100%;
+          height: 100%;
         }
 
         .ct-submit-container { text-align: left; }

@@ -89,11 +89,12 @@ const BlogPage = () => {
                     max-width: 100%;
                     text-align: center;
                 }
-                .blog-page-title {
-                    font-size: clamp(2.5rem, 6vw, 5.2rem); /* Standardized across all sections */
+                .bp-title {
+                    font-size: clamp(2.5rem, 6vw, 5.2rem);
                     font-weight: 500;
-                    letter-spacing: -3px;
-                    line-height: 0.95;
+                    letter-spacing: -0.035em;
+                    line-height: 1.05;
+                    color: #000;
                     margin-bottom: 30px;
                 }
                 .bp-intro {
@@ -169,7 +170,7 @@ const BlogPage = () => {
                     .bp-main { padding-top: 120px; }
                     .bp-container { padding: 0 24px; }
                     .bp-grid { grid-template-columns: 1fr; gap: 50px; }
-                    .bp-title { font-size: 4rem; letter-spacing: -2px; }
+                    .bp-title { font-size: clamp(2.5rem, 8vw, 4rem); letter-spacing: -0.03em; }
                     .bp-header { margin-bottom: 60px; }
                     .bp-card-img-wrap { border-radius: 16px; margin-bottom: 24px; }
                 }
