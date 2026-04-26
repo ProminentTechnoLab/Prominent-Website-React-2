@@ -89,12 +89,14 @@ const InputField = ({ type, name, value, onChange, placeholder, required, isText
       <Tag 
         type={type} 
         name={name} 
+        id={name}
         value={value} 
         onChange={onChange} 
         placeholder={placeholder} 
         required={required} 
         rows={isTextArea ? "1" : undefined}
         onFocus={handleFocus}
+        aria-label={placeholder}
       />
       <div className="ct-line-track">
         <svg className="ct-wave-svg" viewBox="0 0 700 10" preserveAspectRatio="none">
@@ -115,7 +117,7 @@ const ContactContent = () => {
   const sectionRef = useRef(null)
   const [selected, setSelected] = useState([])
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', subject: '', message: '' })
-  const [status, setStatus] = useState({ submitting: false, success: false, error: null })
+  const [status, setStatus] = useState({ submitting: false, success: false, error: null, fieldErrors: {} })
 
   const interests = [
     'Website Development', 'Mobile App Development', 'UI/UX Design',
@@ -140,90 +142,177 @@ const ContactContent = () => {
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData({ ...formData, [name]: value })
+    // Clear field error when user types
+    if (status.fieldErrors[name]) {
+      setStatus(prev => ({
+        ...prev,
+        fieldErrors: { ...prev.fieldErrors, [name]: null }
+      }))
+    }
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setStatus({ submitting: true, success: false, error: null })
+    setStatus({ submitting: true, success: false, error: null, fieldErrors: {} })
+    
     try {
       const response = await fetch('https://api.prominenttechnolabs.com/api/contact', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json', 
+          'Accept': 'application/json' 
+        },
         body: JSON.stringify({ ...formData, service: selected.join(', ') }),
       })
+      
       const data = await response.json()
+      
       if (response.ok) {
-        setStatus({ submitting: false, success: true, error: null })
-        setFormData({ name: '', email: '', phone: '', subject: '', message: '' })
-        setSelected([])
+        // Success animation
+        gsap.to('.ct-inner', {
+          opacity: 0,
+          y: -20,
+          duration: 0.4,
+          ease: 'power2.in',
+          onComplete: () => {
+            window.scrollTo(0, 0); // Reset scroll to top for the full-screen success view
+            setStatus({ submitting: false, success: true, error: null, fieldErrors: {} })
+            setFormData({ name: '', email: '', phone: '', subject: '', message: '' })
+            setSelected([])
+            
+            // Use requestAnimationFrame to ensure the success screen is in the DOM
+            requestAnimationFrame(() => {
+              gsap.fromTo('.ct-success-screen', 
+                { opacity: 0, y: 30 }, 
+                { opacity: 1, y: 0, duration: 1, ease: 'power4.out', clearProps: "all" }
+              )
+            })
+          }
+        })
+      } else if (response.status === 422) {
+        // Validation errors from Laravel
+        setStatus({ 
+          submitting: false, 
+          success: false, 
+          error: 'Please fix the errors below.', 
+          fieldErrors: data.errors || {} 
+        })
       } else {
         throw new Error(data.message || 'Something went wrong')
       }
     } catch (err) {
-      setStatus({ submitting: false, success: false, error: err.message })
+      setStatus({ submitting: false, success: false, error: err.message, fieldErrors: {} })
     }
+  }
+
+  const resetForm = () => {
+    gsap.to('.ct-success-screen', {
+      opacity: 0,
+      y: -20,
+      duration: 0.5,
+      ease: 'power2.in',
+      onComplete: () => {
+        setStatus({ submitting: false, success: false, error: null, fieldErrors: {} })
+        gsap.fromTo('.ct-inner', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 1, ease: 'power4.out' })
+      }
+    })
   }
 
   return (
     <section className="ct-page" ref={sectionRef}>
-      <div className="ct-inner">
-        <h1 className="ct-title">
-          <span className="ct-line">Hey! Tell us all</span>
-          <span className="ct-line">the things</span>
-        </h1>
-
-        <div className="ct-chips-section ct-chips">
-          <p className="ct-label">I'm interested in...</p>
-          <div className="ct-chips-row">
-            {interests.map(item => (
-              <ServiceChip
-                key={item}
-                label={item}
-                active={selected.includes(item)}
-                onClick={() => toggleInterest(item)}
-              />
-            ))}
-          </div>
-        </div>
-
-        <div className="ct-form">
-          {status.success ? (
-            <div className="ct-success">
-              <div className="ct-success-icon-wrap">
-                <IoCheckmarkCircle className="ct-success-icon" />
+        {status.success ? (
+          <div className="ct-success-screen">
+            <div className="ct-success-content">
+              <div className="ct-success-circle">
+                <IoCheckmarkCircle className="ct-success-check" />
               </div>
-              <h3>Thank you!</h3>
-              <p>Your message has been sent successfully. We'll get back to you within 24 hours.</p>
-              <button className="ct-reset" onClick={() => setStatus({ ...status, success: false })}>Send another message</button>
+              <h2 className="ct-success-title">Success!</h2>
+              <p className="ct-success-text">
+                Your inquiry has been received. Our team will reach out to you within 24 business hours to discuss your project.
+              </p>
+              <div className="ct-success-actions">
+                <button onClick={resetForm} className="ct-btn-secondary">New Inquiry</button>
+                <a href="/" className="ct-btn-primary">Back to Home</a>
+              </div>
             </div>
-          ) : (
-            <form onSubmit={handleSubmit}>
-              <InputField type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Your name" required />
-              <InputField type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email" required />
-              <InputField type="tel" name="phone" value={formData.phone} onChange={handleChange} placeholder="Phone (optional)" />
-              <InputField type="text" name="subject" value={formData.subject} onChange={handleChange} placeholder="Subject" required />
-              <InputField name="message" value={formData.message} onChange={handleChange} placeholder="Tell us about your project" required isTextArea />
+          </div>
+        ) : (
+          <div className="ct-inner">
+            <h1 className="ct-title">
+              <span className="ct-line">Hey! Tell us all</span>
+              <span className="ct-line">the things</span>
+            </h1>
 
-              {status.error && (
-                <div className="ct-error"><IoAlertCircle /> {status.error}</div>
-              )}
-
-              <div className="ct-submit-container">
-                <button type="submit" className="ct-submit" disabled={status.submitting}>
-                  <span className="ct-submit-text-wrapper">
-                    <span className="ct-submit-text-old">
-                      {status.submitting ? 'Sending...' : 'Send request'}
-                    </span>
-                    <span className="ct-submit-text-new">
-                      {status.submitting ? 'Sending...' : 'Send request'}
-                    </span>
-                  </span>
-                </button>
+            <div className="ct-chips-section ct-chips">
+              <p className="ct-label">I'm interested in...</p>
+              <div className="ct-chips-row">
+                {interests.map(item => (
+                  <ServiceChip
+                    key={item}
+                    label={item}
+                    active={selected.includes(item)}
+                    onClick={() => toggleInterest(item)}
+                  />
+                ))}
               </div>
-            </form>
-          )}
-        </div>
-      </div>
+            </div>
+
+            <div className="ct-form" role="region" aria-label="Contact Form">
+              <form onSubmit={handleSubmit} noValidate>
+                {/* Honeypot field - hidden from users */}
+                <div style={{ display: 'none' }} aria-hidden="true">
+                  <input 
+                    type="text" 
+                    name="website_url" 
+                    tabIndex="-1" 
+                    autoComplete="off" 
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="ct-field-group">
+                  <InputField type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Your name" required />
+                  {status.fieldErrors.name && <span className="ct-field-error">{status.fieldErrors.name[0]}</span>}
+                </div>
+
+                <div className="ct-field-group">
+                  <InputField type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email" required />
+                  {status.fieldErrors.email && <span className="ct-field-error">{status.fieldErrors.email[0]}</span>}
+                </div>
+
+                <div className="ct-field-group">
+                  <InputField type="tel" name="phone" value={formData.phone} onChange={handleChange} placeholder="Phone (optional)" />
+                </div>
+
+                <div className="ct-field-group">
+                  <InputField type="text" name="subject" value={formData.subject} onChange={handleChange} placeholder="Subject" required />
+                  {status.fieldErrors.subject && <span className="ct-field-error">{status.fieldErrors.subject[0]}</span>}
+                </div>
+
+                <div className="ct-field-group">
+                  <InputField name="message" value={formData.message} onChange={handleChange} placeholder="Tell us about your project" required isTextArea />
+                  {status.fieldErrors.message && <span className="ct-field-error">{status.fieldErrors.message[0]}</span>}
+                </div>
+
+                {status.error && !Object.keys(status.fieldErrors).length && (
+                  <div className="ct-error-summary" role="alert"><IoAlertCircle /> {status.error}</div>
+                )}
+
+                <div className="ct-submit-container">
+                  <button type="submit" className="ct-submit" disabled={status.submitting}>
+                    <span className="ct-submit-text-wrapper">
+                      <span className="ct-submit-text-old">
+                        {status.submitting ? 'Sending...' : 'Send request'}
+                      </span>
+                      <span className="ct-submit-text-new">
+                        {status.submitting ? 'Sending...' : 'Send request'}
+                      </span>
+                    </span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
 
       <style>{`
         .ct-page {
@@ -357,9 +446,106 @@ const ContactContent = () => {
         .ct-submit:hover .ct-submit-text-new { transform: translateY(-100%); }
         .ct-submit:disabled { opacity: 0.4; cursor: not-allowed; }
 
-        .ct-success { text-align: left; padding: 100px 0; max-width: 600px; }
-        .ct-success-icon { font-size: 4rem; color: #000; margin-bottom: 32px; }
-        .ct-success h3 { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 500; margin-bottom: 20px; letter-spacing: -0.03em; }
+        .ct-field-error {
+          display: block;
+          color: #ff3b30;
+          font-size: 0.9rem;
+          margin-top: -45px;
+          margin-bottom: 45px;
+          animation: ct-fade-in 0.3s ease-out;
+        }
+        @keyframes ct-fade-in {
+          from { opacity: 0; transform: translateY(-10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
+        .ct-error-summary {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          color: #ff3b30;
+          font-size: 1rem;
+          margin-bottom: 24px;
+        }
+
+        /* Success Screen Premium UI */
+        .ct-success-screen {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: #fff;
+          z-index: 100;
+          text-align: center;
+        }
+        .ct-success-content {
+          max-width: 600px;
+          padding: 40px;
+        }
+        .ct-success-circle {
+          width: 80px;
+          height: 80px;
+          background: #f0f0f0;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin: 0 auto 40px;
+        }
+        .ct-success-check {
+          font-size: 40px;
+          color: #000;
+        }
+        .ct-success-title {
+          font-size: clamp(3rem, 8vw, 5rem);
+          font-weight: 500;
+          letter-spacing: -0.04em;
+          margin-bottom: 24px;
+          color: #000;
+        }
+        .ct-success-text {
+          font-size: 1.25rem;
+          line-height: 1.6;
+          color: rgba(0,0,0,0.6);
+          margin-bottom: 48px;
+        }
+        .ct-success-actions {
+          display: flex;
+          gap: 20px;
+          justify-content: center;
+        }
+        .ct-btn-primary, .ct-btn-secondary {
+          padding: 16px 32px;
+          border-radius: 100px;
+          font-size: 1rem;
+          font-weight: 500;
+          text-decoration: none;
+          transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+          cursor: pointer;
+          font-family: inherit;
+        }
+        .ct-btn-primary {
+          background: #000;
+          color: #fff;
+          border: 1.5px solid #000;
+        }
+        .ct-btn-primary:hover {
+          background: transparent;
+          color: #000;
+        }
+        .ct-btn-secondary {
+          background: transparent;
+          color: #000;
+          border: 1.5px solid #000;
+        }
+        .ct-btn-secondary:hover {
+          background: #000;
+          color: #fff;
+        }
 
         @media (max-width: 1024px) {
           .ct-inner { padding: 0 8vw !important; }
@@ -367,6 +553,7 @@ const ContactContent = () => {
         @media (max-width: 768px) {
           .ct-inner { padding: 0 6vw !important; }
           .ct-title { font-size: clamp(2.5rem, 8vw, 4rem); }
+          .ct-success-actions { flex-direction: column; }
         }
         @media (max-width: 480px) {
           .ct-inner { padding: 0 20px !important; }

@@ -20,12 +20,12 @@ class ContactRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'    => 'required|string|max:100',
-            'email'   => 'required|email|max:150',
-            'phone'   => 'nullable|string|max:20',
-            'subject' => 'required|string|max:200',
-            'service' => 'nullable|string|max:100',
-            'message' => 'required|string|max:5000',
+            'name'    => 'required|string|min:2|max:100',
+            'email'   => 'required|email:rfc,dns|max:150',
+            'phone'   => 'nullable|string|min:7|max:20',
+            'subject' => 'required|string|min:3|max:200',
+            'service' => 'nullable|string|max:500',
+            'message' => 'required|string|min:10|max:5000',
         ];
     }
 
@@ -35,11 +35,13 @@ class ContactRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required'    => 'Please enter your full name.',
-            'email.required'   => 'Please enter your email address.',
-            'email.email'      => 'Please enter a valid email address.',
-            'message.required' => 'Please describe your project or inquiry.',
-            'message.max'      => 'Message cannot exceed 5000 characters.',
+            'name.required'    => 'Please let us know your name.',
+            'name.min'         => 'Name should be at least 2 characters.',
+            'email.required'   => 'We need your email to get back to you.',
+            'email.email'      => 'This doesn\'t look like a valid email address.',
+            'subject.required' => 'Please provide a brief subject.',
+            'message.required' => 'Tell us a bit about what you need.',
+            'message.min'      => 'Please provide a bit more detail (at least 10 characters).',
         ];
     }
 }

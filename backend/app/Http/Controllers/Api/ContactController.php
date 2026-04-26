@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ContactRequest;
 use App\Mail\ContactFormMail;
+use App\Mail\ContactReceiptMail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 
@@ -18,31 +19,37 @@ class ContactController extends Controller
      */
     public function submit(ContactRequest $request)
     {
+        // 1. Honeypot Check (Spam protection)
+        if ($request->has('website_url') && !empty($request->website_url)) {
+            Log::info('Spam attempt blocked via honeypot', ['email' => $request->email]);
+            return response()->json(['success' => true, 'message' => 'Message sent successfully.'], 200); // Decoy success
+        }
+
         $validated = $request->validated();
 
         try {
-            // Save to database
+            // 2. Save to database
             \App\Models\ContactSubmission::create($validated);
 
-            // Send email to admin
+            // 3. Send email to admin
             Mail::to(config('mail.admin_address'))
                 ->send(new ContactFormMail($validated));
 
             return response()->json([
                 'success' => true,
-                'message' => 'Your message has been submitted successfully.',
+                'message' => 'Thank you! Your message has been submitted successfully.',
+                'data'    => $validated
             ], 200);
 
         } catch (\Exception $e) {
-            Log::error('Contact form email failed', [
-                'error' => $e->getMessage(),
-                'name'  => $validated['name'],
-                'email' => $validated['email'],
+            Log::error('Contact form processing failed', [
+                'exception' => $e->getMessage(),
+                'input'     => $request->except(['phone']),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Something went wrong. Please try again or email us directly at prominenttechnolabs@gmail.com.',
+                'message' => 'We encountered a technical issue while processing your request. Please try again or contact us at prominenttechnolabs@gmail.com.',
             ], 500);
         }
     }
