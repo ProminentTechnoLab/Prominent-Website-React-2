@@ -210,7 +210,6 @@ const Footer = () => {
           width: 100%;
           height: 100%;
           object-fit: cover;
-          opacity: 0.6;
           transition: opacity 0.5s ease;
         }
         
@@ -229,12 +228,12 @@ const Footer = () => {
           display: flex; 
           flex-direction: column; 
           align-items: center; 
-          gap: 25px; 
+          gap: 20px; 
           padding-top: 15vh;
         }
         
         .cb-footer-hero .cb-hero-title {
-          font-size: clamp(3rem, 8vw, 8rem) !important;
+          font-size: clamp(2.8rem, 8vw, 8rem) !important;
           font-weight: 300 !important;
           line-height: 1 !important;
           letter-spacing: -0.04em !important;
@@ -248,21 +247,22 @@ const Footer = () => {
           display: inline-flex !important;
           align-items: center !important;
           justify-content: center !important;
-          padding: clamp(15px, 1.8vw, 25px) clamp(30px, 4vw, 60px) !important;
-          border: 1px solid rgba(255,255,255,0.5) !important;
+          padding: clamp(5px, 1vw, 15px) clamp(20px, 3vw, 40px) !important;
+          border: 1px solid rgba(255,255,255,0.7) !important;
           border-radius: 500px !important;
           background: transparent !important;
           color: #fff !important;
-          font-size: clamp(2rem, 4.5vw, 4.5rem) !important; 
+          font-size: clamp(2.8rem, 8vw, 8rem) !important; 
           font-weight: 300 !important;
           text-transform: uppercase !important;
+          letter-spacing: -0.05em !important;
           text-decoration: none !important;
           position: relative;
           overflow: hidden;
-          transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1) !important;
+          transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1) !important;
           cursor: pointer;
           width: fit-content;
-          margin-top: 20px !important;
+          margin-top: 0px !important;
         }
         .cb-footer-tellus-btn:hover {
           transform: scale(1.03) !important;
@@ -275,14 +275,14 @@ const Footer = () => {
           width: 200%; height: 300%;
           background: #ffffff;
           border-radius: 50%;
-          transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+          transition: transform 1.2s cubic-bezier(0.19, 1, 0.22, 1);
           z-index: 0;
         }
         .cb-footer-tellus-btn:hover::before { transform: translateY(-70%); }
         
         .cb-footer-hero .btn-inner { position: relative; z-index: 1; display: inline-flex; height: 1.1em; line-height: 1.1em; overflow: hidden; }
-        .cb-footer-hero .btn-text-old { display: block; transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1); color: #fff; }
-        .cb-footer-hero .btn-text-new { position: absolute; top: 100%; left: 0; width: 100%; text-align: center; color: #000 !important; transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1); }
+        .cb-footer-hero .btn-text-old { display: block; transition: transform 1.2s cubic-bezier(0.19, 1, 0.22, 1); color: #fff; }
+        .cb-footer-hero .btn-text-new { position: absolute; top: 100%; left: 0; width: 100%; text-align: center; color: #000 !important; transition: transform 1.2s cubic-bezier(0.19, 1, 0.22, 1); }
         .cb-footer-tellus-btn:hover .btn-text-old { transform: translateY(-100%); }
         .cb-footer-tellus-btn:hover .btn-text-new { transform: translateY(-100%); }
 

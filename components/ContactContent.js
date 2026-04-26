@@ -63,29 +63,74 @@ const ServiceChip = ({ label, active, onClick }) => {
 
 const InputField = ({ type, name, value, onChange, placeholder, required, isTextArea }) => {
   const pathRef = useRef(null)
+  const containerRef = useRef(null)
+  const [isFocused, setIsFocused] = useState(false)
 
-  const handleFocus = () => {
+  const handleMouseMove = (e) => {
+    const path = pathRef.current
+    const container = containerRef.current
+    if (!path || !container) return
+
+    const { left, width } = container.getBoundingClientRect()
+    const x = e.clientX - left
+    
+    // Calculate control point for a realistic "pull" toward the cursor
+    const pullX = x.toFixed(0)
+    const pullY = 15 // Distance of the "stretch"
+
+    gsap.to(path, {
+      attr: { d: `M0,5 Q${pullX},${pullY} 700,5` },
+      duration: 0.6,
+      ease: 'power3.out',
+      overwrite: 'auto'
+    })
+  }
+
+  const handleMouseLeave = () => {
     const path = pathRef.current
     if (!path) return
 
-    // Pluck the rope — big smooth wave distortion
+    // Rebound simulation
+    gsap.to(path, {
+      attr: { d: 'M0,5 Q350,5 700,5' },
+      duration: 1.2,
+      ease: 'elastic.out(1.2, 0.3)',
+      overwrite: 'auto'
+    })
+  }
+
+  const handleFocus = () => {
+    setIsFocused(true)
+    const path = pathRef.current
+    if (!path) return
+
+    // High-tension pluck on focus
     gsap.timeline()
       .to(path, {
         attr: { d: 'M0,5 C120,-8 280,18 350,-4 C420,18 580,-8 700,5' },
-        duration: 0.3,
+        duration: 0.2,
         ease: 'power2.out'
       })
       .to(path, {
         attr: { d: 'M0,5 Q350,5 700,5' },
-        duration: 2,
-        ease: 'elastic.out(1, 0.25)'
+        duration: 1.5,
+        ease: 'elastic.out(1, 0.2)'
       })
+  }
+
+  const handleBlur = () => {
+    setIsFocused(false)
   }
 
   const Tag = isTextArea ? 'textarea' : 'input'
 
   return (
-    <div className="ct-field">
+    <div 
+      className={`ct-field ${isFocused ? 'is-focused' : ''}`} 
+      ref={containerRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+    >
       <Tag 
         type={type} 
         name={name} 
@@ -96,6 +141,7 @@ const InputField = ({ type, name, value, onChange, placeholder, required, isText
         required={required} 
         rows={isTextArea ? "1" : undefined}
         onFocus={handleFocus}
+        onBlur={handleBlur}
         aria-label={placeholder}
       />
       <div className="ct-line-track">
@@ -103,8 +149,8 @@ const InputField = ({ type, name, value, onChange, placeholder, required, isText
           <path
             ref={pathRef}
             d="M0,5 Q350,5 700,5"
-            stroke="rgba(0,0,0,0.2)"
-            strokeWidth="1.5"
+            stroke={isFocused ? "#000" : "rgba(0,0,0,0.2)"}
+            strokeWidth={isFocused ? "2" : "1.5"}
             fill="none"
           />
         </svg>
@@ -209,11 +255,18 @@ const ContactContent = () => {
     gsap.to('.ct-success-screen', {
       opacity: 0,
       y: -20,
-      duration: 0.5,
+      duration: 0.4,
       ease: 'power2.in',
       onComplete: () => {
         setStatus({ submitting: false, success: false, error: null, fieldErrors: {} })
-        gsap.fromTo('.ct-inner', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 1, ease: 'power4.out' })
+        
+        // Ensure React has swapped the DOM before animating back
+        requestAnimationFrame(() => {
+          gsap.fromTo('.ct-inner', 
+            { opacity: 0, y: 30 }, 
+            { opacity: 1, y: 0, duration: 0.8, ease: 'power4.out', clearProps: "all" }
+          )
+        })
       }
     })
   }
@@ -390,8 +443,13 @@ const ContactContent = () => {
           outline: none;
           border-radius: 0;
         }
-        .ct-field textarea { resize: none; min-height: 120px; vertical-align: bottom; }
-        .ct-field input::placeholder, .ct-field textarea::placeholder { color: rgba(0,0,0,0.5); font-weight: 400; }
+        .ct-field.is-focused input, .ct-field.is-focused textarea {
+          color: #000;
+        }
+        .ct-field.is-focused .ct-wave-svg path {
+          stroke: #000;
+          stroke-width: 2px;
+        }
         
         .ct-line-track {
           position: absolute;

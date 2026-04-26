@@ -6,6 +6,7 @@ import Footer from '@/components/Footer'
 import CustomCursor from '../components/animations/CustomCursor'
 import AppWrapper from '../components/AppWrapper'
 import PageTransition from '../components/animations/PageTransition'
+import TextReveal from '../components/animations/TextReveal'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -34,6 +35,7 @@ export default function RootLayout({ children }) {
       </head>
       <body>
         <CustomCursor />
+        <TextReveal />
         <AppWrapper>
           <Navbar />
           <PageTransition>
