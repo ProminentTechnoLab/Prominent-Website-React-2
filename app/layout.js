@@ -7,6 +7,7 @@ import CustomCursor from '../components/animations/CustomCursor'
 import AppWrapper from '../components/AppWrapper'
 import PageTransition from '../components/animations/PageTransition'
 import TextReveal from '../components/animations/TextReveal'
+import FloatingContact from '../components/animations/FloatingContact'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -43,6 +44,7 @@ export default function RootLayout({ children }) {
           </PageTransition>
           <Footer />
         </AppWrapper>
+        {/* <FloatingContact /> */}
       </body>
     </html>
   )

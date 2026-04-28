@@ -56,6 +56,28 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  // Header entrance animation on route change
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Animate logo
+      gsap.fromTo('.cb-logo', 
+        { y: 20, opacity: 0 },
+        { y: 0, opacity: 1, duration: 1.2, ease: 'power4.out', delay: 0.8 }
+      )
+      // Animate nav links
+      gsap.fromTo('.cb-nav-link',
+        { y: 20, opacity: 0 },
+        { y: 0, opacity: 1, duration: 1.2, stagger: 0.05, ease: 'power4.out', delay: 0.9 }
+      )
+      // Animate mobile toggle
+      gsap.fromTo('.cb-menu-btn',
+        { scale: 0.8, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 1, ease: 'back.out(1.7)', delay: 1.0 }
+      )
+    }, navRef)
+    return () => ctx.revert()
+  }, [pathname])
+
   // Mobile overlay animation
   useEffect(() => {
     if (!overlayRef.current) return

@@ -24,16 +24,16 @@ const ServicePagePremium = ({ slug }) => {
         { y: '110%' },
         { 
           y: '0%', 
-          duration: 1.2, 
-          stagger: 0.05, 
-          ease: 'expo.out', 
-          delay: 0.3 
+          duration: 1.6, 
+          stagger: 0.04, 
+          ease: 'power4.out', 
+          delay: 0.8 
         }
       )
 
       gsap.fromTo('.spp-hero-p', 
         { y: 40, opacity: 0 },
-        { y: 0, opacity: 0.65, duration: 1.2, ease: 'power4.out', delay: 0.8 }
+        { y: 0, opacity: 0.65, duration: 1.6, ease: 'power4.out', delay: 1.1 }
       )
       
       // 2. Refined Center-Mask Disclosure for Hero Image
@@ -43,9 +43,9 @@ const ServicePagePremium = ({ slug }) => {
           clipPath: 'inset(0% 0% 0% 0% round 40px)', 
           opacity: 1, 
           scale: 1,
-          duration: 1.8, 
+          duration: 2.0, 
           ease: 'expo.inOut', 
-          delay: 0.4 
+          delay: 1.0 
         }
       )
 

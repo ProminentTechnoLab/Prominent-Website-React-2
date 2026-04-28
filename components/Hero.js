@@ -15,15 +15,15 @@ const Hero = () => {
     const ctx = gsap.context(() => {
       gsap.fromTo('.hero-line',
         { y: 120, opacity: 0 },
-        { y: 0, opacity: 1, stagger: 0.12, duration: 1.4, ease: 'power4.out', delay: 0.2 }
+        { y: 0, opacity: 1, stagger: 0.15, duration: 1.8, ease: 'power4.out', delay: 0.8 }
       )
       gsap.fromTo('.hero-sub',
         { y: 40, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1.2, ease: 'power4.out', delay: 0.5 }
+        { y: 0, opacity: 1, duration: 1.6, ease: 'power4.out', delay: 1.1 }
       )
       gsap.fromTo(videoRef.current,
         { scale: 0.92, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 1.6, ease: 'expo.out', delay: 0.5 }
+        { scale: 1, opacity: 1, duration: 1.8, ease: 'expo.out', delay: 1.0 }
       )
       if (videoRef.current) {
         gsap.to(videoRef.current, {

@@ -1,12 +1,16 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { FaInstagram, FaFacebookF, FaYoutube, FaLinkedinIn } from 'react-icons/fa'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 
 const Footer = () => {
   const pathname = usePathname()
+  const footerContainerRef = useRef(null)
+
   const socialLinks = [
     { icon: <FaInstagram />, url: 'https://www.instagram.com/prominent_technolabs/', label: 'Instagram' },
     { icon: <FaLinkedinIn />, url: 'https://in.linkedin.com/company/prominent-technolab', label: 'LinkedIn' },
@@ -21,8 +25,46 @@ const Footer = () => {
     { label: 'Contacts', path: '/contact/' },
   ]
 
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger)
+    const ctx = gsap.context(() => {
+      // CTA Section Reveal
+      gsap.fromTo('.cb-hero-title',
+        { y: 60, opacity: 0 },
+        {
+          y: 0, opacity: 1, duration: 1.6, ease: 'power4.out',
+          scrollTrigger: { trigger: '.cb-footer-hero', start: 'top 80%' }
+        }
+      )
+      gsap.fromTo('.cb-footer-tellus-btn',
+        { scale: 0.9, opacity: 0 },
+        {
+          scale: 1, opacity: 1, duration: 1.6, ease: 'power4.out', delay: 0.2,
+          scrollTrigger: { trigger: '.cb-footer-hero', start: 'top 80%' }
+        }
+      )
+
+      // Info Section Reveal
+      gsap.fromTo('.cb-info-block',
+        { y: 40, opacity: 0 },
+        {
+          y: 0, opacity: 1, stagger: 0.1, duration: 1.2, ease: 'power3.out',
+          scrollTrigger: { trigger: '.cb-footer-info-row', start: 'top 85%' }
+        }
+      )
+      gsap.fromTo('.cb-footer-nav',
+        { y: 20, opacity: 0 },
+        {
+          y: 0, opacity: 1, stagger: 0.05, duration: 1.2, ease: 'power3.out',
+          scrollTrigger: { trigger: '.cb-footer-navs-col', start: 'top 90%' }
+        }
+      )
+    }, footerContainerRef)
+    return () => ctx.revert()
+  }, [pathname])
+
   return (
-    <>
+    <div ref={footerContainerRef}>
       {/* 1. TOP CTA SECTION (Title & Button Only) - Hidden on Contact page */}
       {!pathname.startsWith('/contact') && (
         <div className="cb-footer-hero">
@@ -172,8 +214,8 @@ const Footer = () => {
         .cb-footer-nav { 
           text-decoration: none; 
           color: #fff; 
-          font-size: 1.3rem; /* Matched to previously preferred 1.3rem */
-          font-weight: 500; /* Matched to previously preferred 500 */
+          font-size: 1.3rem; 
+          font-weight: 500; 
           position: relative;
           overflow: hidden;
           padding: 4px 0;
@@ -183,7 +225,7 @@ const Footer = () => {
         .cb-footer-nav-inner {
           display: flex;
           flex-direction: column;
-          height: 1.4em; /* Increased from 1.1em to prevent clipping descenders */
+          height: 1.4em; 
           line-height: 1.4;
           overflow: hidden;
           position: relative;
@@ -228,8 +270,9 @@ const Footer = () => {
           display: flex; 
           flex-direction: column; 
           align-items: center; 
+          justify-content: center;
           gap: 20px; 
-          padding-top: 15vh;
+          padding-top: 0;
         }
         
         .cb-footer-hero .cb-hero-title {
@@ -285,6 +328,7 @@ const Footer = () => {
         .cb-footer-hero .btn-text-new { position: absolute; top: 100%; left: 0; width: 100%; text-align: center; color: #000 !important; transition: transform 1.2s cubic-bezier(0.19, 1, 0.22, 1); }
         .cb-footer-tellus-btn:hover .btn-text-old { transform: translateY(-100%); }
         .cb-footer-tellus-btn:hover .btn-text-new { transform: translateY(-100%); }
+        .cb-footer:disabled { opacity: 0.4; cursor: not-allowed; }
 
         /* 2. INFORMATION & NAVIGATION */
         .cb-footer-info-row { padding: 100px 0 20px; background: #000; }
@@ -328,7 +372,7 @@ const Footer = () => {
           z-index: 1;
           display: flex;
           flex-direction: column;
-          height: 1.4em; /* Increased from 1.1em to prevent clipping */
+          height: 1.4em; 
           line-height: 1.4;
           overflow: hidden;
         }
@@ -368,7 +412,7 @@ const Footer = () => {
 
         /* 3. LEGAL & SOCIAL */
         .cb-footer-bottom-row { padding: 40px 0 60px; background: #000; }
-        .cb-footer .cb-footer-bottom-container { align-items: center; } /* Vertically centered as requested */
+        .cb-footer .cb-footer-bottom-container { align-items: center; } 
         .cb-footer .cb-legal-col { justify-self: start; }
         .cb-footer .cb-legal-links { display: flex; align-items: center; gap: 30px; }
         .cb-footer .cb-legal-link { font-size: 0.95rem; color: #ffffff !important; text-decoration: none !important; font-weight: 500; transition: opacity 0.3s; }
@@ -419,7 +463,7 @@ const Footer = () => {
         }
       `}</style>
       </footer>
-    </>
+    </div>
   )
 }
 

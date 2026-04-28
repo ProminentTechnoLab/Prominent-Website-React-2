@@ -129,13 +129,13 @@ const AboutContent = () => {
       // Hero Title Animation
       gsap.fromTo('.ab-hero-title span',
         { y: 100, opacity: 0 },
-        { y: 0, opacity: 1, stagger: 0.1, duration: 1.2, ease: 'power4.out', delay: 0.2 }
+        { y: 0, opacity: 1, stagger: 0.15, duration: 1.6, ease: 'power4.out', delay: 0.8 }
       )
 
       // Hero Media Reveal
       gsap.fromTo('.ab-hero-media',
         { scale: 0.9, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 1.5, ease: 'expo.out', delay: 0.4 }
+        { scale: 1, opacity: 1, duration: 1.8, ease: 'expo.out', delay: 1.0 }
       )
 
       // Reusable Scroll Reveal

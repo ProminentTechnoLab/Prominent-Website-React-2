@@ -76,12 +76,13 @@ export default function TextReveal() {
         
         gsap.to(innerWords, {
           y: '0%',
-          duration: 1.2, // Slightly slower for more premium feel
+          duration: 1.6, // Slower for premium feel
           ease: 'power4.out',
-          stagger: 0.05,
+          stagger: 0.04,
+          delay: 0.8, // Wait for page reveal
           scrollTrigger: {
             trigger: target,
-            start: 'top 92%',
+            start: 'top 95%',
             toggleActions: 'play none none none',
             once: true
           }
@@ -99,11 +100,12 @@ export default function TextReveal() {
       gsap.to(p, {
         y: 0,
         opacity: 1,
-        duration: 1.2,
+        duration: 1.8,
         ease: 'power3.out',
+        delay: 0.8,
         scrollTrigger: {
           trigger: p,
-          start: 'top 92%',
+          start: 'top 95%',
           once: true
         }
       })
