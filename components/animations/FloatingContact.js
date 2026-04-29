@@ -1,70 +1,120 @@
 'use client'
 
-import React, { useEffect, useRef } from 'react'
-import { useRouter } from 'next/navigation'
+import React, { useEffect, useRef, useState, useCallback } from 'react'
+import Link from 'next/link'
 import { gsap } from 'gsap'
 
 const FloatingContact = () => {
-  const router = useRouter()
   const rootRef = useRef(null)
-  const lensRef = useRef(null)
-  const iconRef = useRef(null)
-  const dotsRef = useRef(null)
+  const ringRef = useRef(null)
+  const innerRef = useRef(null)
+  const [textColor, setTextColor] = useState('#1a1a1a')
+
+  // Detect background luminance beneath the button and set text color accordingly
+  const detectBackground = useCallback(() => {
+    const root = rootRef.current
+    if (!root) return
+
+    const rect = root.getBoundingClientRect()
+    const cx = rect.left + rect.width / 2
+    const cy = rect.top + rect.height / 2
+
+    // Temporarily hide the button so elementFromPoint picks the content behind it
+    root.style.pointerEvents = 'none'
+    root.style.visibility = 'hidden'
+
+    const el = document.elementFromPoint(cx, cy)
+
+    root.style.pointerEvents = ''
+    root.style.visibility = ''
+
+    if (!el) return
+
+    // Walk up to find the first element with a non-transparent background
+    let target = el
+    let bg = 'rgba(0, 0, 0, 0)'
+    while (target && target !== document.body) {
+      const computed = window.getComputedStyle(target).backgroundColor
+      if (computed && computed !== 'rgba(0, 0, 0, 0)' && computed !== 'transparent') {
+        bg = computed
+        break
+      }
+      target = target.parentElement
+    }
+
+    // If still transparent, check body
+    if (bg === 'rgba(0, 0, 0, 0)') {
+      bg = window.getComputedStyle(document.body).backgroundColor || 'rgb(255, 255, 255)'
+    }
+
+    // Parse RGB and calculate relative luminance
+    const match = bg.match(/\d+/g)
+    if (match) {
+      const [r, g, b] = match.map(Number)
+      const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255
+      setTextColor(luminance > 0.5 ? '#1a1a1a' : '#ffffff')
+    }
+  }, [])
 
   useEffect(() => {
-    // 1. Permanent Pulse for Typing Dots
-    gsap.to(".pt-pulse-dot", {
-      opacity: 0.3,
-      scale: 0.5,
-      duration: 0.6,
+    // 1. Permanent Rotation for the text ring
+    gsap.to(ringRef.current, {
+      rotate: 360,
+      duration: 12,
       repeat: -1,
-      yoyo: true,
-      stagger: 0.2,
-      ease: 'sine.inOut'
+      ease: 'none'
     })
 
-    // 2. Subtle Lens Breath
-    gsap.to(lensRef.current, {
-      scale: 1.05,
-      duration: 3,
-      repeat: -1,
-      yoyo: true,
-      ease: 'sine.inOut'
-    })
+    // 2. Detect background color on scroll and resize
+    detectBackground()
+    const onScroll = () => detectBackground()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', detectBackground)
 
-    // 3. Advanced Magnetic Interaction
+    // Also re-detect periodically to catch dynamic content changes
+    const interval = setInterval(detectBackground, 500)
+
+    // 3. Magnetic Interaction
     const handleMouseMove = (e) => {
       const { clientX, clientY } = e
-      if (!rootRef.current) return
-      
-      const { left, top, width, height } = rootRef.current.getBoundingClientRect()
-      const centerX = left + width / 2
-      const centerY = top + height / 2
-      
-      const distanceX = clientX - centerX
-      const distanceY = clientY - centerY
-      const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY)
-      
-      if (distance < 200) {
-        // Smooth magnetic pull
-        gsap.to(rootRef.current, {
-          x: distanceX * 0.2,
-          y: distanceY * 0.2,
-          duration: 0.8,
+      const root = rootRef.current
+      if (!root) return
+
+      const rect = root.getBoundingClientRect()
+      const centerX = rect.left + rect.width / 2
+      const centerY = rect.top + rect.height / 2
+
+      const distX = clientX - centerX
+      const distY = clientY - centerY
+      const distance = Math.sqrt(distX * distX + distY * distY)
+
+      const activeRange = 100
+
+      if (distance < activeRange) {
+        gsap.to(root, {
+          x: distX * 0.08,
+          y: distY * 0.08,
+          duration: 0.6,
           ease: 'power3.out'
         })
-        // Icon Parallax (Deep 3D effect)
-        gsap.to(iconRef.current, {
-          x: distanceX * 0.12,
-          y: distanceY * 0.12,
-          rotateX: -distanceY * 0.1,
-          rotateY: distanceX * 0.1,
-          duration: 0.8,
+        gsap.to(innerRef.current, {
+          x: distX * 0.03,
+          y: distY * 0.03,
+          scale: 1.03,
+          duration: 0.6,
           ease: 'power3.out'
         })
       } else {
-        gsap.to([rootRef.current, iconRef.current], {
-          x: 0, y: 0, rotateX: 0, rotateY: 0,
+        gsap.to(root, {
+          x: 0,
+          y: 0,
+          duration: 1.2,
+          ease: 'elastic.out(1, 0.4)'
+        })
+        gsap.to(innerRef.current, {
+          x: 0,
+          y: 0,
+          scale: 1,
           duration: 1.2,
           ease: 'elastic.out(1, 0.4)'
         })
@@ -72,135 +122,151 @@ const FloatingContact = () => {
     }
 
     window.addEventListener('mousemove', handleMouseMove)
-    return () => window.removeEventListener('mousemove', handleMouseMove)
-  }, [])
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove)
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', detectBackground)
+      clearInterval(interval)
+    }
+  }, [detectBackground])
 
-  const handleClick = () => {
-    gsap.to(lensRef.current, {
-      scale: 0,
-      opacity: 0,
-      duration: 0.4,
-      ease: 'power4.in',
-      onComplete: () => router.push('/contact/')
-    })
-  }
+  // The circumference of our text path (r=38): 2 * π * 38 ≈ 238.76
+  // We use 4 evenly spaced "CONTACT" words with dot separators
+  const circleText = 'CONTACT \u00B7 CONTACT \u00B7 CONTACT \u00B7 CONTACT \u00B7 '
 
   return (
-    <div className="pt-portal-root" ref={rootRef} onClick={handleClick}>
-      <div className="pt-portal-lens" ref={lensRef}>
-        
-        {/* Glass Effect */}
-        <div className="pt-portal-glass" />
-        
-        {/* Kinetic Message Glyph */}
-        <div className="pt-portal-icon-wrap" ref={iconRef}>
-          <div className="pt-message-glyph">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" className="pt-svg">
-              <path 
-                d="M21 11.5C21 16.1944 16.9706 20 12 20C10.5181 20 9.12304 19.6607 7.89315 19.0569L3 20L4.10301 15.7766C3.39864 14.536 3 13.0694 3 11.5C3 6.80558 7.02944 3 12 3C16.9706 3 21 6.80558 21 11.5Z" 
-                stroke="currentColor" 
-                strokeWidth="1.2" 
-                strokeLinejoin="round"
+    <>
+      <Link href="/contact/" className="cb-contact-portal" ref={rootRef}>
+        <div className="cb-contact-ring" ref={ringRef}>
+          <svg viewBox="0 0 100 100" className="cb-contact-svg">
+            <defs>
+              <path
+                id="cb-text-circle"
+                d="M 50, 50 m -38, 0 a 38,38 0 1,1 76,0 a 38,38 0 1,1 -76,0"
               />
-              <circle className="pt-pulse-dot" cx="8" cy="11.5" r="1" fill="#ff6600" />
-              <circle className="pt-pulse-dot" cx="12" cy="11.5" r="1" fill="#ff6600" />
-              <circle className="pt-pulse-dot" cx="16" cy="11.5" r="1" fill="#ff6600" />
-            </svg>
+            </defs>
+            <text className="cb-contact-text" style={{ fill: textColor, transition: 'fill 0.3s ease' }}>
+              <textPath
+                href="#cb-text-circle"
+                textLength="238.76"
+                lengthAdjust="spacing"
+              >
+                {circleText}
+              </textPath>
+            </text>
+          </svg>
+        </div>
+        <div className="cb-contact-inner" ref={innerRef}>
+          <div className="cb-contact-avatar">
+            <img src="/images/contact-memoji.png" alt="Get in touch" />
           </div>
         </div>
+      </Link>
 
-        {/* Refractive Inner Glow */}
-        <div className="pt-portal-glow" />
-      </div>
-
-      <style jsx>{`
-        .pt-portal-root {
+      <style jsx global>{`
+        .cb-contact-portal {
           position: fixed !important;
           bottom: 50px !important;
           right: 50px !important;
-          width: 90px !important;
-          height: 90px !important;
-          z-index: 2147483647 !important;
-          cursor: pointer !important;
+          width: 120px !important;
+          height: 120px !important;
+          z-index: 9999 !important;
           display: flex !important;
           align-items: center !important;
           justify-content: center !important;
+          text-decoration: none !important;
+          cursor: pointer !important;
           pointer-events: all !important;
-          mix-blend-mode: exclusion;
         }
 
-        .pt-portal-lens {
-          position: relative;
-          width: 80px;
-          height: 80px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1);
-          transform-style: preserve-3d;
+        .cb-contact-ring {
+          position: absolute !important;
+          inset: 0 !important;
+          pointer-events: none !important;
+          z-index: 1 !important;
+          opacity: 1 !important;
+          transition: opacity 0.4s cubic-bezier(0.19, 1, 0.22, 1) !important;
         }
 
-        .pt-portal-glass {
-          position: absolute;
-          inset: 0;
-          background: rgba(255, 255, 255, 0.05);
-          backdrop-filter: blur(25px) saturate(180%);
-          -webkit-backdrop-filter: blur(25px) saturate(180%);
-          border-radius: 50%;
-          border: 1.2px solid rgba(255, 255, 255, 0.3);
-          box-shadow: 
-            0 15px 35px rgba(0,0,0,0.1),
-            inset 0 0 15px rgba(255,255,255,0.1);
+        .cb-contact-svg {
+          width: 100% !important;
+          height: 100% !important;
+          display: block !important;
+          overflow: visible !important;
         }
 
-        .pt-portal-icon-wrap {
-          position: relative;
-          z-index: 5;
-          color: #fff;
-          transform-style: preserve-3d;
-          transition: transform 0.4s ease;
+        .cb-contact-text {
+          font-family: inherit !important;
+          font-size: 6.2px !important;
+          font-weight: 600 !important;
+          text-transform: uppercase !important;
+          letter-spacing: 0.8px !important;
         }
 
-        .pt-message-glyph {
-          display: flex;
-          align-items: center;
-          justify-content: center;
+        .cb-contact-inner {
+          position: relative !important;
+          width: 72px !important;
+          height: 72px !important;
+          background: #fff !important;
+          border-radius: 50% !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.08) !important;
+          overflow: hidden !important;
+          border: 1px solid rgba(0,0,0,0.03) !important;
+          z-index: 2 !important;
+          transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1) !important;
         }
 
-        .pt-portal-glow {
-          position: absolute;
-          inset: 15%;
-          background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.2) 0%, transparent 70%);
-          border-radius: 50%;
-          pointer-events: none;
+        .cb-contact-avatar {
+          width: 100% !important;
+          height: 100% !important;
+          background: #f8f8f8 !important;
         }
 
-        /* Hover Effects */
-        .pt-portal-root:hover .pt-portal-lens {
-          transform: scale(1.1);
-        }
-        
-        .pt-portal-root:hover .pt-portal-glass {
-          border-color: #ff6600;
-          background: rgba(255, 255, 255, 0.1);
+        .cb-contact-avatar img {
+          width: 110% !important;
+          height: 110% !important;
+          object-fit: contain !important;
+          transform: translateY(5%) !important;
         }
 
-        .pt-portal-root:hover .pt-message-glyph {
-          transform: translateZ(20px);
+        .cb-contact-portal:hover .cb-contact-ring {
+          opacity: 0 !important;
+        }
+
+        .cb-contact-portal:hover .cb-contact-inner {
+          transform: scale(0.95) !important;
+        }
+
+        @media (max-width: 1024px) {
+          .cb-contact-portal {
+            bottom: 40px !important;
+            right: 40px !important;
+            width: 110px !important;
+            height: 110px !important;
+          }
+          .cb-contact-inner {
+            width: 66px !important;
+            height: 66px !important;
+          }
         }
 
         @media (max-width: 768px) {
-          .pt-portal-root {
+          .cb-contact-portal {
             bottom: 30px !important;
-            right: 30px !important;
-            width: 80px !important;
-            height: 80px !important;
+            right: 24px !important;
+            width: 100px !important;
+            height: 100px !important;
           }
-          .pt-portal-lens { width: 70px; height: 70px; }
-          .pt-svg { width: 26px; height: 26px; }
+          .cb-contact-inner {
+            width: 60px !important;
+            height: 60px !important;
+          }
         }
       `}</style>
-    </div>
+    </>
   )
 }
 

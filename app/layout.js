@@ -5,7 +5,6 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import CustomCursor from '../components/animations/CustomCursor'
 import AppWrapper from '../components/AppWrapper'
-import PageTransition from '../components/animations/PageTransition'
 import TextReveal from '../components/animations/TextReveal'
 import FloatingContact from '../components/animations/FloatingContact'
 
@@ -39,9 +38,7 @@ export default function RootLayout({ children }) {
         <TextReveal />
         <AppWrapper>
           <Navbar />
-          <PageTransition>
-            <main>{children}</main>
-          </PageTransition>
+          <main>{children}</main>
           <Footer />
         </AppWrapper>
         {/* <FloatingContact /> */}
