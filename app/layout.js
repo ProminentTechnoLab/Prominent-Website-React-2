@@ -41,7 +41,7 @@ export default function RootLayout({ children }) {
           <main>{children}</main>
           <Footer />
         </AppWrapper>
-        {/* <FloatingContact /> */}
+        <FloatingContact />
       </body>
     </html>
   )

@@ -1,269 +1,245 @@
 'use client'
 
 import React, { useEffect, useRef, useState, useCallback } from 'react'
-import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { gsap } from 'gsap'
 
+/* ═══════════════════════════════════════════════════════════
+   NEXUS CONNECTOR — Unique Strategic Contact Gateway
+   Adaptive Color Inversion (Difference Blend)
+   Non-Generic Interaction Node · Hover-Triggered Surround
+   ═══════════════════════════════════════════════════════════ */
+
 const FloatingContact = () => {
+  const router = useRouter()
   const rootRef = useRef(null)
-  const ringRef = useRef(null)
-  const innerRef = useRef(null)
-  const [textColor, setTextColor] = useState('#1a1a1a')
+  const circleRef = useRef(null)
+  const iconRef = useRef(null)
+  const textRef = useRef(null)
+  const ringsRef = useRef([])
+  const [isVisible, setIsVisible] = useState(false)
+  const [isNearFooter, setIsNearFooter] = useState(false)
 
-  // Detect background luminance beneath the button and set text color accordingly
-  const detectBackground = useCallback(() => {
-    const root = rootRef.current
-    if (!root) return
-
-    const rect = root.getBoundingClientRect()
-    const cx = rect.left + rect.width / 2
-    const cy = rect.top + rect.height / 2
-
-    // Temporarily hide the button so elementFromPoint picks the content behind it
-    root.style.pointerEvents = 'none'
-    root.style.visibility = 'hidden'
-
-    const el = document.elementFromPoint(cx, cy)
-
-    root.style.pointerEvents = ''
-    root.style.visibility = ''
-
-    if (!el) return
-
-    // Walk up to find the first element with a non-transparent background
-    let target = el
-    let bg = 'rgba(0, 0, 0, 0)'
-    while (target && target !== document.body) {
-      const computed = window.getComputedStyle(target).backgroundColor
-      if (computed && computed !== 'rgba(0, 0, 0, 0)' && computed !== 'transparent') {
-        bg = computed
-        break
-      }
-      target = target.parentElement
-    }
-
-    // If still transparent, check body
-    if (bg === 'rgba(0, 0, 0, 0)') {
-      bg = window.getComputedStyle(document.body).backgroundColor || 'rgb(255, 255, 255)'
-    }
-
-    // Parse RGB and calculate relative luminance
-    const match = bg.match(/\d+/g)
-    if (match) {
-      const [r, g, b] = match.map(Number)
-      const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255
-      setTextColor(luminance > 0.5 ? '#1a1a1a' : '#ffffff')
-    }
+  // Entry Delay
+  useEffect(() => {
+    const t = setTimeout(() => setIsVisible(true), 1200)
+    return () => clearTimeout(t)
   }, [])
 
+  // Dynamic Footer Clearance
   useEffect(() => {
-    // 1. Permanent Rotation for the text ring
-    gsap.to(ringRef.current, {
-      rotate: 360,
-      duration: 12,
-      repeat: -1,
-      ease: 'none'
-    })
+    const check = () => {
+      const footer = document.querySelector('.cb-footer-bottom-row')
+      if (!footer) return
+      const fR = footer.getBoundingClientRect()
+      setIsNearFooter(fR.top < window.innerHeight)
+    }
+    window.addEventListener('scroll', check, { passive: true })
+    check()
+    return () => window.removeEventListener('scroll', check)
+  }, [])
 
-    // 2. Detect background color on scroll and resize
-    detectBackground()
-    const onScroll = () => detectBackground()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    window.addEventListener('resize', detectBackground)
-
-    // Also re-detect periodically to catch dynamic content changes
-    const interval = setInterval(detectBackground, 500)
-
-    // 3. Magnetic Interaction
-    const handleMouseMove = (e) => {
-      const { clientX, clientY } = e
-      const root = rootRef.current
-      if (!root) return
-
-      const rect = root.getBoundingClientRect()
-      const centerX = rect.left + rect.width / 2
-      const centerY = rect.top + rect.height / 2
-
-      const distX = clientX - centerX
-      const distY = clientY - centerY
-      const distance = Math.sqrt(distX * distX + distY * distY)
-
-      const activeRange = 100
-
-      if (distance < activeRange) {
-        gsap.to(root, {
-          x: distX * 0.08,
-          y: distY * 0.08,
-          duration: 0.6,
-          ease: 'power3.out'
-        })
-        gsap.to(innerRef.current, {
-          x: distX * 0.03,
-          y: distY * 0.03,
-          scale: 1.03,
-          duration: 0.6,
-          ease: 'power3.out'
-        })
+  // Magnetic Interaction
+  useEffect(() => {
+    if (!isVisible) return
+    const handle = (e) => {
+      if (!rootRef.current) return
+      const rect = rootRef.current.getBoundingClientRect()
+      const cx = rect.left + rect.width / 2
+      const cy = rect.top + rect.height / 2
+      const dx = e.clientX - cx
+      const dy = e.clientY - cy
+      const dist = Math.sqrt(dx * dx + dy * dy)
+      
+      if (dist < 150) {
+        const s = 1 - dist / 150
+        gsap.to(rootRef.current, { x: dx * 0.08 * s, y: dy * 0.08 * s, duration: 1.2, ease: 'power2.out', overwrite: 'auto' })
       } else {
-        gsap.to(root, {
-          x: 0,
-          y: 0,
-          duration: 1.2,
-          ease: 'elastic.out(1, 0.4)'
-        })
-        gsap.to(innerRef.current, {
-          x: 0,
-          y: 0,
-          scale: 1,
-          duration: 1.2,
-          ease: 'elastic.out(1, 0.4)'
-        })
+        gsap.to(rootRef.current, { x: 0, y: 0, duration: 1.2, ease: 'elastic.out(1, 0.35)', overwrite: 'auto' })
       }
     }
+    window.addEventListener('mousemove', handle, { passive: true })
+    return () => window.removeEventListener('mousemove', handle)
+  }, [isVisible])
 
-    window.addEventListener('mousemove', handleMouseMove)
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove)
-      window.removeEventListener('scroll', onScroll)
-      window.removeEventListener('resize', detectBackground)
-      clearInterval(interval)
+  const handleEnter = useCallback(() => {
+    // Circle & Icon
+    if (circleRef.current) gsap.to(circleRef.current, { scale: 1.2, duration: 0.4, ease: 'back.out(2)' })
+    if (iconRef.current) {
+      gsap.to(iconRef.current, { rotation: 180, scale: 1.15, duration: 0.6, ease: 'power2.inOut' })
+      // Pulse animation for icon paths
+      gsap.to('.nexus-path', { strokeDashoffset: 0, duration: 0.8, stagger: 0.1 })
     }
-  }, [detectBackground])
+    // Surround Rings
+    ringsRef.current.forEach((r, i) => {
+      if (r) {
+        gsap.fromTo(r, 
+          { scale: 0.6, opacity: 0 },
+          { scale: 1.2 + i * 0.4, opacity: 0.4 - i * 0.1, duration: 0.8, ease: 'power3.out', delay: i * 0.1 }
+        )
+        gsap.to(r, { rotation: (i % 2 === 0 ? 360 : -360), duration: 4, repeat: -1, ease: 'none' })
+      }
+    })
+    // Label
+    if (textRef.current) gsap.to(textRef.current, { opacity: 1, x: 0, duration: 0.4 })
+  }, [])
 
-  // The circumference of our text path (r=38): 2 * π * 38 ≈ 238.76
-  // We use 4 evenly spaced "CONTACT" words with dot separators
-  const circleText = 'CONTACT \u00B7 CONTACT \u00B7 CONTACT \u00B7 CONTACT \u00B7 '
+  const handleLeave = useCallback(() => {
+    if (circleRef.current) gsap.to(circleRef.current, { scale: 1, duration: 0.6, ease: 'elastic.out(1, 0.4)' })
+    if (iconRef.current) gsap.to(iconRef.current, { rotation: 0, scale: 1, duration: 0.8, ease: 'elastic.out(1, 0.5)' })
+    // Rings
+    ringsRef.current.forEach(r => {
+      if (r) gsap.to(r, { scale: 0.6, opacity: 0, duration: 0.5, ease: 'power3.in' })
+    })
+    if (textRef.current) gsap.to(textRef.current, { opacity: 0, x: 20, duration: 0.4 })
+  }, [])
+
+  const handleClick = useCallback(() => {
+    if (circleRef.current) {
+      gsap.timeline()
+        .to(circleRef.current, { scale: 0.85, duration: 0.15 })
+        .to(circleRef.current, { scale: 1.1, duration: 0.4, ease: 'back.out(3)' })
+    }
+    setTimeout(() => router.push('/contact/'), 300)
+  }, [router])
 
   return (
     <>
-      <Link href="/contact/" className="cb-contact-portal" ref={rootRef}>
-        <div className="cb-contact-ring" ref={ringRef}>
-          <svg viewBox="0 0 100 100" className="cb-contact-svg">
-            <defs>
-              <path
-                id="cb-text-circle"
-                d="M 50, 50 m -38, 0 a 38,38 0 1,1 76,0 a 38,38 0 1,1 -76,0"
-              />
-            </defs>
-            <text className="cb-contact-text" style={{ fill: textColor, transition: 'fill 0.3s ease' }}>
-              <textPath
-                href="#cb-text-circle"
-                textLength="238.76"
-                lengthAdjust="spacing"
-              >
-                {circleText}
-              </textPath>
-            </text>
-          </svg>
-        </div>
-        <div className="cb-contact-inner" ref={innerRef}>
-          <div className="cb-contact-avatar">
-            <img src="/images/contact-memoji.png" alt="Get in touch" />
+      <div
+        ref={rootRef}
+        className={`nexus-root ${isNearFooter ? 'is-footer' : ''}`}
+        onMouseEnter={handleEnter}
+        onMouseLeave={handleLeave}
+        onClick={handleClick}
+        role="button"
+        tabIndex={0}
+        aria-label="Contact Gateway"
+        style={{ opacity: isVisible ? 1 : 0, pointerEvents: isVisible ? 'all' : 'none' }}
+      >
+        {/* Surround Animations (Visible on Hover) */}
+        {[0, 1, 2].map(i => (
+          <div key={`ring-${i}`} ref={el => ringsRef.current[i] = el} className="nexus-ring" />
+        ))}
+
+        {/* Adaptive Circle Body */}
+        <div ref={circleRef} className="nexus-circle">
+          {/* Unique Non-Generic "Nexus Connector" Icon */}
+          <div ref={iconRef} className="nexus-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              {/* Central communication hub */}
+              <circle cx="12" cy="12" r="3.5" fill="currentColor" />
+              {/* Branching strategic link paths */}
+              <path className="nexus-path" d="M12 4v2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+              <path className="nexus-path" d="M12 18v2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+              <path className="nexus-path" d="M4 12h2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+              <path className="nexus-path" d="M18 12h2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+              {/* Dynamic corner connectors */}
+              <circle cx="12" cy="5" r="1.5" fill="#FF6600">
+                <animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite" />
+              </circle>
+              <circle cx="12" cy="19" r="1.5" fill="#FF6600">
+                <animate attributeName="opacity" values="1;0;1" dur="1s" begin="0.5s" repeatCount="indefinite" />
+              </circle>
+            </svg>
           </div>
+          <div className="nexus-glass" />
         </div>
-      </Link>
+
+        {/* Minimal Tooltip */}
+        <div ref={textRef} className="nexus-label">Connect Now</div>
+      </div>
 
       <style jsx global>{`
-        .cb-contact-portal {
+        .nexus-root {
           position: fixed !important;
-          bottom: 50px !important;
-          right: 50px !important;
-          width: 120px !important;
-          height: 120px !important;
-          z-index: 9999 !important;
-          display: flex !important;
-          align-items: center !important;
-          justify-content: center !important;
-          text-decoration: none !important;
+          bottom: 45px !important;
+          right: 45px !important;
+          z-index: 10001 !important;
           cursor: pointer !important;
-          pointer-events: all !important;
-        }
-
-        .cb-contact-ring {
-          position: absolute !important;
-          inset: 0 !important;
-          pointer-events: none !important;
-          z-index: 1 !important;
-          opacity: 1 !important;
-          transition: opacity 0.4s cubic-bezier(0.19, 1, 0.22, 1) !important;
-        }
-
-        .cb-contact-svg {
-          width: 100% !important;
-          height: 100% !important;
-          display: block !important;
-          overflow: visible !important;
-        }
-
-        .cb-contact-text {
-          font-family: inherit !important;
-          font-size: 6.2px !important;
-          font-weight: 600 !important;
-          text-transform: uppercase !important;
-          letter-spacing: 0.8px !important;
-        }
-
-        .cb-contact-inner {
-          position: relative !important;
-          width: 72px !important;
-          height: 72px !important;
-          background: #fff !important;
-          border-radius: 50% !important;
+          width: 80px !important;
+          height: 80px !important;
           display: flex !important;
           align-items: center !important;
           justify-content: center !important;
-          box-shadow: 0 10px 30px rgba(0,0,0,0.08) !important;
-          overflow: hidden !important;
-          border: 1px solid rgba(0,0,0,0.03) !important;
-          z-index: 2 !important;
-          transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1) !important;
+          /* Premium standard color inversion */
+          mix-blend-mode: difference !important;
+          transition: 
+            opacity 1s ease-out,
+            bottom 0.7s cubic-bezier(0.19, 1, 0.22, 1) !important;
+          -webkit-tap-highlight-color: transparent;
         }
 
-        .cb-contact-avatar {
-          width: 100% !important;
-          height: 100% !important;
-          background: #f8f8f8 !important;
+        .nexus-root.is-footer {
+          bottom: 115px !important;
         }
 
-        .cb-contact-avatar img {
-          width: 110% !important;
-          height: 110% !important;
-          object-fit: contain !important;
-          transform: translateY(5%) !important;
+        /* ── Hover-triggered Surround Rings ── */
+        .nexus-ring {
+          position: absolute;
+          width: 60px;
+          height: 60px;
+          border: 1px solid #ffffff;
+          border-radius: 50%;
+          pointer-events: none;
+          opacity: 0;
+          will-change: transform, opacity;
         }
 
-        .cb-contact-portal:hover .cb-contact-ring {
-          opacity: 0 !important;
+        .nexus-circle {
+          position: relative;
+          width: 66px;
+          height: 66px;
+          border-radius: 50%;
+          background: #ffffff;
+          color: #000000;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          overflow: hidden;
+          will-change: transform;
+          box-shadow: 0 12px 36px rgba(0,0,0,0.22);
         }
 
-        .cb-contact-portal:hover .cb-contact-inner {
-          transform: scale(0.95) !important;
+        .nexus-glass {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 100%);
+          pointer-events: none;
+          z-index: 2;
         }
 
-        @media (max-width: 1024px) {
-          .cb-contact-portal {
-            bottom: 40px !important;
-            right: 40px !important;
-            width: 110px !important;
-            height: 110px !important;
-          }
-          .cb-contact-inner {
-            width: 66px !important;
-            height: 66px !important;
-          }
+        .nexus-icon {
+          position: relative;
+          z-index: 5;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          will-change: transform;
         }
 
+        .nexus-label {
+          position: absolute;
+          right: 105px;
+          background: #ffffff;
+          color: #000000;
+          padding: 10px 22px;
+          border-radius: 100px;
+          font-size: 15px;
+          font-weight: 600;
+          white-space: nowrap;
+          opacity: 0;
+          transform: translateX(20px);
+          pointer-events: none;
+          box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+          z-index: -1;
+        }
+
+        /* Mobile specific */
         @media (max-width: 768px) {
-          .cb-contact-portal {
-            bottom: 30px !important;
-            right: 24px !important;
-            width: 100px !important;
-            height: 100px !important;
-          }
-          .cb-contact-inner {
-            width: 60px !important;
-            height: 60px !important;
-          }
+          .nexus-root { bottom: 35px !important; right: 25px !important; width: 68px !important; height: 68px !important; }
+          .nexus-circle { width: 56px !important; height: 56px !important; }
+          .nexus-root.is-footer { bottom: 100px !important; }
+          .nexus-label { display: none; }
         }
       `}</style>
     </>
