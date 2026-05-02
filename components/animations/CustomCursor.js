@@ -87,12 +87,25 @@ export default function CustomCursor() {
 
     const SELECTOR = 'a, button, [role="button"], input, textarea, select, label, .magnetic, .interactive, .ct-chip, .pr-tab'
     
+    const onHide = () => {
+      gsap.to(scaleRef.current, {
+        val: 0,
+        duration: 0.35,
+        ease: 'expo.out',
+        overwrite: true
+      })
+    }
+
     const handleMouseOver = (e) => {
+      // Hide cursor entirely over floating contact button
+      if (e.target.closest('.fc-root')) { onHide(); return }
       const target = e.target.closest(SELECTOR)
       const hasPointer = window.getComputedStyle(e.target).cursor === 'pointer'
       if (target || hasPointer) onEnter()
     }
     const handleMouseOut = (e) => {
+      // Restore cursor when leaving floating contact button
+      if (e.target.closest('.fc-root')) { onLeave(); return }
       const target = e.target.closest(SELECTOR)
       const hasPointer = window.getComputedStyle(e.target).cursor === 'pointer'
       if (target || hasPointer) onLeave()

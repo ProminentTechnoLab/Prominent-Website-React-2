@@ -5,57 +5,97 @@ import { useRouter } from 'next/navigation'
 import { gsap } from 'gsap'
 
 /* ═══════════════════════════════════════════════════════════
-   NEXUS CONNECTOR — Unique Strategic Contact Gateway
-   Adaptive Color Inversion (Difference Blend)
-   Non-Generic Interaction Node · Hover-Triggered Surround
+   FLOATING CONTACT — Airborne Hub
+   3D Plane flight · Wind/Speed lines interaction
+   Perfectly centered · Hyper 3D depth
    ═══════════════════════════════════════════════════════════ */
 
 const FloatingContact = () => {
   const router = useRouter()
   const rootRef = useRef(null)
+  const perspectiveRef = useRef(null)
   const circleRef = useRef(null)
-  const iconRef = useRef(null)
-  const textRef = useRef(null)
-  const ringsRef = useRef([])
+  const planeRef = useRef(null)
+  const orbitRef = useRef(null)
+  const pulseRef = useRef(null)
+  const windWrapRef = useRef(null)
+  const idleTl = useRef(null)
   const [isVisible, setIsVisible] = useState(false)
   const [isNearFooter, setIsNearFooter] = useState(false)
+  const [isDarkBg, setIsDarkBg] = useState(false)
 
-  // Entry Delay
   useEffect(() => {
     const t = setTimeout(() => setIsVisible(true), 1200)
     return () => clearTimeout(t)
   }, [])
 
-  // Dynamic Footer Clearance
+  // Adaptive Background Detection
+  useEffect(() => {
+    const detectBg = () => {
+      if (!rootRef.current) return
+      rootRef.current.style.pointerEvents = 'none'
+      rootRef.current.style.visibility = 'hidden'
+      const rect = rootRef.current.getBoundingClientRect()
+      const el = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2)
+      rootRef.current.style.visibility = ''
+      rootRef.current.style.pointerEvents = isVisible ? 'all' : 'none'
+      if (!el) return
+      let target = el, bg = ''
+      while (target && target !== document.documentElement) {
+        const c = window.getComputedStyle(target).backgroundColor
+        if (c && c !== 'rgba(0, 0, 0, 0)' && c !== 'transparent') { bg = c; break }
+        target = target.parentElement
+      }
+      if (!bg) { setIsDarkBg(false); return }
+      const m = bg.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/)
+      if (m) setIsDarkBg((0.299 * +m[1] + 0.587 * +m[2] + 0.114 * +m[3]) / 255 < 0.45)
+    }
+    window.addEventListener('scroll', detectBg, { passive: true })
+    window.addEventListener('resize', detectBg, { passive: true })
+    const t1 = setTimeout(detectBg, 200), t2 = setInterval(detectBg, 800)
+    return () => { window.removeEventListener('scroll', detectBg); window.removeEventListener('resize', detectBg); clearTimeout(t1); clearInterval(t2) }
+  }, [isVisible])
+
+  // Footer Clearance
   useEffect(() => {
     const check = () => {
-      const footer = document.querySelector('.cb-footer-bottom-row')
-      if (!footer) return
-      const fR = footer.getBoundingClientRect()
-      setIsNearFooter(fR.top < window.innerHeight)
+      const f = document.querySelector('.cb-footer-bottom-row')
+      if (f) setIsNearFooter(f.getBoundingClientRect().top < window.innerHeight)
     }
-    window.addEventListener('scroll', check, { passive: true })
-    check()
+    window.addEventListener('scroll', check, { passive: true }); check()
     return () => window.removeEventListener('scroll', check)
   }, [])
 
-  // Magnetic Interaction
+  // Breathing Pulse
+  useEffect(() => {
+    if (!isVisible || !pulseRef.current) return
+    idleTl.current = gsap.timeline({ repeat: -1 })
+      .to(pulseRef.current, { scale: 1.6, opacity: 0, duration: 2.2, ease: 'power2.out' })
+      .set(pulseRef.current, { scale: 1, opacity: 0.3 })
+    return () => { if (idleTl.current) idleTl.current.kill() }
+  }, [isVisible])
+
+  // Hyper 3D Tilt Interaction
   useEffect(() => {
     if (!isVisible) return
     const handle = (e) => {
-      if (!rootRef.current) return
-      const rect = rootRef.current.getBoundingClientRect()
-      const cx = rect.left + rect.width / 2
-      const cy = rect.top + rect.height / 2
-      const dx = e.clientX - cx
-      const dy = e.clientY - cy
+      if (!rootRef.current || !perspectiveRef.current) return
+      const r = rootRef.current.getBoundingClientRect()
+      const cx = r.left + r.width / 2, cy = r.top + r.height / 2
+      const dx = e.clientX - cx, dy = e.clientY - cy
       const dist = Math.sqrt(dx * dx + dy * dy)
-      
+
       if (dist < 150) {
         const s = 1 - dist / 150
-        gsap.to(rootRef.current, { x: dx * 0.08 * s, y: dy * 0.08 * s, duration: 1.2, ease: 'power2.out', overwrite: 'auto' })
+        gsap.to(rootRef.current, { x: dx * 0.1 * s, y: dy * 0.1 * s, duration: 0.6, ease: 'power2.out', overwrite: 'auto' })
+        gsap.to(perspectiveRef.current, {
+          rotateY: (dx / 75) * 25 * s,
+          rotateX: -(dy / 75) * 25 * s,
+          duration: 0.6, ease: 'power2.out', overwrite: 'auto'
+        })
       } else {
         gsap.to(rootRef.current, { x: 0, y: 0, duration: 1.2, ease: 'elastic.out(1, 0.35)', overwrite: 'auto' })
+        gsap.to(perspectiveRef.current, { rotateX: 0, rotateY: 0, duration: 1.2, ease: 'elastic.out(1, 0.35)', overwrite: 'auto' })
       }
     }
     window.addEventListener('mousemove', handle, { passive: true })
@@ -63,183 +103,203 @@ const FloatingContact = () => {
   }, [isVisible])
 
   const handleEnter = useCallback(() => {
-    // Circle & Icon
-    if (circleRef.current) gsap.to(circleRef.current, { scale: 1.2, duration: 0.4, ease: 'back.out(2)' })
-    if (iconRef.current) {
-      gsap.to(iconRef.current, { rotation: 180, scale: 1.15, duration: 0.6, ease: 'power2.inOut' })
-      // Pulse animation for icon paths
-      gsap.to('.nexus-path', { strokeDashoffset: 0, duration: 0.8, stagger: 0.1 })
+    if (idleTl.current) idleTl.current.pause()
+    if (pulseRef.current) gsap.to(pulseRef.current, { scale: 1.8, opacity: 0, duration: 0.3 })
+    if (circleRef.current) gsap.to(circleRef.current, { scale: 1.15, duration: 0.5, ease: 'back.out(1.7)' })
+    if (orbitRef.current) gsap.to(orbitRef.current, { scale: 1.3, duration: 0.6, ease: 'back.out(1.5)' })
+
+    // Plane Flight
+    if (planeRef.current) {
+      gsap.killTweensOf(planeRef.current)
+      // Initial bank & forward thrust (Z-axis only to keep centered)
+      gsap.to(planeRef.current, {
+        scale: 1.15, rotateZ: 10, rotateX: 20, translateZ: 15, duration: 0.4, ease: 'power3.out'
+      })
+      // Continuous Loop (Very subtle centering oscillation)
+      gsap.to(planeRef.current, {
+        translateZ: 18,
+        repeat: -1, yoyo: true, duration: 0.6, ease: 'sine.inOut', delay: 0.4
+      })
     }
-    // Surround Rings
-    ringsRef.current.forEach((r, i) => {
-      if (r) {
-        gsap.fromTo(r, 
-          { scale: 0.6, opacity: 0 },
-          { scale: 1.2 + i * 0.4, opacity: 0.4 - i * 0.1, duration: 0.8, ease: 'power3.out', delay: i * 0.1 }
+
+    // Wind Lines
+    if (windWrapRef.current) {
+      gsap.to(windWrapRef.current, { opacity: 1, duration: 0.3 })
+      const lines = windWrapRef.current.querySelectorAll('.fc-wind-line')
+      lines.forEach((line, i) => {
+        gsap.fromTo(line, 
+          { x: -50, y: 50, opacity: 0 },
+          { x: 50, y: -50, opacity: 0.6, duration: 0.5 + Math.random() * 0.5, repeat: -1, delay: i * 0.2, ease: 'none' }
         )
-        gsap.to(r, { rotation: (i % 2 === 0 ? 360 : -360), duration: 4, repeat: -1, ease: 'none' })
-      }
-    })
-    // Label
-    if (textRef.current) gsap.to(textRef.current, { opacity: 1, x: 0, duration: 0.4 })
+      })
+    }
   }, [])
 
   const handleLeave = useCallback(() => {
+    if (idleTl.current) idleTl.current.resume()
     if (circleRef.current) gsap.to(circleRef.current, { scale: 1, duration: 0.6, ease: 'elastic.out(1, 0.4)' })
-    if (iconRef.current) gsap.to(iconRef.current, { rotation: 0, scale: 1, duration: 0.8, ease: 'elastic.out(1, 0.5)' })
-    // Rings
-    ringsRef.current.forEach(r => {
-      if (r) gsap.to(r, { scale: 0.6, opacity: 0, duration: 0.5, ease: 'power3.in' })
-    })
-    if (textRef.current) gsap.to(textRef.current, { opacity: 0, x: 20, duration: 0.4 })
+    if (orbitRef.current) gsap.to(orbitRef.current, { scale: 1, duration: 0.8, ease: 'elastic.out(1, 0.5)' })
+
+    // Stop Flight
+    if (planeRef.current) {
+      gsap.killTweensOf(planeRef.current)
+      gsap.to(planeRef.current, {
+        scale: 1, rotateZ: 0, rotateX: 0, x: 0, y: 0, duration: 0.8, ease: 'elastic.out(1, 0.4)'
+      })
+    }
+
+    // Stop Wind
+    if (windWrapRef.current) {
+      gsap.to(windWrapRef.current, { opacity: 0, duration: 0.3 })
+      gsap.killTweensOf(windWrapRef.current.querySelectorAll('.fc-wind-line'))
+    }
   }, [])
 
   const handleClick = useCallback(() => {
     if (circleRef.current) {
       gsap.timeline()
-        .to(circleRef.current, { scale: 0.85, duration: 0.15 })
+        .to(circleRef.current, { scale: 0.85, duration: 0.12 })
         .to(circleRef.current, { scale: 1.1, duration: 0.4, ease: 'back.out(3)' })
     }
-    setTimeout(() => router.push('/contact/'), 300)
+    setTimeout(() => router.push('/contact/'), 280)
   }, [router])
+
+  const circleBg = isDarkBg ? '#ffffff' : '#111111'
+  const ic = isDarkBg ? '#111111' : '#ffffff'
+  const tc = isDarkBg ? '#ffffff' : '#111111'
+  const orbitText = "CONTACT\u00A0\u00A0\u00A0•\u00A0\u00A0\u00A0CONTACT\u00A0\u00A0\u00A0•\u00A0\u00A0\u00A0CONTACT\u00A0\u00A0\u00A0•\u00A0\u00A0\u00A0CONTACT\u00A0\u00A0\u00A0•\u00A0\u00A0\u00A0"
+
+  // Shading colors
+  const sL = isDarkBg ? '#f8f8f8' : '#ffffff'
+  const sM = isDarkBg ? '#d0d0d0' : '#ececec'
+  const sD = isDarkBg ? '#a0a0a0' : '#cccccc'
 
   return (
     <>
       <div
         ref={rootRef}
-        className={`nexus-root ${isNearFooter ? 'is-footer' : ''}`}
+        className={`fc-root ${isNearFooter ? 'fc-footer' : ''}`}
         onMouseEnter={handleEnter}
         onMouseLeave={handleLeave}
         onClick={handleClick}
         role="button"
         tabIndex={0}
-        aria-label="Contact Gateway"
+        aria-label="Contact Us"
         style={{ opacity: isVisible ? 1 : 0, pointerEvents: isVisible ? 'all' : 'none' }}
       >
-        {/* Surround Animations (Visible on Hover) */}
-        {[0, 1, 2].map(i => (
-          <div key={`ring-${i}`} ref={el => ringsRef.current[i] = el} className="nexus-ring" />
-        ))}
+        <div ref={pulseRef} className="fc-pulse" style={{ background: circleBg }} />
 
-        {/* Adaptive Circle Body */}
-        <div ref={circleRef} className="nexus-circle">
-          {/* Unique Non-Generic "Nexus Connector" Icon */}
-          <div ref={iconRef} className="nexus-icon">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              {/* Central communication hub */}
-              <circle cx="12" cy="12" r="3.5" fill="currentColor" />
-              {/* Branching strategic link paths */}
-              <path className="nexus-path" d="M12 4v2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-              <path className="nexus-path" d="M12 18v2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-              <path className="nexus-path" d="M4 12h2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-              <path className="nexus-path" d="M18 12h2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-              {/* Dynamic corner connectors */}
-              <circle cx="12" cy="5" r="1.5" fill="#FF6600">
-                <animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite" />
-              </circle>
-              <circle cx="12" cy="19" r="1.5" fill="#FF6600">
-                <animate attributeName="opacity" values="1;0;1" dur="1s" begin="0.5s" repeatCount="indefinite" />
-              </circle>
-            </svg>
-          </div>
-          <div className="nexus-glass" />
+        {/* Wind Wrap — Flying Effect Around Button */}
+        <div ref={windWrapRef} className="fc-wind-wrap" style={{ opacity: 0 }}>
+          <div className="fc-wind-line" style={{ background: tc, top: '20%', left: '0%' }} />
+          <div className="fc-wind-line" style={{ background: tc, top: '50%', left: '-10%' }} />
+          <div className="fc-wind-line" style={{ background: tc, top: '80%', left: '10%' }} />
         </div>
 
-        {/* Minimal Tooltip */}
-        <div ref={textRef} className="nexus-label">Connect Now</div>
+        <div ref={perspectiveRef} className="fc-3d-wrap">
+          {/* Orbital Ring */}
+          <div ref={orbitRef} className="fc-orbit-wrap">
+            <div className="fc-orbit">
+              <svg viewBox="0 0 200 200" className="fc-orbit-svg">
+                <defs>
+                  <path id="fc-text-path" d="M 100,100 m -70,0 a 70,70 0 1,1 140,0 a 70,70 0 1,1 -140,0" fill="none" />
+                </defs>
+                <text className="fc-orbit-text" style={{ fill: tc }}>
+                  <textPath href="#fc-text-path" startOffset="0%">{orbitText}</textPath>
+                </text>
+              </svg>
+            </div>
+          </div>
+
+          {/* Main Button */}
+          <div ref={circleRef} className="fc-circle" style={{ background: circleBg }}>
+            {/* ── Airborne Plane ── */}
+            <div ref={planeRef} className="fc-plane-3d">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" style={{ overflow: 'visible', filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))' }}>
+                <path d="M22 2L11 13V22L14 17L19 21L22 2Z" fill={sM} />
+                <path d="M22 2L2 12L11 13L22 2Z" fill={sL} />
+                <path d="M11 13V22L14 17L11 13Z" fill={sD} />
+                <path d="M22 2L2 12L11 13V22L14 17L19 21L22 2Z" stroke={ic} strokeWidth="0.7" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+          </div>
+        </div>
       </div>
 
       <style jsx global>{`
-        .nexus-root {
-          position: fixed !important;
-          bottom: 45px !important;
-          right: 45px !important;
-          z-index: 10001 !important;
-          cursor: pointer !important;
-          width: 80px !important;
-          height: 80px !important;
-          display: flex !important;
-          align-items: center !important;
-          justify-content: center !important;
-          /* Premium standard color inversion */
-          mix-blend-mode: difference !important;
-          transition: 
-            opacity 1s ease-out,
-            bottom 0.7s cubic-bezier(0.19, 1, 0.22, 1) !important;
-          -webkit-tap-highlight-color: transparent;
+        .fc-root {
+          position: fixed; bottom: 40px; right: 40px; z-index: 99999;
+          cursor: pointer; width: 110px; height: 110px;
+          display: flex; align-items: center; justify-content: center;
+          transition: opacity 0.8s cubic-bezier(0.19,1,0.22,1), bottom 0.6s cubic-bezier(0.19,1,0.22,1);
+          -webkit-tap-highlight-color: transparent; isolation: isolate;
+        }
+        .fc-root.fc-footer { bottom: 110px; }
+
+        .fc-pulse {
+          position: absolute; width: 56px; height: 56px; border-radius: 50%;
+          opacity: 0.3; pointer-events: none; will-change: transform, opacity;
+          transition: background 0.6s cubic-bezier(0.19,1,0.22,1);
         }
 
-        .nexus-root.is-footer {
-          bottom: 115px !important;
+        .fc-wind-wrap {
+          position: absolute; inset: -20px;
+          pointer-events: none; z-index: -1;
+        }
+        .fc-wind-line {
+          position: absolute; width: 40px; height: 1px;
+          opacity: 0; transform: rotate(-45deg);
         }
 
-        /* ── Hover-triggered Surround Rings ── */
-        .nexus-ring {
-          position: absolute;
-          width: 60px;
-          height: 60px;
-          border: 1px solid #ffffff;
-          border-radius: 50%;
-          pointer-events: none;
-          opacity: 0;
-          will-change: transform, opacity;
+        .fc-3d-wrap {
+          position: relative; width: 100%; height: 100%;
+          perspective: 1200px;
+          transform-style: preserve-3d;
+          display: flex; align-items: center; justify-content: center;
         }
 
-        .nexus-circle {
-          position: relative;
-          width: 66px;
-          height: 66px;
-          border-radius: 50%;
-          background: #ffffff;
-          color: #000000;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          overflow: hidden;
+        .fc-orbit-wrap {
+          position: absolute; width: 110px; height: 110px;
+          pointer-events: none; will-change: transform;
+          transform: translateZ(40px);
+        }
+        .fc-orbit {
+          width: 100%; height: 100%;
+          animation: fc-spin 14s linear infinite; will-change: transform;
+        }
+        .fc-orbit-svg { width: 100%; height: 100%; overflow: visible; }
+        .fc-orbit-text {
+          font-family: var(--font-main, 'Inter', sans-serif);
+          font-size: 12px; font-weight: 500;
+          letter-spacing: 0.14em; text-transform: uppercase;
+          transition: fill 0.6s cubic-bezier(0.19,1,0.22,1);
+        }
+        @keyframes fc-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        .fc-circle {
+          position: relative; width: 56px; height: 56px; border-radius: 50%;
+          display: flex; align-items: center; justify-content: center;
+          transform-style: preserve-3d;
           will-change: transform;
-          box-shadow: 0 12px 36px rgba(0,0,0,0.22);
+          box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+          transition: background 0.6s cubic-bezier(0.19,1,0.22,1), box-shadow 0.6s cubic-bezier(0.19,1,0.22,1);
         }
 
-        .nexus-glass {
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 100%);
-          pointer-events: none;
-          z-index: 2;
-        }
-
-        .nexus-icon {
-          position: relative;
-          z-index: 5;
-          display: flex;
-          align-items: center;
-          justify-content: center;
+        .fc-plane-3d {
           will-change: transform;
+          transform-style: preserve-3d;
+          display: flex; align-items: center; justify-content: center;
+          transform: translateZ(5px) translateX(-2px);
         }
 
-        .nexus-label {
-          position: absolute;
-          right: 105px;
-          background: #ffffff;
-          color: #000000;
-          padding: 10px 22px;
-          border-radius: 100px;
-          font-size: 15px;
-          font-weight: 600;
-          white-space: nowrap;
-          opacity: 0;
-          transform: translateX(20px);
-          pointer-events: none;
-          box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-          z-index: -1;
-        }
-
-        /* Mobile specific */
         @media (max-width: 768px) {
-          .nexus-root { bottom: 35px !important; right: 25px !important; width: 68px !important; height: 68px !important; }
-          .nexus-circle { width: 56px !important; height: 56px !important; }
-          .nexus-root.is-footer { bottom: 100px !important; }
-          .nexus-label { display: none; }
+          .fc-root { bottom: 24px; right: 18px; width: 90px; height: 90px; }
+          .fc-orbit-wrap { width: 90px; height: 90px; }
+          .fc-orbit-text { font-size: 11px; }
+          .fc-circle { width: 46px; height: 46px; }
+          .fc-pulse { width: 46px; height: 46px; }
+          .fc-root.fc-footer { bottom: 95px; }
+          .fc-plane-3d svg { width: 28px; height: 28px; }
         }
       `}</style>
     </>

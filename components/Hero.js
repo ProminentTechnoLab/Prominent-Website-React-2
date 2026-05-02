@@ -153,11 +153,9 @@ const Hero = () => {
         }
         .cb-hero-media {
           width: 100%;
-          margin: 0 auto;
           border-radius: 24px;
           overflow: hidden;
           will-change: transform;
-          aspect-ratio: 16 / 9;
           background: transparent;
         }
         .cb-hero-video {
