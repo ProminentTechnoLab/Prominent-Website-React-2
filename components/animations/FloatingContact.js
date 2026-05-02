@@ -85,16 +85,16 @@ const FloatingContact = () => {
       const dx = e.clientX - cx, dy = e.clientY - cy
       const dist = Math.sqrt(dx * dx + dy * dy)
 
-      if (dist < 150) {
-        const s = 1 - dist / 150
-        gsap.to(rootRef.current, { x: dx * 0.1 * s, y: dy * 0.1 * s, duration: 0.6, ease: 'power2.out', overwrite: 'auto' })
+      if (dist < 190) {
+        const s = 1 - dist / 190
+        gsap.to([circleRef.current, pulseRef.current], { x: dx * 0.06 * s, y: dy * 0.06 * s, duration: 0.6, ease: 'power2.out', overwrite: 'auto' })
         gsap.to(perspectiveRef.current, {
-          rotateY: (dx / 75) * 25 * s,
-          rotateX: -(dy / 75) * 25 * s,
+          rotateY: (dx / 95) * 15 * s,
+          rotateX: -(dy / 95) * 15 * s,
           duration: 0.6, ease: 'power2.out', overwrite: 'auto'
         })
       } else {
-        gsap.to(rootRef.current, { x: 0, y: 0, duration: 1.2, ease: 'elastic.out(1, 0.35)', overwrite: 'auto' })
+        gsap.to([circleRef.current, pulseRef.current], { x: 0, y: 0, duration: 1.2, ease: 'elastic.out(1, 0.35)', overwrite: 'auto' })
         gsap.to(perspectiveRef.current, { rotateX: 0, rotateY: 0, duration: 1.2, ease: 'elastic.out(1, 0.35)', overwrite: 'auto' })
       }
     }
@@ -105,15 +105,15 @@ const FloatingContact = () => {
   const handleEnter = useCallback(() => {
     if (idleTl.current) idleTl.current.pause()
     if (pulseRef.current) gsap.to(pulseRef.current, { scale: 1.8, opacity: 0, duration: 0.3 })
-    if (circleRef.current) gsap.to(circleRef.current, { scale: 1.15, duration: 0.5, ease: 'back.out(1.7)' })
-    if (orbitRef.current) gsap.to(orbitRef.current, { scale: 1.3, duration: 0.6, ease: 'back.out(1.5)' })
+    if (circleRef.current) gsap.to(circleRef.current, { scale: 1, duration: 0.5, ease: 'power2.out' })
+    if (orbitRef.current) gsap.to(orbitRef.current, { scale: 1.1, duration: 0.6, ease: 'back.out(1.5)' })
 
     // Plane Flight
     if (planeRef.current) {
       gsap.killTweensOf(planeRef.current)
       // Initial bank & forward thrust (Z-axis only to keep centered)
       gsap.to(planeRef.current, {
-        scale: 1.15, rotateZ: 10, rotateX: 20, translateZ: 15, duration: 0.4, ease: 'power3.out'
+        scale: 1.1, rotateZ: 10, rotateX: 20, translateZ: 15, duration: 0.4, ease: 'power3.out'
       })
       // Continuous Loop (Very subtle centering oscillation)
       gsap.to(planeRef.current, {
@@ -127,7 +127,7 @@ const FloatingContact = () => {
       gsap.to(windWrapRef.current, { opacity: 1, duration: 0.3 })
       const lines = windWrapRef.current.querySelectorAll('.fc-wind-line')
       lines.forEach((line, i) => {
-        gsap.fromTo(line, 
+        gsap.fromTo(line,
           { x: -50, y: 50, opacity: 0 },
           { x: 50, y: -50, opacity: 0.6, duration: 0.5 + Math.random() * 0.5, repeat: -1, delay: i * 0.2, ease: 'none' }
         )
@@ -197,25 +197,11 @@ const FloatingContact = () => {
         </div>
 
         <div ref={perspectiveRef} className="fc-3d-wrap">
-          {/* Orbital Ring */}
-          <div ref={orbitRef} className="fc-orbit-wrap">
-            <div className="fc-orbit">
-              <svg viewBox="0 0 200 200" className="fc-orbit-svg">
-                <defs>
-                  <path id="fc-text-path" d="M 100,100 m -70,0 a 70,70 0 1,1 140,0 a 70,70 0 1,1 -140,0" fill="none" />
-                </defs>
-                <text className="fc-orbit-text" style={{ fill: tc }}>
-                  <textPath href="#fc-text-path" startOffset="0%">{orbitText}</textPath>
-                </text>
-              </svg>
-            </div>
-          </div>
-
           {/* Main Button */}
           <div ref={circleRef} className="fc-circle" style={{ background: circleBg }}>
             {/* ── Airborne Plane ── */}
             <div ref={planeRef} className="fc-plane-3d">
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" style={{ overflow: 'visible', filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))' }}>
+              <svg width="38" height="38" viewBox="0 0 24 24" fill="none" style={{ overflow: 'visible', filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))' }}>
                 <path d="M22 2L11 13V22L14 17L19 21L22 2Z" fill={sM} />
                 <path d="M22 2L2 12L11 13L22 2Z" fill={sL} />
                 <path d="M11 13V22L14 17L11 13Z" fill={sD} />
@@ -224,12 +210,26 @@ const FloatingContact = () => {
             </div>
           </div>
         </div>
+
+        {/* Orbital Ring — Now static outside of the 3D shift wrap */}
+        <div ref={orbitRef} className="fc-orbit-wrap">
+          <div className="fc-orbit">
+            <svg viewBox="0 0 200 200" className="fc-orbit-svg">
+              <defs>
+                <path id="fc-text-path" d="M 100,100 m -68,0 a 68,68 0 1,1 136,0 a 68,68 0 1,1 -136,0" fill="none" />
+              </defs>
+              <text className="fc-orbit-text" style={{ fill: tc }}>
+                <textPath href="#fc-text-path" startOffset="0%" textLength="427.26" lengthAdjust="spacing">{orbitText}</textPath>
+              </text>
+            </svg>
+          </div>
+        </div>
       </div>
 
       <style jsx global>{`
         .fc-root {
           position: fixed; bottom: 40px; right: 40px; z-index: 99999;
-          cursor: pointer; width: 110px; height: 110px;
+          cursor: pointer; width: 150px; height: 150px;
           display: flex; align-items: center; justify-content: center;
           transition: opacity 0.8s cubic-bezier(0.19,1,0.22,1), bottom 0.6s cubic-bezier(0.19,1,0.22,1);
           -webkit-tap-highlight-color: transparent; isolation: isolate;
@@ -237,7 +237,7 @@ const FloatingContact = () => {
         .fc-root.fc-footer { bottom: 110px; }
 
         .fc-pulse {
-          position: absolute; width: 56px; height: 56px; border-radius: 50%;
+          position: absolute; width: 82px; height: 82px; border-radius: 50%;
           opacity: 0.3; pointer-events: none; will-change: transform, opacity;
           transition: background 0.6s cubic-bezier(0.19,1,0.22,1);
         }
@@ -259,7 +259,7 @@ const FloatingContact = () => {
         }
 
         .fc-orbit-wrap {
-          position: absolute; width: 110px; height: 110px;
+          position: absolute; width: 150px; height: 150px;
           pointer-events: none; will-change: transform;
           transform: translateZ(40px);
         }
@@ -270,14 +270,14 @@ const FloatingContact = () => {
         .fc-orbit-svg { width: 100%; height: 100%; overflow: visible; }
         .fc-orbit-text {
           font-family: var(--font-main, 'Inter', sans-serif);
-          font-size: 12px; font-weight: 500;
-          letter-spacing: 0.14em; text-transform: uppercase;
+          font-size: 11px; font-weight: 600;
+          letter-spacing: 0.18em; text-transform: uppercase;
           transition: fill 0.6s cubic-bezier(0.19,1,0.22,1);
         }
         @keyframes fc-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
         .fc-circle {
-          position: relative; width: 56px; height: 56px; border-radius: 50%;
+          position: relative; width: 82px; height: 82px; border-radius: 50%;
           display: flex; align-items: center; justify-content: center;
           transform-style: preserve-3d;
           will-change: transform;
@@ -293,13 +293,13 @@ const FloatingContact = () => {
         }
 
         @media (max-width: 768px) {
-          .fc-root { bottom: 24px; right: 18px; width: 90px; height: 90px; }
-          .fc-orbit-wrap { width: 90px; height: 90px; }
-          .fc-orbit-text { font-size: 11px; }
-          .fc-circle { width: 46px; height: 46px; }
-          .fc-pulse { width: 46px; height: 46px; }
+          .fc-root { bottom: 24px; right: 18px; width: 120px; height: 120px; }
+          .fc-orbit-wrap { width: 120px; height: 120px; }
+          .fc-orbit-text { font-size: 13px; }
+          .fc-circle { width: 66px; height: 66px; }
+          .fc-pulse { width: 66px; height: 66px; }
           .fc-root.fc-footer { bottom: 95px; }
-          .fc-plane-3d svg { width: 28px; height: 28px; }
+          .fc-plane-3d svg { width: 32px; height: 32px; }
         }
       `}</style>
     </>
