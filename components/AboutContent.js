@@ -125,21 +125,17 @@ const AboutContent = () => {
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger)
 
-    const ctx = gsap.context(() => {
-      // Hero Title Animation
-      gsap.fromTo('.ab-hero-title span',
-        { y: 100, opacity: 0 },
-        { y: 0, opacity: 1, stagger: 0.15, duration: 1.6, ease: 'power4.out', delay: 0.8 }
-      )
-
-      // Hero Media Reveal
+    const runEntrance = () => {
+      // Hero Media Reveal (Synced with TextReveal)
       gsap.fromTo('.ab-hero-media',
-        { scale: 0.9, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 1.8, ease: 'expo.out', delay: 1.0 }
+        { scale: 0.95, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 1.5, ease: 'expo.out', delay: 0.6 }
       )
+    }
 
-      // Reusable Scroll Reveal
-      gsap.utils.toArray('.reveal').forEach(el => {
+    const ctx = gsap.context(() => {
+      // Reusable Scroll Reveal (Exclude text already handled by TextReveal)
+      gsap.utils.toArray('.reveal:not(h1):not(h2):not(h3):not(h4):not(h5):not(h6):not(p)').forEach(el => {
         gsap.fromTo(el,
           { y: 50, opacity: 0 },
           {
@@ -203,7 +199,11 @@ const AboutContent = () => {
 
     }, containerRef)
 
-    return () => ctx.revert()
+    window.addEventListener('refresh-text-reveal', runEntrance)
+    return () => {
+      ctx.revert()
+      window.removeEventListener('refresh-text-reveal', runEntrance)
+    }
   }, [])
 
   const stats = [
@@ -247,8 +247,7 @@ const AboutContent = () => {
       <section className="ab-hero ab-white-bg">
         <div className="ab-narrow-container">
           <h1 className="ab-hero-title">
-            <span className="d-block">Creativity</span>
-            <span className="d-block">meets technology</span>
+            Creativity meets technology
           </h1>
           <div className="ab-hero-media parallax-wrap">
             <img src="/images/about_hero_vibe.png" alt="Office Vibe" className="parallax-img" />
@@ -362,7 +361,7 @@ const AboutContent = () => {
         .ab-hero { padding: 40px 0 0; text-align: center; }
         .ab-hero-title {
           font-size: clamp(2.5rem, 6vw, 5.2rem);
-          line-height: 1.05;
+          line-height: 1.1;
           font-weight: 500;
           letter-spacing: -0.04em;
           margin-bottom: 80px;
@@ -374,6 +373,9 @@ const AboutContent = () => {
           height: 85vh;
           position: relative;
           background: #f1f1f1;
+          opacity: 0; /* Prevent blinking before animation */
+          transform: scale(0.95);
+          will-change: transform, opacity;
         }
         .ab-hero-media img {
           width: 100%;

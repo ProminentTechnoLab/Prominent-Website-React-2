@@ -11,10 +11,12 @@ const Testimonials = ({ variant = 'light' }) => {
   const isDark = variant === 'dark'
 
   const testimonials = [
-    { name: 'Michael Chen', role: 'Project Manager, US', text: "The quality of work from Prominent TechnoLabs is exceptional. Their developers integrated seamlessly with our team and delivered ahead of schedule.", initials: 'MC' },
-    { name: 'Sarah Jenkins', role: 'CEO, Digital Pulse (UK)', text: "Transformative results! Our e-commerce conversion rate increased by 40% after the redesign. They truly understand modern UX.", initials: 'SJ' },
-    { name: 'Rajesh Gupta', role: 'Founder, RetailGo (India)', text: "Reliable, transparent, and technically brilliant. We've been working with them for 3 years and they never disappoint.", initials: 'RG' },
-    { name: 'Elena Rodriguez', role: 'Tech Lead, Spain', text: "Prompt communication and deep technical knowledge. Their React and Node.js expertise helped us scale effortlessly.", initials: 'ER' }
+    { 
+      name: 'SUDIP ACHARJEE', 
+      role: 'Client', 
+      text: "Working with Prominent TechnoLabs, Website and mobile app project was an absolute pleasure. They demonstrated exceptional expertise in Website mobile app development, creating a product that exceeded our expectations. The app's user-friendly interface, smooth performance, and attention to detail truly impressed us. The team was responsive, open to feedback, and delivered on time. We're extremely satisfied with the end result and would highly recommend Prominent Technolabs for any web & app development needs. A true professional.", 
+      initials: 'SA' 
+    }
   ]
 
   const animateQuote = useCallback(() => {
@@ -32,14 +34,22 @@ const Testimonials = ({ variant = 'light' }) => {
     gsap.to(quoteRef.current, {
       opacity: 0, y: -20, duration: 0.3, ease: 'power2.in',
       onComplete: () => {
+        let newIdx = idx
         if (direction === 'next') {
-          setIdx(prev => (prev + 1) % testimonials.length)
+          newIdx = (idx + 1) % testimonials.length
         } else {
-          setIdx(prev => (prev - 1 + testimonials.length) % testimonials.length)
+          newIdx = (idx - 1 + testimonials.length) % testimonials.length
+        }
+
+        // If index is same (1 slide), we must manually trigger animateQuote
+        if (newIdx === idx) {
+          animateQuote()
+        } else {
+          setIdx(newIdx)
         }
       }
     })
-  }, [isAnimating, testimonials.length])
+  }, [isAnimating, testimonials.length, idx, animateQuote])
 
   useEffect(() => {
     animateQuote()
@@ -97,7 +107,26 @@ const Testimonials = ({ variant = 'light' }) => {
               {/* Progress dots */}
               <div className="tm-dots">
                 {testimonials.map((_, i) => (
-                  <button key={i} className={`tm-dot ${i === idx ? 'active' : ''}`} onClick={() => { if (!isAnimating) { setIsAnimating(true); gsap.to(quoteRef.current, { opacity: 0, y: -20, duration: 0.3, ease: 'power2.in', onComplete: () => setIdx(i) }); }}} aria-label={`Go to testimonial ${i + 1}`} />
+                  <button 
+                    key={i} 
+                    className={`tm-dot ${i === idx ? 'active' : ''}`} 
+                    onClick={() => { 
+                      if (!isAnimating) { 
+                        setIsAnimating(true); 
+                        gsap.to(quoteRef.current, { 
+                          opacity: 0, y: -20, duration: 0.3, ease: 'power2.in', 
+                          onComplete: () => {
+                            if (i === idx) {
+                              animateQuote()
+                            } else {
+                              setIdx(i)
+                            }
+                          } 
+                        }); 
+                      }
+                    }} 
+                    aria-label={`Go to testimonial ${i + 1}`} 
+                  />
                 ))}
               </div>
               <button onClick={() => changeSlide('next')} className="tm-btn" aria-label="Next testimonial">
@@ -177,11 +206,11 @@ const Testimonials = ({ variant = 'light' }) => {
 
         /* Quote */
         .tm-quote {
-          font-size: clamp(1.6rem, 2.8vw, 2.4rem);
+          font-size: clamp(1.4rem, 2.2vw, 1.85rem);
           font-weight: 500;
-          line-height: 1.35;
-          letter-spacing: -0.02em;
-          max-width: 900px;
+          line-height: 1.4;
+          letter-spacing: -0.015em;
+          max-width: 950px;
           margin-bottom: 60px;
           color: ${isDark ? '#fff' : '#000'};
         }

@@ -28,35 +28,12 @@ const Footer = () => {
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger)
     const ctx = gsap.context(() => {
-      // CTA Section Reveal
-      gsap.fromTo('.cb-hero-title',
-        { y: 60, opacity: 0 },
-        {
-          y: 0, opacity: 1, duration: 1.6, ease: 'power4.out',
-          scrollTrigger: { trigger: '.cb-footer-hero', start: 'top 80%' }
-        }
-      )
+      // Footer animations handled by global TextReveal and local scale effects for buttons
       gsap.fromTo('.cb-footer-tellus-btn',
         { scale: 0.9, opacity: 0 },
         {
           scale: 1, opacity: 1, duration: 1.6, ease: 'power4.out', delay: 0.2,
           scrollTrigger: { trigger: '.cb-footer-hero', start: 'top 80%' }
-        }
-      )
-
-      // Info Section Reveal
-      gsap.fromTo('.cb-info-block',
-        { y: 40, opacity: 0 },
-        {
-          y: 0, opacity: 1, stagger: 0.1, duration: 1.2, ease: 'power3.out',
-          scrollTrigger: { trigger: '.cb-footer-info-row', start: 'top 85%' }
-        }
-      )
-      gsap.fromTo('.cb-footer-nav',
-        { y: 20, opacity: 0 },
-        {
-          y: 0, opacity: 1, stagger: 0.05, duration: 1.2, ease: 'power3.out',
-          scrollTrigger: { trigger: '.cb-footer-navs-col', start: 'top 90%' }
         }
       )
     }, footerContainerRef)

@@ -12,22 +12,19 @@ const Hero = () => {
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger)
-    const ctx = gsap.context(() => {
-      gsap.fromTo('.hero-line',
-        { y: 120, opacity: 0 },
-        { y: 0, opacity: 1, stagger: 0.15, duration: 1.8, ease: 'power4.out', delay: 0.8 }
-      )
-      gsap.fromTo('.hero-sub',
-        { y: 40, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1.6, ease: 'power4.out', delay: 1.1 }
-      )
+    
+    const runEntrance = () => {
+      // Reveal the video container in sync with the text reveal
       gsap.fromTo(videoRef.current,
-        { scale: 0.92, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 1.8, ease: 'expo.out', delay: 1.0 }
+        { scale: 0.9, opacity: 0 },
+        { scale: 0.94, opacity: 1, duration: 1.5, ease: 'expo.out', delay: 0.6 }
       )
+    }
+
+    const ctx = gsap.context(() => {
       if (videoRef.current) {
         gsap.to(videoRef.current, {
-          y: -100, scale: 0.94,
+          y: -100,
           scrollTrigger: { trigger: heroRef.current, start: 'top top', end: 'bottom top', scrub: 1.5 }
         })
       }
@@ -39,13 +36,6 @@ const Hero = () => {
             scrollTrigger: { trigger: aboutRef.current, start: 'top 80%', toggleActions: 'play none none none' }
           }
         )
-        gsap.fromTo('.cb-about-text p',
-          { y: 40, opacity: 0 },
-          {
-            y: 0, opacity: 1, stagger: 0.15, duration: 1, ease: 'power3.out',
-            scrollTrigger: { trigger: aboutRef.current, start: 'top 75%', toggleActions: 'play none none none' }
-          }
-        )
         gsap.fromTo('.cb-about-cta',
           { y: 30, opacity: 0 },
           {
@@ -55,15 +45,19 @@ const Hero = () => {
         )
       }
     }, heroRef)
-    return () => ctx.revert()
+
+    window.addEventListener('refresh-text-reveal', runEntrance)
+    return () => {
+      ctx.revert()
+      window.removeEventListener('refresh-text-reveal', runEntrance)
+    }
   }, [])
 
   return (
     <section className="cb-hero" ref={heroRef}>
       <div className="cb-hero-content">
         <h1 className="cb-hero-title">
-          <span className="hero-line">Powering Businesses</span>
-          <span className="hero-line">With Innovation</span>
+          Powering Businesses With Innovation
         </h1>
         <p className="hero-sub">
           A full-service digital agency crafting intuitive UI/UX designs, scalable web &amp; mobile
@@ -132,7 +126,7 @@ const Hero = () => {
         .cb-hero-title {
           font-size: clamp(2.5rem, 6vw, 5.2rem); /* Further refined for a more sophisticated typography balance */
           font-weight: 500;
-          line-height: 1.05;
+          line-height: 1.1;
           letter-spacing: -0.035em;
           color: #000;
           margin-bottom: 28px;
@@ -155,8 +149,10 @@ const Hero = () => {
           width: 100%;
           border-radius: 24px;
           overflow: hidden;
-          will-change: transform;
-          background: transparent;
+          will-change: transform, opacity;
+          background: #f1f1f1;
+          opacity: 0; /* Prevent blinking before animation */
+          transform: scale(0.9);
         }
         .cb-hero-video {
           width: 100% !important;

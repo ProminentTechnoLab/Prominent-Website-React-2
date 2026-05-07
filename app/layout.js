@@ -35,8 +35,8 @@ export default function RootLayout({ children }) {
       </head>
       <body>
         <CustomCursor />
-        <TextReveal />
         <AppWrapper>
+          <TextReveal />
           <Navbar />
           <main>{children}</main>
           <Footer />

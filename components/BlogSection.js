@@ -14,13 +14,7 @@ const BlogSection = () => {
         gsap.registerPlugin(ScrollTrigger)
         
         const ctx = gsap.context(() => {
-            // Header animation
-            gsap.fromTo('.bs-header-top', 
-                { y: 50, opacity: 0 },
-                { y: 0, opacity: 1, duration: 1, ease: 'power3.out',
-                  scrollTrigger: { trigger: sectionRef.current, start: 'top 85%' }
-                }
-            )
+            // Header animation handled by global TextReveal
 
             // Rows animation
             rowRefs.current.forEach((row, i) => {
@@ -129,7 +123,7 @@ const BlogSection = () => {
                     font-weight: 500;
                     letter-spacing: -3px;
                     margin-bottom: 20px;
-                    line-height: 0.95;
+                    line-height: 1.1;
                 }
 
                 .bs-list {
@@ -144,6 +138,8 @@ const BlogSection = () => {
                     gap: 60px;
                     padding-bottom: 40px; /* Reduced gap between blogs */
                     transition: transform 0.4s ease;
+                    opacity: 0; /* Prevent blinking */
+                    will-change: transform, opacity;
                 }
 
                 .bs-row-img-wrap {

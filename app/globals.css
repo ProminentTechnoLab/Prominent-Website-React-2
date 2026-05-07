@@ -38,6 +38,7 @@ html {
   background-color: var(--bg-primary);
   overflow-x: hidden;
   width: 100%;
+  scrollbar-width: thin; /* Firefox */
 }
 
 body {
@@ -49,6 +50,24 @@ body {
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
   width: 100%;
+  overscroll-behavior: none; /* Prevent bounce artifacts with Lenis */
+}
+
+/* ─── Premium Thinner Scrollbar ─── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 100px;
+  border: 1px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.35);
 }
 
 ::selection {
@@ -99,4 +118,17 @@ main {
 }
 @media (max-width: 480px) {
   .container { padding: 0 16px; }
+}
+
+/* ─── Text Reveal Safety ─── */
+h1:not([data-split-done]), 
+h2:not([data-split-done]), 
+h3:not([data-split-done]), 
+h4:not([data-split-done]), 
+h5:not([data-split-done]), 
+h6:not([data-split-done]), 
+p:not([data-split-done]), 
+.reveal-text:not([data-split-done]), 
+.reveal-p:not([data-split-done]) {
+  opacity: 0;
 }

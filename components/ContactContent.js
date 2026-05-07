@@ -62,60 +62,23 @@ const ServiceChip = ({ label, active, onClick }) => {
 }
 
 const InputField = ({ type, name, value, onChange, placeholder, required, isTextArea }) => {
-  const pathRef = useRef(null)
-  const containerRef = useRef(null)
+  const lineRef = useRef(null)
   const [isFocused, setIsFocused] = useState(false)
-
-  const handleMouseMove = (e) => {
-    const path = pathRef.current
-    const container = containerRef.current
-    if (!path || !container) return
-
-    const { left, width } = container.getBoundingClientRect()
-    const x = e.clientX - left
-    
-    // Calculate control point for a realistic "pull" toward the cursor
-    const pullX = x.toFixed(0)
-    const pullY = 15 // Distance of the "stretch"
-
-    gsap.to(path, {
-      attr: { d: `M0,5 Q${pullX},${pullY} 700,5` },
-      duration: 0.6,
-      ease: 'power3.out',
-      overwrite: 'auto'
-    })
-  }
-
-  const handleMouseLeave = () => {
-    const path = pathRef.current
-    if (!path) return
-
-    // Rebound simulation
-    gsap.to(path, {
-      attr: { d: 'M0,5 Q350,5 700,5' },
-      duration: 1.2,
-      ease: 'elastic.out(1.2, 0.3)',
-      overwrite: 'auto'
-    })
-  }
+  const [isHovered, setIsHovered] = useState(false)
 
   const handleFocus = () => {
     setIsFocused(true)
-    const path = pathRef.current
-    if (!path) return
+    const line = lineRef.current
+    if (!line) return
 
-    // High-tension pluck on focus
-    gsap.timeline()
-      .to(path, {
-        attr: { d: 'M0,5 C120,-8 280,18 350,-4 C420,18 580,-8 700,5' },
-        duration: 0.2,
-        ease: 'power2.out'
-      })
-      .to(path, {
-        attr: { d: 'M0,5 Q350,5 700,5' },
-        duration: 1.5,
-        ease: 'elastic.out(1, 0.2)'
-      })
+    // Reset and then slide the wave across (0 to -66.66%)
+    gsap.set(line, { xPercent: 0 })
+    gsap.to(line, {
+      xPercent: -66.66,
+      duration: 1.2,
+      ease: "cubic-bezier(0, .25, .5, 1)",
+      overwrite: 'auto'
+    })
   }
 
   const handleBlur = () => {
@@ -126,10 +89,9 @@ const InputField = ({ type, name, value, onChange, placeholder, required, isText
 
   return (
     <div 
-      className={`ct-field ${isFocused ? 'is-focused' : ''}`} 
-      ref={containerRef}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
+      className={`ct-field ${isFocused ? 'is-focused' : ''} ${isHovered ? 'is-hovered' : ''}`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       <Tag 
         type={type} 
@@ -145,15 +107,13 @@ const InputField = ({ type, name, value, onChange, placeholder, required, isText
         aria-label={placeholder}
       />
       <div className="ct-line-track">
-        <svg className="ct-wave-svg" viewBox="0 0 700 10" preserveAspectRatio="none">
-          <path
-            ref={pathRef}
-            d="M0,5 Q350,5 700,5"
-            stroke={isFocused ? "#000" : "rgba(0,0,0,0.2)"}
-            strokeWidth={isFocused ? "2" : "1.5"}
-            fill="none"
-          />
-        </svg>
+        <div 
+          ref={lineRef}
+          className="ct-sliding-line"
+          style={{
+            opacity: isFocused ? 0.5 : (isHovered ? 0.45 : 0.2)
+          }}
+        />
       </div>
     </div>
   )
@@ -177,12 +137,25 @@ const ContactContent = () => {
   }
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.fromTo('.ct-line', { y: 80, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.15, duration: 1.8, ease: 'power4.out', delay: 0.8 })
-      gsap.fromTo('.ct-chips', { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 1.6, ease: 'power4.out', delay: 1.1 })
-      gsap.fromTo('.ct-form', { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 1.6, ease: 'power4.out', delay: 1.3 })
-    }, sectionRef)
-    return () => ctx.revert()
+    const runEntrance = () => {
+      gsap.fromTo('.ct-chips', 
+        { y: 40, opacity: 0 }, 
+        { y: 0, opacity: 1, duration: 1.4, ease: 'power4.out', delay: 0.6 }
+      )
+      // Reveal container but stagger the fields inside
+      gsap.set('.ct-form', { opacity: 1 }) 
+      gsap.fromTo('.ct-field-group',
+        { y: 30, opacity: 0 },
+        { y: 0, opacity: 1, duration: 1.2, ease: 'power3.out', delay: 0.8, stagger: 0.1 }
+      )
+      gsap.fromTo('.ct-submit-container',
+        { y: 20, opacity: 0 },
+        { y: 0, opacity: 1, duration: 1, ease: 'power3.out', delay: 1.3 }
+      )
+    }
+
+    window.addEventListener('refresh-text-reveal', runEntrance)
+    return () => window.removeEventListener('refresh-text-reveal', runEntrance)
   }, [])
 
   const handleChange = (e) => {
@@ -290,11 +263,14 @@ const ContactContent = () => {
             </div>
           </div>
         ) : (
-          <div className="ct-inner">
-            <h1 className="ct-title">
-              <span className="ct-line">Hey! Tell us all</span>
-              <span className="ct-line">the things</span>
-            </h1>
+          <>
+            <div className="ct-header">
+              <h1 className="ct-title">
+                Hey! Tell us all <br /> the things
+              </h1>
+            </div>
+
+            <div className="ct-inner">
 
             <div className="ct-chips-section ct-chips">
               <p className="ct-label">I'm interested in...</p>
@@ -364,7 +340,8 @@ const ContactContent = () => {
                 </div>
               </form>
             </div>
-          </div>
+            </div>
+          </>
         )}
 
       <style>{`
@@ -373,20 +350,23 @@ const ContactContent = () => {
           padding: 160px 0 120px;
           min-height: 100vh;
         }
-        .ct-inner { width: 100%; margin: 0; padding: 0 12vw; }
+        .ct-inner { width: 100%; margin: 0; padding: 0 35vw 0 8vw; }
+        .ct-header { width: 100%; padding: 0 8vw; margin-bottom: 80px; text-align: center; }
 
         .ct-title {
           font-size: clamp(2.5rem, 6vw, 5.2rem);
           font-weight: 500;
-          line-height: 1.05;
+          line-height: 1.1;
           letter-spacing: -0.035em;
           color: #000;
           text-align: center;
-          margin-bottom: 80px;
         }
         .ct-line { display: block; overflow: hidden; }
 
-        .ct-chips-section { margin-bottom: 60px; text-align: left; }
+        .ct-chips-section { margin-bottom: 60px; text-align: left; opacity: 0; will-change: transform, opacity; }
+        .ct-field-group { opacity: 0; will-change: transform, opacity; }
+        .ct-form { max-width: 1100px; text-align: left; opacity: 0; will-change: transform, opacity; }
+        .ct-submit-container { opacity: 0; }
         .ct-label {
           font-size: 1.2rem;
           font-weight: 400;
@@ -399,7 +379,7 @@ const ContactContent = () => {
           flex-wrap: wrap;
           gap: 15px 12px;
           justify-content: flex-start;
-          max-width: 800px;
+          max-width: 1200px;
         }
         .ct-chip {
           padding: 14px 28px;
@@ -425,7 +405,7 @@ const ContactContent = () => {
         .ct-chip:hover .ct-chip-text { transform: translateY(-100%); }
 
         /* Form Track Interaction (Cuberto Contacts Style) */
-        .ct-form { max-width: 700px; text-align: left; }
+        .ct-form { max-width: 1100px; text-align: left; }
         .ct-field { 
           margin-bottom: 60px; 
           position: relative; 
@@ -456,12 +436,26 @@ const ContactContent = () => {
           bottom: -2px;
           left: 0;
           width: 100%;
-          height: 10px;
+          height: 60px;
           pointer-events: none;
+          overflow: hidden;
         }
-        .ct-wave-svg {
-          width: 100%;
-          height: 100%;
+        .ct-sliding-line {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          width: 300%;
+          transform: translateX(0);
+          background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 60' preserveAspectRatio='none'><path fill='none' stroke='%23000' d='M0,59 L400,59 Q600,35 800,59 L1200,59'></path></svg>");
+          background-position: center bottom;
+          background-repeat: repeat-x;
+          background-size: 100% 41px;
+          pointer-events: none;
+          touch-action: none;
+          transition: opacity .4s;
+          will-change: transform;
         }
 
         .ct-submit-container { text-align: left; }

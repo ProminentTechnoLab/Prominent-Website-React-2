@@ -60,6 +60,12 @@ const ServicesSection = () => {
     }
   })
 
+  const handleRowClick = (path) => {
+    window.dispatchEvent(new CustomEvent('trigger-nav-transition', { 
+      detail: { href: path, isSamePage: false } 
+    }))
+  }
+
   return (
     <section
       className="ss-section"
@@ -80,6 +86,7 @@ const ServicesSection = () => {
                 ref={el => rowRefs.current[idx] = el}
                 data-index={idx}
                 className={`ss-row ${isHovered ? 'is-hovered' : ''}`}
+                onClick={() => handleRowClick(service.path)}
                 onMouseEnter={() => {
                   // Keep hover on desktop
                   if (!window.matchMedia('(max-width: 1024px)').matches) {
@@ -197,17 +204,21 @@ const ServicesSection = () => {
           display: flex;
           flex-direction: column;
           width: 100%;
-          border-top: 1px solid rgba(255, 255, 255, 0.8);
+          border-top: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .ss-row {
           position: relative;
           width: 100%;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.8);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Reduced opacity for better look */
           padding: 50px 100px; 
           transition: opacity 0.5s ease, background-color 0.5s ease;
           border-radius: 0px !important; 
           background-color: transparent;
+          cursor: pointer;
+        }
+        .ss-row:last-child {
+          border-bottom: none;
         }
         .ss-row.is-hovered {
           background-color: var(--hover-bg);
@@ -549,12 +560,18 @@ const ServicesSection = () => {
           .ss-case-study-link { 
             opacity: 1 !important; 
             transform: translateY(0) !important; 
-            display: flex !important;
-            width: 100% !important;
-            justify-content: space-between !important;
-            margin-top: 0 !important;
+            display: inline-flex !important;
+            width: fit-content !important;
+            margin-top: 15px !important;
+            color: #ffffff !important;
+            border-bottom: 1px solid rgba(255,255,255,0.4) !important;
+            padding-bottom: 4px !important;
+            font-size: 0.9rem !important;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
           }
           .ss-case-study-link::after, .ss-case-study-link::before { display: none !important; }
+          .link-arrow-wrap { margin-left: 10px !important; font-size: 0.8rem !important; }
           .ss-media-box { transform: translateY(0) scale(1) !important; opacity: 1 !important; }
           .ss-list-wrap:hover .ss-row:not(.is-hovered) { opacity: 1 !important; }
           

@@ -4,15 +4,18 @@ import React, { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger)
+}
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false)
-  const [visible, setVisible] = useState(true)
   const pathname = usePathname()
   const navRef = useRef(null)
   const overlayRef = useRef(null)
-  const lastScrollY = useRef(0)
-  const ticking = useRef(false)
+  const isHidden = useRef(false)
 
   const navLinks = [
     { title: 'Services', path: '/services/' },
@@ -27,56 +30,73 @@ const Navbar = () => {
     document.body.style.overflow = ''
   }, [pathname])
 
-  // Scroll direction detection: hide on scroll down, show on scroll up
+  // Scroll direction detection using GSAP ScrollTrigger
   useEffect(() => {
-    const handleScroll = () => {
-      if (ticking.current) return
-      ticking.current = true
-
-      requestAnimationFrame(() => {
-        const currentScrollY = window.scrollY
-
-        if (currentScrollY <= 10) {
-          // At the very top — always show
-          setVisible(true)
-        } else if (currentScrollY > lastScrollY.current && currentScrollY > 80) {
-          // Scrolling DOWN past 80px — hide
-          setVisible(false)
-        } else if (currentScrollY < lastScrollY.current) {
-          // Scrolling UP — show
-          setVisible(true)
+    const st = ScrollTrigger.create({
+      start: 'top top',
+      end: 'max',
+      onUpdate: (self) => {
+        if (!navRef.current) return
+        const currentY = self.scroll()
+        const direction = self.direction
+        
+        // Handle Shadow
+        if (currentY > 20) {
+          navRef.current.classList.add('is-scrolled')
+        } else {
+          navRef.current.classList.remove('is-scrolled')
         }
 
-        lastScrollY.current = currentScrollY
-        ticking.current = false
-      })
-    }
+        // Logic: Standard hide/show on scroll
+        if (currentY > 50) {
+          if (direction === -1 && isHidden.current) {
+            // Scrolling UP - Show it instantly
+            gsap.to(navRef.current, { y: 0, duration: 0.4, ease: 'power2.out' })
+            isHidden.current = false
+          } else if (direction === 1 && !isHidden.current) {
+            // Scrolling DOWN - Hide it
+            gsap.to(navRef.current, { y: '-100%', duration: 0.4, ease: 'power2.out' })
+            isHidden.current = true
+          }
+        } else if (currentY <= 10 && isHidden.current) {
+          // At the very top - always show
+          gsap.to(navRef.current, { y: 0, duration: 0.4, ease: 'power2.out' })
+          isHidden.current = false
+        }
+      }
+    })
 
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
+    return () => st.kill()
   }, [])
 
-  // Header entrance animation on route change
+  // Header entrance animation
   useEffect(() => {
-    const ctx = gsap.context(() => {
+    const runEntrance = () => {
       // Animate logo
       gsap.fromTo('.cb-logo', 
         { y: 20, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1.2, ease: 'power4.out', delay: 0.8 }
+        { y: 0, opacity: 1, duration: 1.2, ease: 'power4.out', delay: 0.4 }
       )
       // Animate nav links
       gsap.fromTo('.cb-nav-link',
         { y: 20, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1.2, stagger: 0.05, ease: 'power4.out', delay: 0.9 }
+        { y: 0, opacity: 1, duration: 1.2, stagger: 0.05, ease: 'power4.out', delay: 0.5 }
       )
       // Animate mobile toggle
       gsap.fromTo('.cb-menu-btn',
         { scale: 0.8, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 1, ease: 'back.out(1.7)', delay: 1.0 }
+        { scale: 1, opacity: 1, duration: 1, ease: 'back.out(1.7)', delay: 0.6 }
       )
-    }, navRef)
-    return () => ctx.revert()
-  }, [pathname])
+    }
+
+    // Only run on the official transition signal from AppWrapper
+    // This prevents "double-animations" when the route changes
+    window.addEventListener('refresh-text-reveal', runEntrance)
+
+    return () => {
+      window.removeEventListener('refresh-text-reveal', runEntrance)
+    }
+  }, []) // Empty dependency array - logic is handled by the event listener
 
   // Mobile overlay animation
   useEffect(() => {
@@ -99,18 +119,29 @@ const Navbar = () => {
     }
   }, [menuOpen])
 
+  // Navigation handler
+  const handleNav = (e, path) => {
+    e.preventDefault()
+    if (menuOpen) setMenuOpen(false)
+    const isSamePage = (pathname === path)
+    window.dispatchEvent(new CustomEvent('trigger-nav-transition', { 
+      detail: { href: path, isSamePage } 
+    }))
+  }
+
   return (
     <>
       <nav
         ref={navRef}
         className="cb-nav"
-        style={{
-          transform: visible ? 'translateY(0)' : 'translateY(-100%)',
-        }}
       >
         <div className="cb-nav-inner">
           {/* Logo — original color, no filter */}
-          <Link href="/" className="cb-logo">
+          <Link 
+            href="/" 
+            className="cb-logo"
+            onClick={(e) => handleNav(e, '/')}
+          >
             <img src="/images/logo-color.svg" alt="Prominent TechnoLabs" className="cb-logo-img" />
           </Link>
 
@@ -121,6 +152,7 @@ const Navbar = () => {
                 key={link.title}
                 href={link.path}
                 className={`cb-nav-link ${pathname.startsWith(link.path) ? 'active' : ''}`}
+                onClick={(e) => handleNav(e, link.path)}
               >
                 <span className="cb-nav-link-inner">
                   <span className="cb-nav-link-old">{link.title}</span>
@@ -143,7 +175,11 @@ const Navbar = () => {
       {/* Full-screen Mobile Overlay */}
       <div ref={overlayRef} className="cb-overlay" style={{ display: 'none', clipPath: 'inset(0% 0% 100% 0%)' }}>
         <div className="cb-overlay-header">
-          <Link href="/" className="cb-logo" onClick={() => setMenuOpen(false)}>
+          <Link 
+            href="/" 
+            className="cb-logo" 
+            onClick={(e) => handleNav(e, '/')}
+          >
             <img src="/images/logo-color.svg" alt="Prominent TechnoLabs" className="cb-logo-img" />
           </Link>
           <button className="cb-close-btn" onClick={() => setMenuOpen(false)} aria-label="Close">
@@ -158,7 +194,12 @@ const Navbar = () => {
           <div className="cb-overlay-label">Menu</div>
           <div className="mob-link-container">
             {[{ title: 'Home', path: '/' }, ...navLinks].map((link) => (
-              <Link key={link.title} href={link.path} className="mob-link" onClick={() => setMenuOpen(false)}>
+              <Link 
+                key={link.title} 
+                href={link.path} 
+                className="mob-link" 
+                onClick={(e) => handleNav(e, link.path)}
+              >
                 {link.title}
               </Link>
             ))}
@@ -217,6 +258,11 @@ const Navbar = () => {
           display: flex;
           align-items: center;
           gap: 40px;
+        }
+
+        .cb-logo, .cb-nav-link, .cb-menu-btn {
+          opacity: 0; /* Hidden by default to prevent blinking */
+          will-change: transform, opacity;
         }
 
         .cb-nav-link {

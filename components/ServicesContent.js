@@ -88,27 +88,17 @@ const ServicesContent = () => {
   ]
 
   useEffect(() => {
+    const runEntrance = () => {
+      // Hero Video Reveal (Synced with global TextReveal)
+      gsap.fromTo('.sc-hero-video-wrap',
+        { scale: 0.9, opacity: 0 },
+        { scale: 0.94, opacity: 1, duration: 1.5, ease: 'expo.out', delay: 0.6 }
+      )
+    }
+
     const ctx = gsap.context(() => {
-      // Hero Title Animation
-      gsap.from('.sc-hero-title span', {
-        y: 80,
-        opacity: 0,
-        duration: 1.2,
-        ease: 'power4.out',
-        stagger: 0.1
-      })
-
-      // Hero Video Reveal
-      gsap.from('.sc-hero-video-wrap', {
-        scale: 0.9,
-        opacity: 0,
-        duration: 1.5,
-        ease: 'expo.out',
-        delay: 0.5
-      })
-
-      // Section Reveals
-      gsap.utils.toArray('.reveal').forEach(el => {
+      // Section Reveals (Containers/Rows) - Exclude text nodes handled by global TextReveal
+      gsap.utils.toArray('.reveal:not(h1):not(h2):not(h3):not(h4):not(h5):not(h6):not(p)').forEach(el => {
         gsap.from(el, {
           y: 40,
           opacity: 0,
@@ -120,11 +110,20 @@ const ServicesContent = () => {
           }
         })
       })
-
     }, containerRef)
 
-    return () => ctx.revert()
+    window.addEventListener('refresh-text-reveal', runEntrance)
+    return () => {
+      ctx.revert()
+      window.removeEventListener('refresh-text-reveal', runEntrance)
+    }
   }, [])
+
+  const handleNav = (path) => {
+    window.dispatchEvent(new CustomEvent('trigger-nav-transition', { 
+      detail: { href: path, isSamePage: false } 
+    }))
+  }
 
   return (
     <div className="sc-container" ref={containerRef}>
@@ -163,7 +162,7 @@ const ServicesContent = () => {
               const config = SERVICE_CONFIGS[s.id]
               return (
                 <div key={s.id} className="sc-list-item-wrap">
-                  <div className="sc-row reveal">
+                  <div className="sc-row reveal" onClick={() => handleNav(`/services/${s.slug}/`)}>
                     <div className="sc-row-grid">
                       <div className="sc-col-left">
                         <span className="sc-row-badge">{config.badge}</span>
@@ -175,11 +174,9 @@ const ServicesContent = () => {
                           </p>
                         </div>
                         <div className="sc-row-action">
-                          <Link href={`/services/${s.slug}/`} className="hero-btn">
-                            <span className="hero-btn-text-wrapper">
-                              <span className="hero-text-old">Read more</span>
-                              <span className="hero-text-new">Read more</span>
-                            </span>
+                          <Link href={`/services/${s.slug}/`} className="sc-explore-link">
+                            <span className="sc-link-text">Explore Service</span>
+                            <span className="sc-link-arrow">&rarr;</span>
                           </Link>
                         </div>
                       </div>
@@ -297,6 +294,9 @@ const ServicesContent = () => {
           overflow: hidden;
           background: #f1f1f1;
           line-height: 0;
+          opacity: 0; /* Prevent blinking before animation */
+          transform: scale(0.9);
+          will-change: transform, opacity;
         }
         .sc-hero-video {
           width: 100%;
@@ -323,6 +323,7 @@ const ServicesContent = () => {
         .sc-row {
           padding: 60px 0;
           transition: all 0.4s ease;
+          cursor: pointer;
         }
         .sc-row-grid {
           display: grid;
@@ -403,6 +404,51 @@ const ServicesContent = () => {
         }
         .hero-btn:hover .hero-text-old { transform: translateY(-100%); opacity: 0; }
         .hero-btn:hover .hero-text-new { transform: translateY(-100%); }
+        
+        .sc-explore-link {
+          display: inline-flex;
+          align-items: center;
+          font-size: 1.1rem;
+          font-weight: 500;
+          color: #000;
+          text-decoration: none;
+          position: relative;
+          padding-bottom: 5px;
+        }
+        .sc-explore-link::after {
+          content: '';
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          height: 1px;
+          background: #000;
+          transform: scaleX(0);
+          transform-origin: right;
+          transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        .sc-explore-link:hover::after {
+          transform: scaleX(1);
+          transform-origin: left;
+        }
+        .sc-link-arrow {
+          margin-left: 12px;
+          transition: transform 0.3s ease;
+        }
+        .sc-explore-link:hover .sc-link-arrow {
+          transform: translateX(5px);
+        }
+
+        @media (max-width: 768px) {
+          .sc-explore-link {
+            font-size: 0.9rem !important;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border-bottom: 1px solid rgba(0,0,0,0.2) !important;
+            width: fit-content;
+          }
+          .sc-explore-link::after { display: none !important; }
+        }
 
         /* Benefits */
         .sc-benefits-grid {

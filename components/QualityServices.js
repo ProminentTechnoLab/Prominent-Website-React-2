@@ -11,18 +11,8 @@ const QualityServices = () => {
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger)
     const ctx = gsap.context(() => {
-      gsap.fromTo('.os-title',
-        { y: 80, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1.6, ease: 'power4.out', delay: 0.8,
-          scrollTrigger: { trigger: sectionRef.current, start: 'top 85%' }
-        }
-      )
-      gsap.fromTo('.os-subtitle',
-        { y: 40, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1.6, ease: 'power4.out', delay: 1.0,
-          scrollTrigger: { trigger: sectionRef.current, start: 'top 80%' }
-        }
-      )
+      // Title and Subtitle are handled globally by TextReveal for a consistent scrub effect
+
       gsap.utils.toArray('.os-card').forEach((card) => {
         gsap.fromTo(card, { y: 80, opacity: 0 }, {
           y: 0, opacity: 1, duration: 1.2, ease: 'power3.out',

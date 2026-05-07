@@ -8,13 +8,15 @@ const BlogPage = () => {
     const gridRef = useRef(null)
 
     useEffect(() => {
-        const ctx = gsap.context(() => {
+        const runEntrance = () => {
             gsap.fromTo('.bp-card', 
                 { y: 50, opacity: 0 },
-                { y: 0, opacity: 1, duration: 1, ease: 'power3.out', stagger: 0.15, delay: 0.2 }
+                { y: 0, opacity: 1, duration: 1.2, ease: 'power3.out', stagger: 0.15, delay: 0.6 }
             )
-        }, gridRef)
-        return () => ctx.revert()
+        }
+
+        window.addEventListener('refresh-text-reveal', runEntrance)
+        return () => window.removeEventListener('refresh-text-reveal', runEntrance)
     }, [])
 
     const blogs = [
@@ -93,7 +95,7 @@ const BlogPage = () => {
                     font-size: clamp(2.5rem, 6vw, 5.2rem);
                     font-weight: 500;
                     letter-spacing: -0.035em;
-                    line-height: 1.05;
+                    line-height: 1.1;
                     color: #000;
                     margin-bottom: 30px;
                 }
@@ -115,6 +117,8 @@ const BlogPage = () => {
                     display: flex;
                     flex-direction: column;
                     cursor: pointer;
+                    opacity: 0; /* Prevent blinking */
+                    will-change: transform, opacity;
                 }
 
                 .bp-card-img-wrap {

@@ -18,25 +18,7 @@ const ServicePagePremium = ({ slug }) => {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // 1. Kinetic Typography: Word Split Reveal
-      const splitWords = gsap.utils.toArray('.spp-word-inner')
-      gsap.fromTo(splitWords, 
-        { y: '110%' },
-        { 
-          y: '0%', 
-          duration: 1.6, 
-          stagger: 0.04, 
-          ease: 'power4.out', 
-          delay: 0.8 
-        }
-      )
-
-      gsap.fromTo('.spp-hero-p', 
-        { y: 40, opacity: 0 },
-        { y: 0, opacity: 0.65, duration: 1.6, ease: 'power4.out', delay: 1.1 }
-      )
-      
-      // 2. Refined Center-Mask Disclosure for Hero Image
+      // 1. Hero visual reveal and parallax
       gsap.fromTo('.spp-visual-wrap', 
         { clipPath: 'inset(10% 20% 10% 20% round 40px)', opacity: 0, scale: 0.95 },
         { 
@@ -60,22 +42,7 @@ const ServicePagePremium = ({ slug }) => {
         }
       })
 
-      // 3. Section reveal animations
-      gsap.utils.toArray('.reveal').forEach((el) => {
-        gsap.fromTo(el,
-          { y: 60, opacity: 0 },
-          {
-            y: 0, opacity: 1, duration: 1.2, ease: 'power3.out',
-            scrollTrigger: {
-              trigger: el,
-              start: 'top 85%',
-              toggleActions: 'play none none none'
-            }
-          }
-        )
-      })
-
-      // 4. Magnetic Tech Pills Micro-Interaction
+      // Tech Pills Micro-Interaction
       const pills = gsap.utils.toArray('.spp-tech-pill')
       pills.forEach((pill) => {
         pill.addEventListener('mousemove', (e) => {
@@ -87,6 +54,23 @@ const ServicePagePremium = ({ slug }) => {
         pill.addEventListener('mouseleave', () => {
           gsap.to(pill, { x: 0, y: 0, duration: 0.6, ease: 'elastic.out(1, 0.3)' })
         })
+      })
+
+      // Section Reveals (Containers) - Text handled by global TextReveal
+      gsap.utils.toArray('.reveal:not(h1):not(h2):not(h3):not(h4):not(h5):not(h6):not(p)').forEach(el => {
+        gsap.fromTo(el,
+          { y: 60, opacity: 0 },
+          {
+            y: 0, opacity: 1,
+            duration: 1.2,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: el,
+              start: 'top 90%',
+              toggleActions: 'play none none none'
+            }
+          }
+        )
       })
 
     }, containerRef)
@@ -112,11 +96,7 @@ const ServicePagePremium = ({ slug }) => {
         <div className="spp-inner">
           <div className="spp-hero-content">
             <h1 className="spp-hero-h">
-              {config.heroTitle.split(' ').map((word, i) => (
-                <span key={i} className="spp-word-wrap">
-                  <span className="spp-word-inner">{word}&nbsp;</span>
-                </span>
-              ))}
+              {config.heroTitle}
             </h1>
             <p className="spp-hero-p">{config.heroSubtitle}</p>
           </div>
@@ -140,7 +120,7 @@ const ServicePagePremium = ({ slug }) => {
       <section className="spp-details-section">
         <div className="spp-inner">
           
-          <StretchableLine color="rgba(0,0,0,0.12)" />
+          <StretchableLine color="rgba(0,0,0,0.85)" />
 
           {/* Overview Section */}
           <div className="spp-section-row reveal">
@@ -153,7 +133,7 @@ const ServicePagePremium = ({ slug }) => {
             </div>
           </div>
 
-          <StretchableLine color="rgba(0,0,0,0.12)" />
+          <StretchableLine color="rgba(0,0,0,0.85)" />
 
           {/* Capabilities Section */}
           <div className="spp-section-row reveal">
@@ -172,7 +152,7 @@ const ServicePagePremium = ({ slug }) => {
             </div>
           </div>
 
-          <StretchableLine color="rgba(0,0,0,0.12)" />
+          <StretchableLine color="rgba(0,0,0,0.85)" />
 
           {/* Process Section */}
           <div className="spp-section-row reveal">
@@ -194,7 +174,7 @@ const ServicePagePremium = ({ slug }) => {
             </div>
           </div>
 
-          <StretchableLine color="rgba(0,0,0,0.12)" />
+          <StretchableLine color="rgba(0,0,0,0.85)" />
 
           {/* Technologies Section */}
           <div className="spp-section-row reveal">
