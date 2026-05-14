@@ -10,6 +10,14 @@ export default function sitemap() {
         { path: '/services', priority: 0.9, freq: 'weekly' },
 
         { path: '/contact', priority: 0.7, freq: 'monthly' },
+        { path: '/portfolio', priority: 0.9, freq: 'weekly' },
+    ]
+
+    const portfolioPages = [
+        '/portfolio/biobonz',
+        '/portfolio/propleadz',
+        '/portfolio/bb-signs',
+        '/portfolio/yoyo-fashion',
     ]
 
     const servicePages = [
@@ -35,5 +43,12 @@ export default function sitemap() {
         priority: 0.85,
     }))
 
-    return [...main, ...services]
+    const portfolio = portfolioPages.map(path => ({
+        url: `${baseUrl}${path}`,
+        lastModified: now,
+        changeFrequency: 'monthly',
+        priority: 0.8,
+    }))
+
+    return [...main, ...services, ...portfolio]
 }

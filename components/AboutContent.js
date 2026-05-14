@@ -370,7 +370,7 @@ const AboutContent = () => {
           width: 100%;
           border-radius: 40px;
           overflow: hidden;
-          height: 85vh;
+          height: 70vh;
           position: relative;
           background: #f1f1f1;
           opacity: 0; /* Prevent blinking before animation */
@@ -605,20 +605,21 @@ const AboutContent = () => {
           .ab-benefit-row { grid-template-columns: 0.6fr 1.2fr 2.5fr; }
         }
         @media (max-width: 1024px) {
-          .ab-grid { grid-template-columns: 1fr; gap: 40px; padding: 100px 0; }
+          .ab-grid { grid-template-columns: 1fr; gap: 40px; padding: 100px 0 40px; }
           .ab-stats-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
-          .ab-stats { padding: 100px 0; }
+          .ab-stats { padding: 40px 0 100px; }
+          .ab-hero-media { height: 60vh; }
           .ab-benefit-row { grid-template-columns: 1fr; gap: 24px; padding: 50px 0; }
           .ab-benefit-icon-box { width: 64px; height: 64px; }
           .ab-benefits {
-            border-top-left-radius: 40px;
-            border-top-right-radius: 40px;
-            margin-top: -40px;
+            border-top-left-radius: 60px;
+            border-top-right-radius: 60px;
+            margin-top: -60px;
           }
           .ab-testimonials-outer {
-            border-top-left-radius: 40px;
-            border-top-right-radius: 40px;
-            margin-top: -40px;
+            border-top-left-radius: 60px;
+            border-top-right-radius: 60px;
+            margin-top: -60px;
           }
         }
         @media (max-width: 768px) {
@@ -629,10 +630,19 @@ const AboutContent = () => {
 
           .ab-wide-container { padding: 0 6vw; }
           .ab-grid { padding: 80px 0 20px; }
-          .ab-benefits { padding: 80px 0; border-top-left-radius: 0; border-top-right-radius: 0; margin-top: 0; }
-          .ab-testimonials-outer { border-top-left-radius: 0; border-top-right-radius: 0; margin-top: 0; }
+          .ab-benefits { 
+            padding: 80px 0; 
+            border-top-left-radius: 0; 
+            border-top-right-radius: 0; 
+            margin-top: 0; 
+          }
+          .ab-testimonials-outer { 
+            border-top-left-radius: 0; 
+            border-top-right-radius: 0; 
+            margin-top: 0; 
+          }
 
-          .ab-stats { padding: 40px 0 80px; }
+          .ab-stats { padding: 20px 0 80px; }
         }
         @media (max-width: 480px) {
           .ab-hero-title { font-size: 2.2rem; }

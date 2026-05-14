@@ -2,7 +2,9 @@
 
 import React, { useEffect, useRef } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { gsap } from 'gsap'
+import { blogs } from './data'
 
 const BlogPage = () => {
     const gridRef = useRef(null)
@@ -19,27 +21,6 @@ const BlogPage = () => {
         return () => window.removeEventListener('refresh-text-reveal', runEntrance)
     }, [])
 
-    const blogs = [
-        {
-            category: 'MARKETING',
-            title: 'How Digital Marketing is Evolving in 2024',
-            date: 'April 14, 2024',
-            image: '/images/blog_marketing.png'
-        },
-        {
-            category: 'DESIGN',
-            title: 'The Future of UI/UX: Design Systems & AI',
-            date: 'April 12, 2024',
-            image: '/images/blog_design.png'
-        },
-        {
-            category: 'DEVELOPMENT',
-            title: 'Mastering Next.js 14 for Enterprise Web Apps',
-            date: 'April 10, 2024',
-            image: '/images/blog_development.png'
-        }
-    ]
-
     return (
         <main className="bp-main">
             <div className="bp-container">
@@ -52,7 +33,11 @@ const BlogPage = () => {
 
                 <div className="bp-grid" ref={gridRef}>
                     {blogs.map((blog, i) => (
-                        <div key={i} className="bp-card">
+                        <Link 
+                            key={blog.slug} 
+                            href={`/blog/${blog.slug}`}
+                            className="bp-card"
+                        >
                             <div className="bp-card-img-wrap">
                                 <Image 
                                     src={blog.image} 
@@ -66,7 +51,7 @@ const BlogPage = () => {
                                 <h2 className="bp-card-title">{blog.title}</h2>
                                 <div className="bp-card-date">{blog.date}</div>
                             </div>
-                        </div>
+                        </Link>
                     ))}
                 </div>
             </div>
@@ -119,6 +104,8 @@ const BlogPage = () => {
                     cursor: pointer;
                     opacity: 0; /* Prevent blinking */
                     will-change: transform, opacity;
+                    text-decoration: none;
+                    color: inherit;
                 }
 
                 .bp-card-img-wrap {
@@ -145,6 +132,8 @@ const BlogPage = () => {
                     border-radius: 100px;
                     margin-bottom: 20px;
                     width: fit-content;
+                    color: #000;
+                    text-transform: uppercase;
                 }
 
                 .bp-card-title {
@@ -154,6 +143,8 @@ const BlogPage = () => {
                     line-height: 1.2;
                     margin-bottom: 16px;
                     transition: opacity 0.3s ease;
+                    color: #000;
+                    text-decoration: none;
                 }
                 .bp-card:hover .bp-card-title {
                     opacity: 0.6;
@@ -162,6 +153,7 @@ const BlogPage = () => {
                 .bp-card-date {
                     font-size: 0.95rem;
                     opacity: 0.4;
+                    color: #000;
                 }
 
                 @media (max-width: 1024px) {

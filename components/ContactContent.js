@@ -530,7 +530,7 @@ const ContactContent = () => {
           display: flex;
           align-items: center;
           justify-content: center;
-          background: #fff;
+          background: #ffffff;
           z-index: 100;
           text-align: center;
         }

@@ -8,7 +8,7 @@
    Font: Inter, weight 400-500 for body, 500 for headings
    ============================================ */
 :root {
-  --bg-primary:    #f1f1f1;
+  --bg-primary:    #ffffff;
   --bg-dark:       #000000;
   --bg-white:      #ffffff;
   --text-dark:     #000000;

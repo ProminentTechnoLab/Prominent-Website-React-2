@@ -237,8 +237,8 @@ const ServicesContent = () => {
           background: #000000; 
           color: #ffffff; 
           padding: 140px 0;
-          border-top-left-radius: 60px;
-          border-top-right-radius: 60px;
+          border-top-left-radius: 80px;
+          border-top-right-radius: 80px;
         }
 
         .sc-wide-inner {
@@ -535,6 +535,10 @@ const ServicesContent = () => {
           }
           .sc-col-icon { margin-top: 0; justify-content: flex-start; }
           .sc-main-title { margin-bottom: 60px; }
+          .sc-black-bg {
+            border-top-left-radius: 60px;
+            border-top-right-radius: 60px;
+          }
         }
 
         @media (max-width: 768px) {
@@ -547,7 +551,11 @@ const ServicesContent = () => {
           .sc-main-title { font-size: 2.8rem; margin-bottom: 40px; }
           .sc-row { padding: 40px 0; }
           .sc-section-title { font-size: 1.8rem; }
-          .sc-black-bg { padding: 60px 0; border-top-left-radius: 0; border-top-right-radius: 0; }
+          .sc-black-bg { 
+            padding: 60px 0; 
+            border-top-left-radius: 0; 
+            border-top-right-radius: 0; 
+          }
           .sc-row-desc { font-size: 1.1rem; margin-bottom: 30px; }
           .hero-btn { padding: 15px 30px; font-size: 15px; }
         }

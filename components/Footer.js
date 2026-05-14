@@ -20,6 +20,7 @@ const Footer = () => {
 
   const navLinks = [
     { label: 'Services', path: '/services/' },
+    { label: 'Portfolio', path: '/portfolio/' },
     { label: 'Company', path: '/about/' },
     { label: 'Blog', path: '/blog/' },
     { label: 'Contacts', path: '/contact/' },
@@ -409,27 +410,43 @@ const Footer = () => {
         }
         .cb-social-circle:hover { background: #333 !important; transform: scale(1.05); }
 
-        @media (max-width: 1024px) {
-          .cb-footer-container { grid-template-columns: 1fr; gap: 60px; }
-          .cb-footer-navs-col { justify-content: flex-start; }
-          .cb-info-flex-row { flex-direction: row; flex-wrap: wrap; gap: 30px; }
-          .cb-footer-bottom-container { align-items: flex-start; gap: 40px; }
+        @media (max-width: 1280px) {
+          .cb-footer .cb-footer-container { 
+            grid-template-columns: 1fr !important; 
+            gap: 60px !important; 
+          }
+          .cb-footer .cb-footer-navs-col { 
+            justify-content: flex-start !important; 
+            width: 100% !important;
+          }
+          .cb-footer .cb-footer-navs { 
+            justify-content: start !important; 
+            justify-items: start !important;
+            text-align: left !important; 
+            column-gap: 60px !important;
+          }
+          .cb-footer .cb-footer-nav { text-align: left !important; }
+          .cb-footer .cb-info-flex-row { flex-direction: row; flex-wrap: wrap; gap: 30px; }
+          
+          .cb-footer .cb-footer-bottom-container { 
+            display: flex !important; 
+            flex-direction: column !important; 
+            align-items: flex-start !important; 
+            gap: 40px !important; 
+          }
+          .cb-footer .cb-social-col { order: 1 !important; justify-self: start !important; width: 100% !important; }
+          .cb-footer .cb-social-icons { justify-content: flex-start !important; }
+          .cb-footer .cb-legal-col { order: 2 !important; justify-self: start !important; width: 100% !important; }
+          .cb-footer .cb-legal-links { justify-content: flex-start !important; }
         }
         @media (max-width: 768px) {
           .cb-footer-hero { height: 60vh !important; }
           .cb-hero-title { font-size: 3.2rem !important; }
           .cb-footer-tellus-btn { padding: 12px 30px !important; font-size: 1.8rem !important; }
-          .cb-footer-navs-col { justify-content: flex-start !important; }
-          .cb-footer-navs { grid-template-columns: auto auto; justify-content: start; text-align: left !important; column-gap: 50px; row-gap: 12px; }
-          .cb-footer-nav { text-align: left !important; }
           
-          .cb-footer-bottom-container { display: flex; flex-direction: column; align-items: flex-start; gap: 40px; }
-          .cb-social-col { order: 1; justify-self: start; width: 100%; }
-          .cb-social-icons { justify-content: flex-start; }
-          .cb-legal-col { order: 2; justify-self: start; width: 100%; }
+          .cb-footer-navs { grid-template-columns: auto auto; column-gap: 50px; row-gap: 12px; }
           .cb-legal-links { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 15px; }
           
-          .cb-info-flex-row { gap: 30px; }
           .cb-footer .cb-pill { font-size: 1.1rem; padding: 12px 24px; max-width: 100%; word-break: break-all; }
         }
         @media (max-width: 480px) {

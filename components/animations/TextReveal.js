@@ -50,14 +50,14 @@ export default function TextReveal() {
                     wordWrap.style.display = 'inline-block'
                     wordWrap.style.overflow = 'hidden'
                     wordWrap.style.verticalAlign = 'bottom'
-                    wordWrap.style.paddingBottom = '0.1em' // Space for descenders (g, j, p, q, y)
-                    wordWrap.style.marginBottom = '-0.1em' // Offset padding to maintain baseline
+                    wordWrap.style.paddingBottom = '0.25em' // Generous space for descenders (g, j, p, q, y)
+                    wordWrap.style.marginBottom = '-0.25em' // Offset padding to maintain baseline
                     
                     const wordInner = document.createElement('span')
                     wordInner.className = 'word-inner'
                     wordInner.innerText = word
                     wordInner.style.display = 'inline-block'
-                    wordInner.style.transform = 'translateY(120%)' // Slightly more to clear padding
+                    wordInner.style.transform = 'translateY(130%)' // Slightly more to clear padding
                     wordInner.style.willChange = 'transform'
                     wordWrap.appendChild(wordInner)
                     fragment.appendChild(wordWrap)

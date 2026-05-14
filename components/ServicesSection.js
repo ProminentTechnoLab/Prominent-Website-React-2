@@ -160,7 +160,7 @@ const ServicesSection = () => {
         .ss-section {
           padding: 100px 0 120px;
           overflow: hidden;
-          background-color: #0d0d0d;
+          background-color: #000000;
           border-top-left-radius: 80px;
           border-top-right-radius: 80px;
           margin-top: -80px; 

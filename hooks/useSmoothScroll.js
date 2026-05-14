@@ -21,6 +21,9 @@ export default function useSmoothScroll() {
       infinite: false,
     })
 
+    // Expose Lenis globally so Navbar can listen for scroll direction
+    window.__lenis = lenis
+
     lenis.on('scroll', ScrollTrigger.update)
 
     function raf(time) {
@@ -33,6 +36,7 @@ export default function useSmoothScroll() {
     window.scrollTo(0, 0)
 
     return () => {
+      window.__lenis = null
       lenis.destroy()
     }
   }, [])

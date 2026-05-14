@@ -2,6 +2,7 @@
 
 import Hero from '../components/Hero'
 import ServicesSection from '../components/ServicesSection'
+import PortfolioSection from '../components/PortfolioSection'
 import BlogSection from '../components/BlogSection'
 
 export default function Home() {
@@ -9,6 +10,7 @@ export default function Home() {
     <>
       <Hero />
       <ServicesSection />
+      <PortfolioSection />
       <BlogSection />
     </>
   )

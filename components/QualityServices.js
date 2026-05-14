@@ -249,7 +249,7 @@ const QualityServices = () => {
           .os-grid { gap: 0 30px; }
         }
         @media (max-width: 768px) {
-          .os-section { border-radius: 0; padding: 80px 0 60px; margin-top: 0; }
+          .os-section { border-radius: 0 !important; padding: 80px 0 60px; margin-top: 0 !important; }
           .os-inner { padding: 0 24px; }
           .os-grid { grid-template-columns: 1fr; }
           .os-col-right { margin-top: 0; }

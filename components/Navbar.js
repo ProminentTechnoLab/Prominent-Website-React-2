@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useRef, useCallback } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { gsap } from 'gsap'
@@ -19,54 +19,73 @@ const Navbar = () => {
 
   const navLinks = [
     { title: 'Services', path: '/services/' },
+    { title: 'Portfolio', path: '/portfolio/' },
     { title: 'Company', path: '/about/' },
     { title: 'Blog', path: '/blog/' },
     { title: 'Contacts', path: '/contact/' },
   ]
 
-  // Close menu on route change
+  // Close menu on route change & reset navbar visibility
   useEffect(() => {
     setMenuOpen(false)
     document.body.style.overflow = ''
+    document.body.style.height = ''
+    document.body.style.touchAction = ''
+    // Always show the header when navigating to a new page
+    if (navRef.current) {
+      gsap.set(navRef.current, { y: 0 })
+      isHidden.current = false
+    }
   }, [pathname])
 
-  // Scroll direction detection using GSAP ScrollTrigger
+  // Scroll direction detection — bulletproof rAF loop
+  // Reads the actual DOM scroll position every frame, works with any scroll library
   useEffect(() => {
-    const st = ScrollTrigger.create({
-      start: 'top top',
-      end: 'max',
-      onUpdate: (self) => {
-        if (!navRef.current) return
-        const currentY = self.scroll()
-        const direction = self.direction
-        
-        // Handle Shadow
-        if (currentY > 20) {
-          navRef.current.classList.add('is-scrolled')
-        } else {
-          navRef.current.classList.remove('is-scrolled')
-        }
+    let rafId = null
+    let prevY = window.scrollY || 0
 
-        // Logic: Standard hide/show on scroll
-        if (currentY > 50) {
-          if (direction === -1 && isHidden.current) {
-            // Scrolling UP - Show it instantly
-            gsap.to(navRef.current, { y: 0, duration: 0.4, ease: 'power2.out' })
-            isHidden.current = false
-          } else if (direction === 1 && !isHidden.current) {
-            // Scrolling DOWN - Hide it
-            gsap.to(navRef.current, { y: '-100%', duration: 0.4, ease: 'power2.out' })
-            isHidden.current = true
-          }
-        } else if (currentY <= 10 && isHidden.current) {
-          // At the very top - always show
-          gsap.to(navRef.current, { y: 0, duration: 0.4, ease: 'power2.out' })
+    const tick = () => {
+      if (!navRef.current) {
+        rafId = requestAnimationFrame(tick)
+        return
+      }
+
+      const currentY = window.scrollY
+
+      // Handle Shadow
+      if (currentY > 20) {
+        navRef.current.classList.add('is-scrolled')
+      } else {
+        navRef.current.classList.remove('is-scrolled')
+      }
+
+      const diff = currentY - prevY
+
+      // Near the top — always visible
+      if (currentY < 80) {
+        if (isHidden.current) {
+          gsap.to(navRef.current, { y: 0, duration: 0.35, ease: 'power2.out', overwrite: true })
           isHidden.current = false
         }
+      } else if (diff < -1 && isHidden.current) {
+        // Scrolling UP → Show (1px threshold to ignore sub-pixel noise)
+        gsap.to(navRef.current, { y: 0, duration: 0.35, ease: 'power2.out', overwrite: true })
+        isHidden.current = false
+      } else if (diff > 1 && !isHidden.current) {
+        // Scrolling DOWN → Hide
+        gsap.to(navRef.current, { y: '-100%', duration: 0.35, ease: 'power2.out', overwrite: true })
+        isHidden.current = true
       }
-    })
 
-    return () => st.kill()
+      prevY = currentY
+      rafId = requestAnimationFrame(tick)
+    }
+
+    rafId = requestAnimationFrame(tick)
+
+    return () => {
+      if (rafId) cancelAnimationFrame(rafId)
+    }
   }, [])
 
   // Header entrance animation
@@ -102,7 +121,11 @@ const Navbar = () => {
   useEffect(() => {
     if (!overlayRef.current) return
     if (menuOpen) {
+      // Robust Body Scroll Lock
       document.body.style.overflow = 'hidden'
+      document.body.style.height = '100vh'
+      document.body.style.touchAction = 'none'
+
       gsap.to(overlayRef.current, {
         clipPath: 'inset(0% 0% 0% 0%)',
         duration: 0.8, ease: 'power4.inOut',
@@ -111,6 +134,9 @@ const Navbar = () => {
       gsap.fromTo('.mob-link', { y: 60, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.06, duration: 0.7, ease: 'power4.out', delay: 0.3 })
     } else {
       document.body.style.overflow = ''
+      document.body.style.height = ''
+      document.body.style.touchAction = ''
+
       gsap.to(overlayRef.current, {
         clipPath: 'inset(0% 0% 100% 0%)',
         duration: 0.6, ease: 'power4.inOut',
@@ -352,19 +378,26 @@ const Navbar = () => {
         /* ─── Full-screen Mobile Overlay ─── */
         .cb-overlay {
           position: fixed;
-          inset: 0;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100vh;
+          height: 100dvh;
           background: #ffffff;
-          z-index: 2000;
+          z-index: 100001; /* Above Sigil (99999) */
+          display: flex;
           flex-direction: column;
-          padding: 0;
+          overflow: hidden;
         }
         .cb-overlay-header {
           display: flex;
           justify-content: space-between;
           align-items: center;
           padding: 0 24px;
-          height: 70px; /* Reduced from 80px */
+          height: 70px;
           flex-shrink: 0;
+          background: #fff;
+          z-index: 2;
         }
         .cb-close-btn {
           background: none;
@@ -377,14 +410,16 @@ const Navbar = () => {
           flex: 1;
           display: flex;
           flex-direction: column;
-          padding: 70px 12vw 0; /* Reduced from 80px to match new header height */
-          justify-content: flex-start;
+          padding: 40px 12vw 0;
+          justify-content: center; /* Centered links as per premium standard */
+          overflow: hidden; /* No scroll as requested */
+          background: #fff;
         }
         .cb-overlay-label {
           font-size: 0.85rem;
           font-weight: 400;
           color: #999;
-          margin-bottom: 30px;
+          margin-bottom: 20px;
           text-transform: capitalize;
           letter-spacing: 0;
         }

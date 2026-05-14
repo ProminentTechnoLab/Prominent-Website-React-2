@@ -6,6 +6,8 @@ import Image from 'next/image'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 
+import { blogs } from '../app/blog/data'
+
 const BlogSection = () => {
     const sectionRef = useRef(null)
     const rowRefs = useRef([])
@@ -14,8 +16,6 @@ const BlogSection = () => {
         gsap.registerPlugin(ScrollTrigger)
         
         const ctx = gsap.context(() => {
-            // Header animation handled by global TextReveal
-
             // Rows animation
             rowRefs.current.forEach((row, i) => {
                 if (!row) return
@@ -32,27 +32,6 @@ const BlogSection = () => {
         return () => ctx.revert()
     }, [])
 
-    const blogs = [
-        {
-            category: 'MARKETING',
-            title: 'How Digital Marketing is Evolving in 2024',
-            date: 'April 14, 2024',
-            image: '/images/blog_marketing.png'
-        },
-        {
-            category: 'DESIGN',
-            title: 'The Future of UI/UX: Design Systems & AI',
-            date: 'April 12, 2024',
-            image: '/images/blog_design.png'
-        },
-        {
-            category: 'DEVELOPMENT',
-            title: 'Mastering Next.js 14 for Enterprise Web Apps',
-            date: 'April 10, 2024',
-            image: '/images/blog_development.png'
-        }
-    ]
-
     return (
         <section className="bs-section" ref={sectionRef}>
             <div className="bs-inner">
@@ -62,8 +41,9 @@ const BlogSection = () => {
 
                 <div className="bs-list">
                     {blogs.map((blog, i) => (
-                        <div 
-                            key={i} 
+                        <Link 
+                            key={blog.slug} 
+                            href={`/blog/${blog.slug}`}
                             ref={el => rowRefs.current[i] = el}
                             className="bs-row"
                         >
@@ -82,15 +62,15 @@ const BlogSection = () => {
                                 <h3 className="bs-row-title">{blog.title}</h3>
                                 <div className="bs-row-date">{blog.date}</div>
                             </div>
-                        </div>
+                        </Link>
                     ))}
                 </div>
 
                 <div className="bs-footer">
-                    <Link href="/blog/" className="bs-explore-btn">
-                        <span className="btn-text-wrap">
-                            <span className="btn-text-old">Visit our blog</span>
-                            <span className="btn-text-new">Visit our blog</span>
+                    <Link href="/blog/" className="bs-explore-btn" onClick={(e) => { e.preventDefault(); handleNav('/blog/'); }}>
+                        <span className="bs-btn-text-wrap">
+                            <span className="bs-btn-text-old">Explore more</span>
+                            <span className="bs-btn-text-new">Explore more</span>
                         </span>
                     </Link>
                 </div>
@@ -98,12 +78,12 @@ const BlogSection = () => {
 
             <style>{`
                 .bs-section {
-                    background-color: #ffffff;
-                    color: #000000;
+                    background-color: #0d0d0d;
+                    color: #ffffff;
                     padding: 120px 0;
                     position: relative;
                     z-index: 10;
-                    /* Cuberto rounded top transition from black services section */
+                    /* Cuberto rounded top transition from white portfolio section */
                     border-top-left-radius: 80px;
                     border-top-right-radius: 80px;
                     margin-top: -80px;
@@ -112,7 +92,7 @@ const BlogSection = () => {
                 .bs-inner {
                     max-width: 1400px;
                     margin: 0 auto;
-                    padding: 0 15vw; /* Increased horizontal padding for a more centered look */
+                    padding: 0 15vw;
                 }
 
                 .bs-header {
@@ -124,6 +104,7 @@ const BlogSection = () => {
                     letter-spacing: -3px;
                     margin-bottom: 20px;
                     line-height: 1.1;
+                    color: #ffffff;
                 }
 
                 .bs-list {
@@ -136,14 +117,16 @@ const BlogSection = () => {
                     display: flex;
                     align-items: center;
                     gap: 60px;
-                    padding-bottom: 40px; /* Reduced gap between blogs */
+                    padding-bottom: 40px;
                     transition: transform 0.4s ease;
-                    opacity: 0; /* Prevent blinking */
+                    opacity: 0;
                     will-change: transform, opacity;
+                    text-decoration: none;
+                    color: inherit;
                 }
 
                 .bs-row-img-wrap {
-                    flex: 0 0 420px; /* Increased from 320px for a more prominent visual impact */
+                    flex: 0 0 420px;
                 }
                 .bs-row-img-inner {
                     position: relative;
@@ -151,7 +134,7 @@ const BlogSection = () => {
                     aspect-ratio: 16/10;
                     border-radius: 20px;
                     overflow: hidden;
-                    background: #f5f5f5;
+                    background: #1a1a1a;
                     transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
                 }
                 .bs-row:hover .bs-row-img-inner {
@@ -167,10 +150,11 @@ const BlogSection = () => {
                     font-size: 0.75rem;
                     font-weight: 600;
                     letter-spacing: 0.05em;
-                    border: 1px solid rgba(0,0,0,0.15);
+                    border: 1px solid rgba(255,255,255,0.3);
                     padding: 6px 14px;
                     border-radius: 100px;
                     margin-bottom: 24px;
+                    color: #ffffff;
                 }
 
                 .bs-row-title {
@@ -180,12 +164,14 @@ const BlogSection = () => {
                     line-height: 1.15;
                     margin-bottom: 12px;
                     max-width: 800px;
+                    color: #ffffff;
                 }
 
                 .bs-row-date {
                     font-size: 0.95rem;
-                    opacity: 0.4;
+                    opacity: 0.5;
                     font-weight: 400;
+                    color: #ffffff;
                 }
 
                 /* --- Liquid Button Animation --- */
@@ -201,12 +187,13 @@ const BlogSection = () => {
                     align-items: center;
                     justify-content: center;
                     padding: 24px 50px;
-                    border: 1.5px solid #000;
+                    border: 1.5px solid #ffffff !important;
                     border-radius: 100px;
                     text-decoration: none;
-                    color: #000;
+                    color: #ffffff !important;
                     font-size: 1.1rem;
                     font-weight: 500;
+                    font-family: inherit;
                     overflow: hidden;
                     transition: color 0.4s ease, border-color 0.4s ease;
                 }
@@ -218,7 +205,7 @@ const BlogSection = () => {
                     left: -50%;
                     width: 200%;
                     height: 300%;
-                    background: #000;
+                    background: #ffffff;
                     border-radius: 50%;
                     transform: translateY(0);
                     transition: transform 1.2s cubic-bezier(0.19, 1, 0.22, 1);
@@ -229,45 +216,56 @@ const BlogSection = () => {
                     transform: translateY(-60%);
                 }
 
-                .btn-text-wrap {
+                .bs-btn-text-wrap {
                     position: relative;
                     z-index: 2;
                     display: flex;
                     flex-direction: column;
                     overflow: hidden;
-                    height: 1.4em; /* Increased to prevent clipping 'g' and other descenders */
-                    line-height: 1.4;
+                    height: 1.6em;
+                    line-height: 1.6;
                     padding-bottom: 2px;
                 }
-                .btn-text-old {
+                .bs-btn-text-old {
                     transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+                    color: #ffffff !important;
                 }
-                .btn-text-new {
+                .bs-btn-text-new {
                     position: absolute;
                     top: 100%;
                     left: 0;
                     width: 100%;
-                    color: #fff;
+                    text-align: center;
+                    color: #000000 !important;
                     transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1);
                 }
 
-                .bs-explore-btn:hover .btn-text-old {
+                .bs-explore-btn:hover .bs-btn-text-old {
                     transform: translateY(-100%);
                 }
-                .bs-explore-btn:hover .btn-text-new {
+                .bs-explore-btn:hover .bs-btn-text-new {
                     transform: translateY(-100%);
                 }
 
                 /* --- Responsive --- */
                 @media (max-width: 1024px) {
                     .bs-inner { padding: 0 40px; }
-                    .bs-section { border-top-left-radius: 40px; border-top-right-radius: 40px; margin-top: -40px; }
+                    .bs-section { 
+                        border-top-left-radius: 60px !important; 
+                        border-top-right-radius: 60px !important; 
+                        margin-top: -60px !important; 
+                    }
                     .bs-row { gap: 40px; }
                     .bs-row-img-wrap { flex: 0 0 260px; }
                 }
 
                 @media (max-width: 768px) {
-                    .bs-section { padding: 80px 0; border-radius: 0; margin-top: 0; }
+                    .bs-section { 
+                        padding: 80px 0; 
+                        border-top-left-radius: 0 !important; 
+                        border-top-right-radius: 0 !important; 
+                        margin-top: 0 !important; 
+                    }
                     .bs-inner { padding: 0 24px; }
                     .bs-title { font-size: 3.5rem; letter-spacing: -1.5px; }
                     .bs-row { flex-direction: column; align-items: flex-start; gap: 30px; }

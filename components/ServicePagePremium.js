@@ -120,8 +120,6 @@ const ServicePagePremium = ({ slug }) => {
       <section className="spp-details-section">
         <div className="spp-inner">
           
-          <StretchableLine color="rgba(0,0,0,0.85)" />
-
           {/* Overview Section */}
           <div className="spp-section-row reveal">
             <div className="spp-sticky-label-wrap">

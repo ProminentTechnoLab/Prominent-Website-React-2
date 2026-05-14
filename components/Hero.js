@@ -124,14 +124,19 @@ const Hero = () => {
           margin: 0 auto 40px;
         }
         .cb-hero-title {
-          font-size: clamp(2.5rem, 6vw, 5.2rem); /* Further refined for a more sophisticated typography balance */
+          font-size: clamp(2.5rem, 6vw, 5.2rem);
           font-weight: 500;
-          line-height: 1.1;
+          line-height: 1.18;
           letter-spacing: -0.035em;
           color: #000;
           margin-bottom: 28px;
         }
-        .hero-line { display: block; overflow: hidden; }
+        .hero-line { 
+          display: block; 
+          overflow: hidden; 
+          padding-bottom: 0.15em;
+          margin-bottom: -0.15em;
+        }
         .hero-sub {
           font-size: clamp(1.1rem, 1.4vw, 1.25rem);
           font-weight: 400;
@@ -150,7 +155,7 @@ const Hero = () => {
           border-radius: 24px;
           overflow: hidden;
           will-change: transform, opacity;
-          background: #f1f1f1;
+          background: #ffffff;
           opacity: 0; /* Prevent blinking before animation */
           transform: scale(0.9);
         }

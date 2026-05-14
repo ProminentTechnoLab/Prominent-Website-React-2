@@ -123,14 +123,14 @@ const WhyUs = () => {
           .wu-stat:nth-child(2) { border-right: none; }
         }
         @media (max-width: 768px) {
-          .wu-section { padding: 80px 0; border-radius: 20px 20px 0 0; }
+          .wu-section { padding: 80px 0; border-radius: 0; }
           .wu-inner { padding: 0 20px; }
           .wu-title { margin-bottom: 50px; }
           .wu-stats { grid-template-columns: 1fr 1fr; }
           .wu-reason { grid-template-columns: 1fr; gap: 12px; padding: 30px 0; }
         }
         @media (max-width: 480px) {
-          .wu-section { padding: 60px 0; border-radius: 16px 16px 0 0; }
+          .wu-section { padding: 60px 0; border-radius: 0; }
           .wu-inner { padding: 0 16px; }
           .wu-stats { grid-template-columns: 1fr; }
           .wu-stat { border-right: none; padding: 24px 0; }
