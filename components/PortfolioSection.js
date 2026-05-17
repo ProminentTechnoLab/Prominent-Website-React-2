@@ -45,6 +45,17 @@ const PortfolioSection = () => {
         }))
     }
 
+    // Explicit colors mapped for RGB values for the beautiful hover glowing backdrops
+    const brandColors = {
+        'biobonz': { hex: '#2D5A27', rgb: '45, 90, 39' },
+        'propleadz': { hex: '#1A73E8', rgb: '26, 115, 232' },
+        'bb-signs': { hex: '#E62E2D', rgb: '230, 46, 45' },
+        'yoyo-fashion': { hex: '#FF4081', rgb: '255, 64, 129' }
+    }
+
+    // Slicing to the first 4 projects
+    const homeProjects = projects.slice(0, 4)
+
     return (
         <section className="ps-section" ref={sectionRef}>
             <div className="ps-inner">
@@ -54,39 +65,51 @@ const PortfolioSection = () => {
                 </div>
 
                 <div className="ps-grid">
-                    {projects.slice(0, 4).map((project, i) => (
-                        <div 
-                            key={project.slug} 
-                            className="ps-card"
-                            ref={el => cardRefs.current[i] = el}
-                        >
-                            <div className="ps-card-media">
-                                <Image 
-                                    src={project.image} 
-                                    alt={project.title} 
-                                    fill 
-                                    style={{ objectFit: 'cover' }}
-                                    className="ps-image"
-                                />
-                            </div>
-                            <div className="ps-card-info">
-                                <div className="ps-card-meta">
-                                    <span className="ps-category">{project.category}</span>
-                                    <span className="ps-year">2024</span>
+                    {homeProjects.map((project, i) => {
+                        const colors = brandColors[project.slug] || { hex: '#000000', rgb: '0,0,0' }
+                        return (
+                            <div 
+                                key={project.slug} 
+                                className={`ps-card ps-card-${i}`}
+                                ref={el => cardRefs.current[i] = el}
+                                style={{ 
+                                    '--project-color': colors.hex,
+                                    '--project-color-rgb': colors.rgb
+                                }}
+                            >
+                                <div className="ps-card-media-wrapper">
+                                    <div className="ps-card-media">
+                                        <Image 
+                                            src={project.image} 
+                                            alt={project.title} 
+                                            fill 
+                                            style={{ objectFit: 'cover' }}
+                                            className="ps-image"
+                                            priority={i < 2} // Preload the first row to prevent blank flashes!
+                                        />
+                                    </div>
+                                    <div className="ps-card-glow" />
                                 </div>
-                                <h3 className="ps-card-title">{project.title}</h3>
-                                <div className="ps-card-footer">
-                                    <Link 
-                                        href={`/portfolio/${project.slug}/`} 
-                                        className="ps-explore-link"
-                                        onClick={(e) => { e.preventDefault(); handleNav(`/portfolio/${project.slug}/`); }}
-                                    >
-                                        View Case Study <span className="ps-link-arrow">&rarr;</span>
-                                    </Link>
+                                <div className="ps-card-info">
+                                    <div className="ps-card-meta">
+                                        <span className="ps-category">{project.category}</span>
+                                        <span className="ps-year">{project.year}</span>
+                                    </div>
+                                    <h3 className="ps-card-title">{project.title}</h3>
+
+                                    <div className="ps-card-footer">
+                                        <Link 
+                                            href={`/portfolio/${project.slug}/`} 
+                                            className="ps-explore-link"
+                                            onClick={(e) => { e.preventDefault(); handleNav(`/portfolio/${project.slug}/`); }}
+                                        >
+                                            View Case Study <span className="ps-link-arrow">&rarr;</span>
+                                        </Link>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
+                        )
+                    })}
                 </div>
 
                 <div className="ps-footer">
@@ -103,7 +126,7 @@ const PortfolioSection = () => {
                 .ps-section {
                     background-color: #ffffff;
                     color: #000000;
-                    padding: 120px 0 140px;
+                    padding: 120px 0 260px; /* Increased bottom padding to accommodate the staggered cards visual overflow */
                     position: relative;
                     z-index: 10;
                     border-top-left-radius: 80px;
@@ -139,33 +162,205 @@ const PortfolioSection = () => {
                     font-weight: 400;
                 }
 
+                /* ─── Premium Staggered Zig Zag Grid ─── */
                 .ps-grid {
                     display: grid;
                     grid-template-columns: repeat(2, 1fr);
-                    gap: 60px 40px;
+                    gap: 120px 60px; /* 120px gap vertically between rows, 60px horizontally */
+                    align-items: start;
                 }
 
                 .ps-card {
                     display: flex;
                     flex-direction: column;
                     gap: 24px;
+                    position: relative;
+                    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+                }
+
+                /* Explicit columns: first right, second left, third right, fourth left */
+                .ps-card-0 {
+                    grid-column: 2; /* Right Column */
+                    grid-row: 1;
+                }
+
+                .ps-card-1 {
+                    grid-column: 1; /* Left Column */
+                    grid-row: 1;
+                    transform: translateY(160px); /* Shift left column down */
+                }
+
+                .ps-card-2 {
+                    grid-column: 2; /* Right Column */
+                    grid-row: 2;
+                }
+
+                .ps-card-3 {
+                    grid-column: 1; /* Left Column */
+                    grid-row: 2;
+                    transform: translateY(160px); /* Shift left column down */
+                }
+
+                /* ─── Card Visual Media ─── */
+                .ps-card-media-wrapper {
+                    position: relative;
+                    width: 100%;
+                    border-radius: 12px;
                 }
 
                 .ps-card-media {
                     position: relative;
                     width: 100%;
-                    aspect-ratio: 16/10;
-                    border-radius: 24px;
+                    aspect-ratio: 16/9;
+                    border-radius: 12px;
                     overflow: hidden;
-                    background: #f5f5f5;
+                    background: #f7f7f7;
+                    z-index: 2;
+                    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.04);
+                    transition: box-shadow 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
                 }
 
                 .ps-image {
-                    transition: transform 0.8s var(--ease-expo);
+                    transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+                }
+
+                /* ─── External Live Link ─── */
+                .ps-live-link {
+                    position: absolute;
+                    top: 24px;
+                    right: 24px;
+                    width: 54px;
+                    height: 54px;
+                    background: #ffffff;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: #000000;
+                    z-index: 5;
+                    opacity: 0;
+                    transform: scale(0.8) translate(-10px, 10px);
+                    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+                }
+
+                .ps-live-link svg {
+                    width: 22px;
+                    height: 22px;
+                    transition: transform 0.4s ease;
+                }
+
+                .ps-card:hover .ps-live-link {
+                    opacity: 1;
+                    transform: scale(1) translate(0, 0);
+                }
+
+                .ps-live-link:hover {
+                    background: var(--project-color, #000000);
+                    color: #ffffff;
+                    transform: scale(1.1) !important;
+                }
+                
+                .ps-live-link:hover svg {
+                    transform: translate(2px, -2px);
+                }
+
+                /* ─── Ambient Glow Effect on Hover ─── */
+                .ps-card-glow {
+                    position: absolute;
+                    top: 10%;
+                    left: 10%;
+                    width: 80%;
+                    height: 80%;
+                    background: radial-gradient(circle, rgba(var(--project-color-rgb), 0.45) 0%, transparent 70%);
+                    z-index: 1;
+                    filter: blur(40px);
+                    opacity: 0;
+                    transform: scale(0.9);
+                    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+                }
+
+                /* Hover States */
+                .ps-card:hover .ps-card-media {
+                    transform: translateY(-8px);
+                    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.12), 0 0 40px rgba(var(--project-color-rgb), 0.1);
                 }
 
                 .ps-card:hover .ps-image {
-                    transform: scale(1.05);
+                    transform: scale(1.06);
+                }
+
+                .ps-card:hover .ps-card-glow {
+                    opacity: 1;
+                    transform: scale(1.1);
+                }
+
+                /* ─── Card Info & Details ─── */
+                .ps-card-info {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 12px;
+                    padding: 0 8px;
+                    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+                }
+
+                .ps-card:hover .ps-card-info {
+                    transform: translateY(-4px);
+                }
+
+                .ps-card-meta {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    font-size: 0.75rem;
+                    font-weight: 600;
+                    letter-spacing: 0.08em;
+                    text-transform: uppercase;
+                    opacity: 0.4;
+                }
+
+                .ps-category {
+                    color: var(--project-color, #000000);
+                    opacity: 0.95;
+                    font-weight: 700;
+                }
+
+                .ps-card-title {
+                    font-size: clamp(1.6rem, 2.3vw, 2.2rem);
+                    font-weight: 500;
+                    letter-spacing: -0.02em;
+                    color: #000000;
+                    margin: 4px 0;
+                    transition: color 0.4s ease;
+                }
+
+                .ps-card:hover .ps-card-title {
+                    color: var(--project-color, #000000);
+                }
+
+                /* ─── Minimalist Technology Tags ─── */
+                .ps-card-tags {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 8px;
+                    margin: 4px 0 8px;
+                }
+
+                .ps-tag {
+                    font-size: 0.72rem;
+                    font-weight: 500;
+                    padding: 4px 12px;
+                    background: #f3f3f3;
+                    border: 1px solid #e5e5e5;
+                    border-radius: 100px;
+                    color: #555555;
+                    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+                }
+
+                .ps-card:hover .ps-tag {
+                    background: rgba(var(--project-color-rgb), 0.08);
+                    border-color: rgba(var(--project-color-rgb), 0.15);
+                    color: var(--project-color);
                 }
 
                 /* ─── Premium Link Hover ─── */
@@ -193,10 +388,10 @@ const PortfolioSection = () => {
                     left: 0;
                     width: 100%;
                     height: 1.5px;
-                    background: #000;
+                    background: var(--project-color, #000000);
                     transform: scaleX(0);
                     transform-origin: right;
-                    transition: transform 0.6s var(--ease-expo);
+                    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
                 }
 
                 .ps-explore-link:hover::after {
@@ -206,39 +401,17 @@ const PortfolioSection = () => {
 
                 .ps-link-arrow {
                     font-size: 1.1rem;
-                    transition: transform 0.4s var(--ease-expo);
+                    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
                 }
 
                 .ps-explore-link:hover .ps-link-arrow {
                     transform: translateX(6px);
+                    color: var(--project-color, #000000);
                 }
 
-                .ps-card-info {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 8px;
-                }
-
-                .ps-card-meta {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    font-size: 0.75rem;
-                    font-weight: 600;
-                    letter-spacing: 0.05em;
-                    text-transform: uppercase;
-                    opacity: 0.4;
-                }
-
-                .ps-card-title {
-                    font-size: clamp(1.5rem, 2.5vw, 2rem);
-                    font-weight: 500;
-                    letter-spacing: -0.02em;
-                    color: #000000;
-                }
-
+                /* ─── View All Button ─── */
                 .ps-footer {
-                    margin-top: 80px;
+                    margin-top: 140px;
                     display: flex;
                     justify-content: center;
                 }
@@ -310,27 +483,49 @@ const PortfolioSection = () => {
                     transform: translateY(-100%);
                 }
 
+                /* ─── Media Queries (Responsive Tuning) ─── */
                 @media (max-width: 1024px) {
                     .ps-inner { padding: 0 40px; }
-                    .ps-grid { gap: 40px; }
+                    .ps-grid { gap: 80px 40px; }
                     .ps-section { 
                         border-top-left-radius: 60px; 
                         border-top-right-radius: 60px; 
                         margin-top: -60px;
+                        padding-bottom: 200px;
+                    }
+                    .ps-card-1, .ps-card-3 {
+                        transform: translateY(100px); /* Lower stagger for tablets */
                     }
                 }
 
                 @media (max-width: 768px) {
                     .ps-section { 
-                        padding: 80px 0; 
+                        padding: 80px 0 100px; 
                         border-top-left-radius: 0; 
                         border-top-right-radius: 0; 
                         margin-top: 0;
                     }
                     .ps-inner { padding: 0 24px; }
-                    .ps-grid { grid-template-columns: 1fr; gap: 48px; }
-                    .ps-card-media { border-radius: 16px; }
+                    .ps-grid { 
+                        display: flex;
+                        flex-direction: column;
+                        gap: 60px; 
+                    }
+                    .ps-card {
+                        grid-column: auto !important;
+                        grid-row: auto !important;
+                        transform: none !important;
+                    }
+                    .ps-card-media { border-radius: 8px; }
+                    .ps-card-media-wrapper { border-radius: 8px; }
                     .ps-all-btn { width: 100%; }
+                    .ps-footer { margin-top: 60px; }
+                    .ps-card:hover .ps-card-info {
+                        transform: none;
+                    }
+                    .ps-card:hover .ps-card-media {
+                        transform: none;
+                    }
                 }
             `}</style>
         </section>

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { gsap } from 'gsap'
@@ -14,6 +14,7 @@ if (typeof window !== 'undefined') {
 const ProjectDetailContent = ({ project }) => {
     const containerRef = useRef(null)
     const stickyVisitRef = useRef(null)
+    const [focusedIdx, setFocusedIdx] = useState(0)
     
     // Find next project
     const currentIndex = projects.findIndex(p => p.slug === project.slug)
@@ -61,23 +62,20 @@ const ProjectDetailContent = ({ project }) => {
                     { y: 0, opacity: 1, duration: 1.2, ease: 'power4.out', delay: 0.2 }
                 )
 
-                // Masonry Parallax
-                gsap.utils.toArray('.pd-gallery-item').forEach((item, i) => {
-                    gsap.fromTo(item,
-                        { y: 60, opacity: 0 },
-                        {
-                            y: 0,
-                            opacity: 1,
-                            duration: 1.5,
-                            ease: 'power3.out',
-                            scrollTrigger: {
-                                trigger: item,
-                                start: 'top 95%',
-                                scrub: i % 2 === 0 ? 0.5 : 1
-                            }
+                // Accordion Gallery Reveal
+                gsap.fromTo('.pd-accordion-gallery',
+                    { y: 60, opacity: 0 },
+                    {
+                        y: 0,
+                        opacity: 1,
+                        duration: 1.2,
+                        ease: 'power3.out',
+                        scrollTrigger: {
+                            trigger: '.pd-gallery',
+                            start: 'top 85%'
                         }
-                    )
-                })
+                    }
+                )
 
                 // Media Parallax
                 gsap.fromTo('.pd-full-img',
@@ -129,7 +127,7 @@ const ProjectDetailContent = ({ project }) => {
             </a>
 
             {/* ─── 01 HERO ─── */}
-            <section className="pd-chapter pd-hero" data-bg={project.color} data-text="#ffffff">
+            <section className="pd-chapter pd-hero" data-bg={project.color} data-text="#ffffff" style={{ '--project-color': project.color }}>
                 <div className="pd-inner">
                     <div className="pd-hero-grid">
                         <div className="pd-hero-left">
@@ -146,8 +144,23 @@ const ProjectDetailContent = ({ project }) => {
                                 </div>
                                 <div className="pd-hero-meta-item">
                                     <span className="pd-meta-label">Year</span>
-                                    <span className="pd-meta-value">2024</span>
+                                    <span className="pd-meta-value">{project.year}</span>
                                 </div>
+                                {/* {project.link && project.link !== '#' && (
+                                    <div className="pd-hero-meta-item">
+                                        <span className="pd-meta-label">Live Project</span>
+                                        <a 
+                                            href={project.link} 
+                                            target="_blank" 
+                                            rel="noopener noreferrer" 
+                                            className="pd-meta-link"
+                                            style={{ '--hover-bg': '#ffffff', '--hover-text': project.color }}
+                                        >
+                                            Visit Live
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                                        </a>
+                                    </div>
+                                )} */}
                             </div>
                         </div>
                         <div className="pd-hero-right">
@@ -180,15 +193,17 @@ const ProjectDetailContent = ({ project }) => {
                 </div>
             </section>
 
-            {/* ─── 04 MASONRY SHOWCASE ─── */}
-            <section className="pd-chapter pd-gallery" data-bg="#f9f9fb" data-text="#000000">
+            {/* ─── 04 ACCORDION SHOWCASE ─── */}
+            <section className="pd-chapter pd-gallery" data-bg="#ffffff" data-text="#000000">
                 <div className="pd-inner">
-                    <div className="pd-masonry-grid">
-                        {project.images?.map((img, idx) => (
-                            <div key={idx} className={`pd-gallery-item pos-${idx}`}>
-                                <div className="pd-gallery-img-box">
-                                    <Image src={img} alt="Showcase" fill style={{ objectFit: 'cover' }} />
-                                </div>
+                    <div className="pd-accordion-gallery">
+                        {project.images?.slice(0, 3).map((img, idx) => (
+                            <div 
+                                key={idx} 
+                                className={`pd-accordion-item ${focusedIdx === idx ? 'active' : ''}`}
+                                onMouseEnter={() => setFocusedIdx(idx)}
+                            >
+                                <Image src={img} alt={`Showcase ${idx + 1}`} fill style={{ objectFit: 'cover' }} className="pd-accordion-img" />
                             </div>
                         ))}
                     </div>
@@ -223,7 +238,8 @@ const ProjectDetailContent = ({ project }) => {
                             <span className="pd-next-label">Next Project</span>
                             <h2 className="pd-next-title">{nextProject.title}</h2>
                             <div className="pd-next-circle">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                                <svg className="arrow-out" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                                <svg className="arrow-in" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                             </div>
                         </div>
                     </div>
@@ -261,40 +277,79 @@ const ProjectDetailContent = ({ project }) => {
                 .pd-sticky-icon svg { width: 18px; height: 18px; }
 
                 /* ─── Global Chapters ─── */
-                .pd-chapter { padding: 120px 0; position: relative; }
+                .pd-chapter { position: relative; width: 100%; }
 
                 /* ─── Hero ─── */
-                .pd-hero { min-height: 90vh; display: flex; align-items: center; padding-top: 140px; }
+                .pd-hero { display: flex; align-items: center; padding: 200px 0 120px; }
                 .pd-hero-grid { display: grid; grid-template-columns: 350px 1fr; gap: 80px; align-items: flex-start; }
                 .pd-hero-meta { display: flex; flex-direction: column; gap: 40px; }
                 .pd-meta-label { display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; font-weight: 700; opacity: 0.5; margin-bottom: 12px; }
                 .pd-meta-value, .pd-meta-list span { font-size: 1.1rem; font-weight: 500; }
                 .pd-meta-list { display: flex; flex-direction: column; gap: 6px; }
-                .pd-hero-title { font-size: clamp(4rem, 12vw, 12rem); font-weight: 300; line-height: 0.9; letter-spacing: -0.05em; margin-bottom: 30px; text-transform: uppercase; }
-                .pd-hero-desc { font-size: clamp(1.2rem, 2vw, 2.2rem); line-height: 1.3; font-weight: 400; max-width: 900px; opacity: 0.9; }
+                .pd-meta-link { display: inline-flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; padding: 10px 20px; border-radius: 100px; border: 1px solid currentColor; color: inherit; text-decoration: none; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); margin-top: 5px; opacity: 0.8; }
+                .pd-meta-link:hover { background: currentColor; color: var(--project-color, #000) !important; opacity: 1; transform: translateY(-2px); }
+                .pd-meta-link svg { width: 14px; height: 14px; }
+                .pd-hero-title { font-size: clamp(3.5rem, 7vw, 8rem); font-weight: 300; line-height: 1; letter-spacing: -0.03em; margin-bottom: 30px; text-transform: uppercase; word-break: break-word; }
+                .pd-hero-desc { font-size: clamp(1.2rem, 1.8vw, 2rem); line-height: 1.4; font-weight: 400; max-width: 800px; opacity: 0.9; }
 
                 /* ─── Media Full (Aspect Ratio Fix) ─── */
                 .pd-media-full { padding: 0; height: auto; aspect-ratio: 21/9; width: 100%; overflow: hidden; }
-                .pd-full-img-wrap { position: relative; width: 100%; height: 100%; overflow: hidden; }
-                .pd-full-img { position: relative; width: 100%; height: 120%; top: -10%; }
+                .pd-full-img-wrap { 
+                    position: relative; 
+                    width: 100%; 
+                    height: 100%; 
+                    overflow: hidden; 
+                    border-top: 1px solid rgba(128,128,128,0.2); 
+                    border-bottom: 1px solid rgba(128,128,128,0.2); 
+                }
+                .pd-full-img { position: absolute; width: 100%; height: 120%; top: -10%; left: 0; }
 
                 /* ─── Strategy ─── */
+                .pd-strategy { padding: 140px 0 70px; }
                 .pd-content-split { display: grid; grid-template-columns: 350px 1fr; gap: 80px; }
                 .pd-chapter-num { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.2em; opacity: 0.3; padding-top: 10px; }
                 .pd-chapter-heading { font-size: clamp(2.5rem, 5vw, 5rem); font-weight: 400; line-height: 1.1; letter-spacing: -0.04em; margin-bottom: 50px; }
                 .pd-chapter-para { font-size: clamp(1.1rem, 1.8vw, 1.8rem); line-height: 1.5; opacity: 0.8; max-width: 900px; }
 
-                /* ─── Masonry Showcase ─── */
-                .pd-gallery { padding-bottom: 160px; }
-                .pd-masonry-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 40px; }
-                .pd-gallery-item { position: relative; border-radius: 16px; overflow: hidden; background: #eee; }
-                .pos-0 { grid-column: 1 / 9; aspect-ratio: 16/10; }
-                .pos-1 { grid-column: 9 / 13; aspect-ratio: 4/5; margin-top: 80px; }
-                .pos-2 { grid-column: 2 / 7; aspect-ratio: 4/5; margin-top: -80px; }
-                .pos-3 { grid-column: 7 / 13; aspect-ratio: 16/10; }
+                /* ─── Premium Accordion Gallery ─── */
+                .pd-gallery { padding: 70px 0 140px; }
+                .pd-accordion-gallery { 
+                    display: flex; 
+                    gap: 24px; 
+                    height: 400px; 
+                    width: 100%; 
+                    align-items: flex-start;
+                }
+
+                .pd-accordion-item { 
+                    position: relative; 
+                    border-radius: 12px; 
+                    overflow: hidden; 
+                    background: #f5f5f5; 
+                    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); 
+                    cursor: pointer; 
+                }
+
+                .pd-accordion-img {
+                    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+                }
+
+                /* Default State (Inactive) */
+                .pd-accordion-item { 
+                    flex: 1; 
+                    height: 55%; 
+                }
+                .pd-accordion-item .pd-accordion-img { transform: scale(1.15); filter: brightness(0.7); }
+                
+                /* Active State (Controlled by React) */
+                .pd-accordion-item.active { 
+                    flex: 2; 
+                    height: 100%; 
+                }
+                .pd-accordion-item.active .pd-accordion-img { transform: scale(1); filter: brightness(1); }
 
                 /* ─── Outcome Section (Refined) ─── */
-                .pd-outcome { padding: 100px 0; border-top: 1px solid rgba(0,0,0,0.05); }
+                .pd-outcome { padding: 100px 0 140px; border-top: 1px solid rgba(0,0,0,0.05); }
                 .pd-outcome-card { max-width: 1200px; }
                 .pd-outcome-grid { display: grid; grid-template-columns: 350px 1fr; gap: 80px; }
                 .pd-outcome-title { font-size: 2.8rem; font-weight: 500; margin-top: 15px; letter-spacing: -0.02em; }
@@ -305,13 +360,68 @@ const ProjectDetailContent = ({ project }) => {
                 .pd-next-link { display: flex; width: 100%; height: 100%; position: relative; text-decoration: none; overflow: hidden; align-items: center; justify-content: center; }
                 .pd-next-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; transition: transform 1.2s var(--ease-expo), filter 1.2s ease; filter: grayscale(100%); transform: scale(1.1); }
                 .pd-next-link:hover .pd-next-bg { transform: scale(1); filter: grayscale(0%); }
-                .pd-next-content { position: relative; z-index: 2; text-align: center; color: #fff; }
+                .pd-next-content { position: relative; z-index: 2; text-align: center; color: #fff; padding: 0 4vw; }
                 .pd-next-label { display: block; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.3em; margin-bottom: 24px; opacity: 0.7; }
-                .pd-next-title { font-size: clamp(3.5rem, 10vw, 10rem); font-weight: 300; text-transform: uppercase; line-height: 1; letter-spacing: -0.05em; }
-                .pd-next-circle { width: 90px; height: 90px; border: 1px solid rgba(255,255,255,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 50px auto 0; transition: all 0.5s var(--ease-expo); }
-                .pd-next-link:hover .pd-next-circle { background: #fff; border-color: #fff; transform: scale(1.1); }
-                .pd-next-circle svg { width: 24px; height: 24px; color: #fff; transition: color 0.5s ease; }
-                .pd-next-link:hover .pd-next-circle svg { color: #000; }
+                .pd-next-title { font-size: clamp(3rem, 8vw, 8.5rem); font-weight: 300; text-transform: uppercase; line-height: 1; letter-spacing: -0.03em; word-break: break-word; }
+                
+                .pd-next-circle { 
+                    width: 90px; 
+                    height: 90px; 
+                    border: 1px solid rgba(255,255,255,0.3); 
+                    border-radius: 50%; 
+                    display: flex; 
+                    align-items: center; 
+                    justify-content: center; 
+                    margin: 50px auto 0; 
+                    transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1); 
+                    position: relative;
+                    overflow: hidden;
+                    cursor: pointer;
+                }
+                
+                /* Stage 1: Hover the footer area */
+                .pd-next-link:hover .pd-next-circle { 
+                    background: #ffffff; 
+                    border-color: #ffffff; 
+                    transform: scale(1.1); 
+                }
+
+                .pd-next-link:hover .pd-next-circle svg { 
+                    color: #000000; 
+                }
+
+                .pd-next-circle svg { 
+                    width: 30px; 
+                    height: 30px; 
+                    color: #ffffff; 
+                    position: absolute;
+                    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease, color 0.4s ease;
+                }
+
+                .pd-next-circle .arrow-out {
+                    transform: translate(0px, 0px);
+                    opacity: 1;
+                }
+
+                .pd-next-circle .arrow-in {
+                    transform: translate(-30px, 30px);
+                    opacity: 0;
+                }
+
+                /* Stage 2: Hover specifically on the button */
+                .pd-next-circle:hover {
+                    transform: scale(1.25) !important;
+                }
+
+                .pd-next-circle:hover .arrow-out {
+                    transform: translate(30px, -30px) !important;
+                    opacity: 0 !important;
+                }
+
+                .pd-next-circle:hover .arrow-in {
+                    transform: translate(0px, 0px) !important;
+                    opacity: 1 !important;
+                }
 
                 @media (max-width: 1024px) {
                     .pd-hero-grid, .pd-content-split, .pd-outcome-grid { grid-template-columns: 1fr; gap: 40px; }
@@ -319,24 +429,31 @@ const ProjectDetailContent = ({ project }) => {
                     .pd-hero-meta { flex-direction: row; flex-wrap: wrap; gap: 30px; }
                     .pd-hero-meta-item { flex: 1; min-width: 150px; }
                     .pd-media-full { aspect-ratio: 16/9; }
+
+                    /* Disable Accordion on Touch Devices -> Stack 1-by-1 */
+                    .pd-accordion-gallery { height: auto; display: grid; grid-template-columns: 1fr; gap: 30px; }
+                    .pd-accordion-item, .pd-accordion-item.active { flex: none !important; height: 400px !important; width: 100%; }
+                    .pd-accordion-item .pd-accordion-img, .pd-accordion-item.active .pd-accordion-img { filter: brightness(1) !important; transform: scale(1) !important; }
                 }
 
                 @media (max-width: 768px) {
-                    .pd-chapter { padding: 60px 0; }
-                    .pd-hero { padding-top: 100px; min-height: auto; }
+                    .pd-hero { padding: 140px 0 80px; }
+                    .pd-strategy { padding: 80px 0 40px; }
+                    .pd-gallery { padding: 40px 0 80px; }
+                    .pd-outcome { padding: 60px 0 80px; }
                     .pd-hero-meta { gap: 24px; }
                     .pd-meta-label { margin-bottom: 8px; }
                     .pd-hero-desc { font-size: 1.2rem; line-height: 1.4; }
                     .pd-chapter-heading { font-size: 2.4rem; margin-bottom: 24px; }
                     .pd-chapter-para, .pd-outcome-para { font-size: 1.2rem; line-height: 1.5; }
                     
-                    /* Masonry Reset */
-                    .pd-masonry-grid { grid-template-columns: 1fr; gap: 20px; }
-                    .pd-gallery-item { border-radius: 12px; }
-                    .pos-0, .pos-1, .pos-2, .pos-3 { grid-column: span 1; aspect-ratio: 4/3; margin-top: 0 !important; }
+                    /* Accordion Gallery Mobile Adjustments */
+                    .pd-accordion-gallery { gap: 20px; }
+                    .pd-accordion-item, .pd-accordion-item.active { height: 300px !important; border-radius: 8px; }
                     
                     /* Media Fix */
                     .pd-media-full { aspect-ratio: 4/3; height: 350px; }
+                    .pd-full-img-wrap { height: 100%; border-top: 1px solid rgba(128,128,128,0.2); border-bottom: 1px solid rgba(128,128,128,0.2); }
                     .pd-full-img { top: 0; height: 100%; }
                     
                     .pd-outcome-title { font-size: 2rem; margin-top: 5px; }

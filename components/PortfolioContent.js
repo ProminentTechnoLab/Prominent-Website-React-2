@@ -64,7 +64,7 @@ const PortfolioContent = () => {
             <section className="pc-projects">
                 <div className="pc-inner">
                     <div className="pc-grid">
-                        {projects.map((project, i) => (
+                        {(projects.length >= 4 ? [projects[1], projects[0], projects[3], projects[2]] : projects).map((project, i) => (
                             <div 
                                 key={project.slug} 
                                 className="pc-project-row"
@@ -84,6 +84,7 @@ const PortfolioContent = () => {
                                         <h2 className="pc-project-title">{project.title}</h2>
                                     </div>
                                     <p className="pc-project-desc">{project.description}</p>
+
                                     <div className="pc-project-footer">
                                         <Link 
                                             href={`/portfolio/${project.slug}/`} 
@@ -93,6 +94,15 @@ const PortfolioContent = () => {
                                             <span className="pc-link-text">View Case Study</span>
                                             <span className="pc-link-arrow">&rarr;</span>
                                         </Link>
+                                        <a 
+                                            href={project.link} 
+                                            target="_blank" 
+                                            rel="noopener noreferrer" 
+                                            className="pc-external-link"
+                                        >
+                                            <span className="pc-link-text">Live Project</span>
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -139,7 +149,7 @@ const PortfolioContent = () => {
                 .pc-grid {
                     display: flex;
                     flex-direction: column;
-                    gap: 120px;
+                    gap: 80px;
                 }
 
                 .pc-project-row {
@@ -150,21 +160,22 @@ const PortfolioContent = () => {
                     position: relative;
                 }
 
+                .pc-project-media {
+                    position: relative;
+                    width: 100%;
+                    aspect-ratio: 16/9;
+                    border-radius: 12px;
+                    overflow: hidden;
+                    background: #f5f5f5;
+                    order: 0;
+                }
+
                 .pc-project-row:nth-child(even) {
                     grid-template-columns: 1fr 1.2fr;
                 }
 
                 .pc-project-row:nth-child(even) .pc-project-media {
                     order: 2;
-                }
-
-                .pc-project-media {
-                    position: relative;
-                    width: 100%;
-                    aspect-ratio: 16/11;
-                    border-radius: 32px;
-                    overflow: hidden;
-                    background: #f5f5f5;
                 }
 
                 .pc-project-img {
@@ -207,6 +218,12 @@ const PortfolioContent = () => {
                 }
 
                 /* ─── Premium Link Hover ─── */
+                .pc-project-footer {
+                    display: flex;
+                    gap: 32px;
+                    align-items: center;
+                }
+
                 .pc-explore-link {
                     display: inline-flex;
                     align-items: center;
@@ -247,6 +264,35 @@ const PortfolioContent = () => {
                     transform: translateX(8px);
                 }
 
+                /* Premium Pill Button for Live Project */
+                .pc-external-link {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 8px;
+                    font-size: 0.85rem;
+                    font-weight: 600;
+                    text-transform: uppercase;
+                    letter-spacing: 0.05em;
+                    padding: 10px 20px;
+                    border-radius: 100px;
+                    border: 1px solid rgba(0,0,0,0.15);
+                    color: #000;
+                    text-decoration: none;
+                    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+                }
+
+                .pc-external-link:hover {
+                    background: #000;
+                    color: #fff;
+                    border-color: #000;
+                    transform: translateY(-2px);
+                }
+
+                .pc-external-link svg {
+                    width: 14px;
+                    height: 14px;
+                }
+
                 @media (max-width: 1024px) {
                     .pc-inner { padding: 0 40px; }
                     .pc-project-row { gap: 40px; }
@@ -264,7 +310,7 @@ const PortfolioContent = () => {
                     .pc-project-row:nth-child(even) .pc-project-media {
                         order: 0;
                     }
-                    .pc-project-media { border-radius: 20px; }
+                    .pc-project-media { border-radius: 8px; }
                     .pc-project-title { font-size: 2.2rem; }
                     .pc-project-desc { font-size: 1.1rem; }
                 }
