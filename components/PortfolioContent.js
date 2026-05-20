@@ -100,8 +100,16 @@ const PortfolioContent = () => {
                                             rel="noopener noreferrer" 
                                             className="pc-external-link"
                                         >
-                                            <span className="pc-link-text">Live Project</span>
-                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                                            <span className="pc-btn-text-wrap">
+                                                <span className="pc-btn-text-old">
+                                                    Live Project
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                                                </span>
+                                                <span className="pc-btn-text-new">
+                                                    Live Project
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                                                </span>
+                                            </span>
                                         </a>
                                     </div>
                                 </div>
@@ -266,6 +274,55 @@ const PortfolioContent = () => {
 
                 /* Premium Pill Button for Live Project */
                 .pc-external-link {
+                    position: relative;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 10px 24px;
+                    border-radius: 100px;
+                    border: 1px solid rgba(0,0,0,0.15);
+                    color: #000;
+                    text-decoration: none;
+                    overflow: hidden;
+                    background: transparent;
+                    transition: border-color 0.4s ease, transform 0.8s var(--ease-expo);
+                }
+
+                .pc-external-link::before {
+                    content: '';
+                    position: absolute;
+                    top: 100%;
+                    left: -50%;
+                    width: 200%;
+                    height: 300%;
+                    background: #000000;
+                    border-radius: 50%;
+                    transform: translateY(0);
+                    transition: transform 1.2s cubic-bezier(0.19, 1, 0.22, 1);
+                    z-index: 0;
+                }
+
+                .pc-external-link:hover {
+                    border-color: #000000;
+                    transform: translateY(-2px);
+                }
+
+                .pc-external-link:hover::before {
+                    transform: translateY(-70%);
+                }
+
+                .pc-btn-text-wrap {
+                    position: relative;
+                    z-index: 1;
+                    display: flex;
+                    flex-direction: column;
+                    overflow: hidden;
+                    height: 1.4em;
+                    line-height: 1.4;
+                }
+
+                .pc-btn-text-old,
+                .pc-btn-text-new {
                     display: inline-flex;
                     align-items: center;
                     gap: 8px;
@@ -273,24 +330,38 @@ const PortfolioContent = () => {
                     font-weight: 600;
                     text-transform: uppercase;
                     letter-spacing: 0.05em;
-                    padding: 10px 20px;
-                    border-radius: 100px;
-                    border: 1px solid rgba(0,0,0,0.15);
+                    transition: transform 1.2s var(--ease-expo);
+                }
+
+                .pc-btn-text-old {
                     color: #000;
-                    text-decoration: none;
-                    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
                 }
 
-                .pc-external-link:hover {
-                    background: #000;
+                .pc-btn-text-new {
+                    position: absolute;
+                    top: 100%;
+                    left: 0;
+                    width: 100%;
                     color: #fff;
-                    border-color: #000;
-                    transform: translateY(-2px);
                 }
 
-                .pc-external-link svg {
-                    width: 14px;
-                    height: 14px;
+                .pc-external-link:hover .pc-btn-text-old {
+                    transform: translateY(-120%);
+                }
+
+                .pc-external-link:hover .pc-btn-text-new {
+                    transform: translateY(-100%);
+                }
+
+                .pc-btn-text-old svg,
+                .pc-btn-text-new svg {
+                    width: 13px;
+                    height: 13px;
+                    transition: transform 0.4s ease;
+                }
+
+                .pc-external-link:hover .pc-btn-text-new svg {
+                    transform: translate(2px, -2px);
                 }
 
                 @media (max-width: 1024px) {
