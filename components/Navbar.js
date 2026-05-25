@@ -143,6 +143,13 @@ const Navbar = () => {
         onComplete: () => { if (overlayRef.current) overlayRef.current.style.display = 'none' }
       })
     }
+
+    // Cleanup: always restore body scroll if component unmounts while menu is open
+    return () => {
+      document.body.style.overflow = ''
+      document.body.style.height = ''
+      document.body.style.touchAction = ''
+    }
   }, [menuOpen])
 
   // Navigation handler

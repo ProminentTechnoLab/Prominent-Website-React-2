@@ -36,7 +36,6 @@
 
 html {
   background-color: var(--bg-primary);
-  overflow-x: hidden;
   width: 100%;
   scrollbar-width: thin; /* Firefox */
 }
