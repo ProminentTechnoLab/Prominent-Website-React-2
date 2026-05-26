@@ -384,6 +384,13 @@ const PortfolioContent = () => {
                     .pc-project-media { border-radius: 8px; }
                     .pc-project-title { font-size: 2.2rem; }
                     .pc-project-desc { font-size: 1.1rem; }
+                    .pc-project-footer {
+                        flex-direction: row;
+                        flex-wrap: wrap;
+                        align-items: center;
+                        gap: 20px;
+                        margin-top: 8px;
+                    }
                 }
             `}</style>
         </div>

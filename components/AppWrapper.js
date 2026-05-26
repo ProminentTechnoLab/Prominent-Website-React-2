@@ -18,7 +18,7 @@ const AppWrapper = ({ children }) => {
   useEffect(() => {
     const ctx = gsap.context(() => {
       // Ensure content is ready to be seen immediately
-      gsap.set(contentRef.current, { opacity: 1, y: 0 })
+      gsap.set(contentRef.current, { opacity: 1 })
 
       if (isInitialMount.current) {
         // --- 1. INITIAL PAGE LOAD ---
@@ -98,7 +98,7 @@ const AppWrapper = ({ children }) => {
           willChange: 'transform'
         }}
       />
-      <div ref={contentRef} style={{ opacity: 1, transform: 'translateY(0)' }}>
+      <div ref={contentRef} style={{ opacity: 1 }}>
         <div key={`${pathname}-${navKey}`}>
           {children}
         </div>

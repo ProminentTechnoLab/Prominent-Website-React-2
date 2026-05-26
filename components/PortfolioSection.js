@@ -510,14 +510,20 @@ const PortfolioSection = () => {
                         display: flex;
                         flex-direction: column;
                         gap: 60px; 
+                        align-items: stretch;
                     }
                     .ps-card {
                         grid-column: auto !important;
                         grid-row: auto !important;
                         transform: none !important;
+                        width: 100%;
                     }
-                    .ps-card-media { border-radius: 8px; }
-                    .ps-card-media-wrapper { border-radius: 8px; }
+                    .ps-card-media { 
+                        border-radius: 12px; 
+                        box-shadow: none;
+                    }
+                    .ps-card-media-wrapper { border-radius: 12px; }
+                    .ps-card-glow { display: none; }
                     .ps-all-btn { width: 100%; }
                     .ps-footer { margin-top: 60px; }
                     .ps-card:hover .ps-card-info {
@@ -525,6 +531,7 @@ const PortfolioSection = () => {
                     }
                     .ps-card:hover .ps-card-media {
                         transform: none;
+                        box-shadow: none;
                     }
                 }
             `}</style>

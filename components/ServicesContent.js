@@ -251,6 +251,8 @@ const ServicesContent = () => {
         }
         .sc-hero-video-container {
           width: 100%;
+          max-width: 1200px;
+          margin: 0 auto;
           padding: 0 100px;
         }
         
@@ -290,6 +292,7 @@ const ServicesContent = () => {
         }
         .sc-hero-video-wrap {
           width: 100%;
+          aspect-ratio: 16 / 9;
           border-radius: 40px;
           overflow: hidden;
           background: #f1f1f1;
@@ -300,9 +303,10 @@ const ServicesContent = () => {
         }
         .sc-hero-video {
           width: 100%;
-          height: auto;
+          height: 100%;
+          object-fit: cover;
           display: block;
-          transform: scale(1.12); /* Zoom in to hide watermark */
+          transform: scale(1.12); /* Slight zoom to hide watermark */
           transform-origin: center;
         }
 

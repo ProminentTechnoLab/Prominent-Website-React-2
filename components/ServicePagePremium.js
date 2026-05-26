@@ -240,6 +240,8 @@ const ServicePagePremium = ({ slug }) => {
 
         .spp-visual-wrap {
           width: 100%;
+          max-width: 1200px;
+          margin: 0 auto;
           border-radius: 40px;
           overflow: hidden;
           background: #f8f8f8;
@@ -249,7 +251,7 @@ const ServicePagePremium = ({ slug }) => {
         .spp-image-container {
           position: relative;
           width: 100%;
-          height: 85vh;
+          aspect-ratio: 16 / 9;
         }
         .parallax-img {
           transform: scale(1.2);
@@ -375,14 +377,14 @@ const ServicePagePremium = ({ slug }) => {
           .spp-row-label { position: relative; top: 0; font-size: 12px; margin-bottom: 10px; }
           .spp-stats { flex-wrap: wrap; gap: 40px; }
           .spp-offers-grid { grid-template-columns: 1fr; }
-          .spp-image-container { height: 60vh; }
+
         }
 
         @media (max-width: 768px) {
           .spp-hero { padding-top: 140px; }
           .spp-hero-h { font-size: 3rem; }
           .spp-visual-wrap { border-radius: 24px; }
-          .spp-image-container { height: 45vh; }
+
           .spp-content-h { font-size: 2.1rem; }
           .spp-content-p { font-size: 1.35rem; }
           .spp-step-h { font-size: 1.6rem; }

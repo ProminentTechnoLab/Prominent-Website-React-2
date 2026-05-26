@@ -148,10 +148,13 @@ const Hero = () => {
         }
         .cb-hero-video-container {
           width: 100%;
+          max-width: 1200px;
+          margin: 0 auto;
           padding: 0 100px;
         }
         .cb-hero-media {
           width: 100%;
+          aspect-ratio: 16 / 9;
           border-radius: 24px;
           overflow: hidden;
           will-change: transform, opacity;
@@ -164,7 +167,7 @@ const Hero = () => {
           height: 100% !important;
           object-fit: cover !important;
           display: block !important;
-          transform: scale(1.15); /* Aggressive zoom to crop wide baked-in black bars */
+          transform: scale(1.05); /* Slight zoom to crop baked-in black bars */
         }
 
         /* ═══ About Section — exact 50/50 split ═══ */
