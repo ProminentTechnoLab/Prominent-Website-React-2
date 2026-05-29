@@ -148,9 +148,9 @@ const Hero = () => {
         }
         .cb-hero-video-container {
           width: 100%;
-          max-width: 1200px;
+          max-width: 1600px;
           margin: 0 auto;
-          padding: 0 100px;
+          padding: 0 5vw;
         }
         .cb-hero-media {
           width: 100%;

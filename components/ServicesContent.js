@@ -251,9 +251,9 @@ const ServicesContent = () => {
         }
         .sc-hero-video-container {
           width: 100%;
-          max-width: 1200px;
+          max-width: 1600px;
           margin: 0 auto;
-          padding: 0 100px;
+          padding: 0 5vw;
         }
         
         .d-block { display: block; overflow: hidden; }
@@ -293,7 +293,7 @@ const ServicesContent = () => {
         .sc-hero-video-wrap {
           width: 100%;
           aspect-ratio: 16 / 9;
-          border-radius: 40px;
+          border-radius: 24px;
           overflow: hidden;
           background: #f1f1f1;
           line-height: 0;
@@ -569,6 +569,7 @@ const ServicesContent = () => {
           .sc-wide-inner { padding: 0 20px; }
           .sc-narrow-inner { padding: 0 20px; }
           .sc-hero-video-container { padding: 0 20px; }
+          .sc-hero-video-wrap { border-radius: 16px; }
           .sc-hero-title { font-size: 2.4rem; }
           .sc-main-title { font-size: 2.2rem; }
           .sc-benefit-icon-box { width: 64px; height: 64px; }

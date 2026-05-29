@@ -423,7 +423,7 @@ const Navbar = () => {
           flex: 1;
           display: flex;
           flex-direction: column;
-          padding: 40px 12vw 0;
+          padding: 0 12vw;
           justify-content: center; /* Centered links as per premium standard */
           overflow: hidden; /* No scroll as requested */
           background: #fff;
@@ -442,19 +442,19 @@ const Navbar = () => {
         }
         .mob-link {
           font-family: var(--font-main);
-          font-size: clamp(2.5rem, 8vw, 4.2rem);
+          font-size: clamp(1.8rem, 6vw, 3rem);
           font-weight: 400;
           color: #000;
           text-decoration: none;
-          line-height: 1.1;
-          padding: 6px 0;
+          line-height: 1.2;
+          padding: 8px 0;
           transition: opacity 0.3s;
-          letter-spacing: -0.02em;
+          letter-spacing: -0.01em;
         }
         .mob-link:hover { opacity: 0.35; }
 
         .cb-overlay-footer {
-          padding: 40px 12vw 60px;
+          padding: 30px 12vw 50px;
           border-top: 1px solid rgba(0, 0, 0, 0.05);
         }
         .cb-footer-links-row {
@@ -489,7 +489,7 @@ const Navbar = () => {
         @media (max-width: 480px) {
           .cb-nav-inner { padding: 0 16px; }
           .cb-overlay-header { padding: 0 16px; }
-          .cb-overlay-body { padding: 60px 8vw 0; }
+          .cb-overlay-body { padding: 0 8vw; }
           .cb-overlay-footer { padding: 30px 8vw 50px; }
         }
       `}</style>
