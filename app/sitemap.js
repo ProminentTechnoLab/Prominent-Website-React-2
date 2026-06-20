@@ -18,6 +18,7 @@ export default function sitemap() {
         '/portfolio/propleadz',
         '/portfolio/bb-signs',
         '/portfolio/yoyo-fashion',
+        '/portfolio/antyodaya-news',
     ]
 
     const servicePages = [

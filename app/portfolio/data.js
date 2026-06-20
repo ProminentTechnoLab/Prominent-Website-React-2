@@ -14,8 +14,8 @@ export const projects = [
         image: '/images/portfolio/biobonz-hero.png',
         images: [
             '/images/portfolio/biobonz-hero.png',
-            '/images/refokus_ecommerce.png',
-            '/images/refokus_ecommerce_3.png',
+            '/images/portfolio/biobonz-2.png',
+            '/images/portfolio/biobonz-3.png',
             '/images/serv_ecom_lg.png'
         ],
         link: 'https://biobonz.com/',
@@ -36,8 +36,8 @@ export const projects = [
         image: '/images/portfolio/propleadz-hero.png',
         images: [
             '/images/portfolio/propleadz-hero.png',
-            '/images/refokus_api.png',
-            '/images/premium_dark_laptop.png',
+            '/images/portfolio/propleadz-2.png',
+            '/images/portfolio/propleadz-3.png',
             '/images/serv_api_lg.png'
         ],
         link: 'https://propleadz.in/',
@@ -58,8 +58,8 @@ export const projects = [
         image: '/images/portfolio/bbsigns-hero.png',
         images: [
             '/images/portfolio/bbsigns-hero.png',
-            '/images/premium_yellow_brand.png',
-            '/images/premium_ui_ux.png',
+            '/images/portfolio/bbsigns-2.png',
+            '/images/portfolio/bbsigns-3.png',
             '/images/about_hero_vibe.png'
         ],
         link: 'https://bbsigns.co.nz/',
@@ -80,11 +80,33 @@ export const projects = [
         image: '/images/portfolio/yoyo-hero.png',
         images: [
             '/images/portfolio/yoyo-hero.png',
-            '/images/premium_mobile_app.png',
-            '/images/premium_blue_phone.png',
+            '/images/portfolio/yoyo-2.png',
+            '/images/portfolio/yoyo-3.png',
             '/images/serv_mob_lg.png'
         ],
         link: 'https://www.yoyo.fashion/',
         color: '#FF4081'
+    },
+    {
+        slug: 'antyodaya-news',
+        title: 'Antyodaya News',
+        year: '2026',
+        category: 'NEWS PORTAL',
+        services: ['News Portal Development', 'UI/UX Design', 'Content Management', 'Digital Media'],
+        tags: ['Next.js', 'News', 'Portal'],
+        tech: ['React', 'Next.js', 'CMS', 'Tailwind CSS'],
+        description: 'A comprehensive news portal delivering timely and accurate information to the masses.',
+        fullDescription: 'Antyodaya News is a modern digital news platform dedicated to providing up-to-date and reliable news coverage. We focused on creating a highly accessible and readable interface for a wide demographic of users, ensuring that news consumption is seamless across all devices.',
+        approach: 'Our approach prioritized content readability and fast load times. We implemented a robust content management system to handle high volumes of daily articles and utilized advanced caching strategies for optimal performance during traffic spikes.',
+        results: 'The platform successfully serves a growing daily readership with exceptional page load speeds and high user retention rates.',
+        image: '/images/portfolio/antyodayanews-hero.png',
+        images: [
+            '/images/portfolio/antyodayanews-hero.png',
+            '/images/portfolio/antyodayanews-2.png',
+            '/images/portfolio/antyodayanews-3.png',
+            '/images/about_hero_vibe.png'
+        ],
+        link: 'https://antyodayanews.com/',
+        color: '#D32F2F'
     }
 ];

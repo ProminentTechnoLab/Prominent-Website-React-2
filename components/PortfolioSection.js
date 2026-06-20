@@ -50,7 +50,8 @@ const PortfolioSection = () => {
         'biobonz': { hex: '#2D5A27', rgb: '45, 90, 39' },
         'propleadz': { hex: '#1A73E8', rgb: '26, 115, 232' },
         'bb-signs': { hex: '#E62E2D', rgb: '230, 46, 45' },
-        'yoyo-fashion': { hex: '#FF4081', rgb: '255, 64, 129' }
+        'yoyo-fashion': { hex: '#FF4081', rgb: '255, 64, 129' },
+        'antyodaya-news': { hex: '#D32F2F', rgb: '211, 47, 47' }
     }
 
     // Slicing to the first 4 projects

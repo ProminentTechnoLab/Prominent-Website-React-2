@@ -64,7 +64,7 @@ const PortfolioContent = () => {
             <section className="pc-projects">
                 <div className="pc-inner">
                     <div className="pc-grid">
-                        {(projects.length >= 4 ? [projects[1], projects[0], projects[3], projects[2]] : projects).map((project, i) => (
+                        {(projects.length >= 4 ? [projects[1], projects[0], projects[3], projects[2], ...projects.slice(4)] : projects).map((project, i) => (
                             <div 
                                 key={project.slug} 
                                 className="pc-project-row"

@@ -21,6 +21,11 @@ const sites = [
         name: 'yoyo-hero.png',
         url: 'https://www.yoyo.fashion/collections/all',
         fallbackUrl: 'https://www.yoyo.fashion/'
+    },
+    {
+        name: 'antyodayanews-hero.png',
+        url: 'https://antyodayanews.com/',
+        fallbackUrl: 'https://antyodayanews.com/'
     }
 ];
 

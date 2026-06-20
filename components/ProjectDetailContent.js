@@ -146,7 +146,7 @@ const ProjectDetailContent = ({ project }) => {
                                     <span className="pd-meta-label">Year</span>
                                     <span className="pd-meta-value">{project.year}</span>
                                 </div>
-                                {/* {project.link && project.link !== '#' && (
+                                {project.link && project.link !== '#' && (
                                     <div className="pd-hero-meta-item">
                                         <span className="pd-meta-label">Live Project</span>
                                         <a 
@@ -160,7 +160,7 @@ const ProjectDetailContent = ({ project }) => {
                                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
                                         </a>
                                     </div>
-                                )} */}
+                                )}
                             </div>
                         </div>
                         <div className="pd-hero-right">
@@ -287,7 +287,7 @@ const ProjectDetailContent = ({ project }) => {
                 .pd-meta-value, .pd-meta-list span { font-size: 1.1rem; font-weight: 500; }
                 .pd-meta-list { display: flex; flex-direction: column; gap: 6px; }
                 .pd-meta-link { display: inline-flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; padding: 10px 20px; border-radius: 100px; border: 1px solid currentColor; color: inherit; text-decoration: none; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); margin-top: 5px; opacity: 0.8; }
-                .pd-meta-link:hover { background: currentColor; color: var(--project-color, #000) !important; opacity: 1; transform: translateY(-2px); }
+                .pd-meta-link:hover { background: var(--hover-bg, #ffffff); color: var(--hover-text, #000) !important; opacity: 1; transform: translateY(-2px); }
                 .pd-meta-link svg { width: 14px; height: 14px; }
                 .pd-hero-title { font-size: clamp(3.5rem, 7vw, 8rem); font-weight: 300; line-height: 1; letter-spacing: -0.03em; margin-bottom: 30px; text-transform: uppercase; word-break: break-word; }
                 .pd-hero-desc { font-size: clamp(1.2rem, 1.8vw, 2rem); line-height: 1.4; font-weight: 400; max-width: 800px; opacity: 0.9; }
